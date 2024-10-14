@@ -18,7 +18,7 @@ namespace Explorer.Blog.Core.Domain
         public string title { get; private set; }
         public string description { get; private set; }
         public DateTime createdDate { get; private set; } 
-        public List<string> imageUrls { get; private set; } = new List<string>();
+        public List<BlogImage> images { get; private set; }
         public BlogStatus status { get; private set; }
 
         public string RenderedDescription
@@ -29,7 +29,7 @@ namespace Explorer.Blog.Core.Domain
             }
         }
 
-        public Blog(string title, string description, BlogStatus status,int userId, List<string> imageUrls = null)
+        public Blog(string title, string description, BlogStatus status,int userId, List<BlogImage> image = null)
         {
             this.title = title ?? throw new ArgumentNullException(nameof(title));
             this.description = description ?? throw new ArgumentNullException(nameof(description));
@@ -47,7 +47,7 @@ namespace Explorer.Blog.Core.Domain
             }
             this.userId = userId;
 
-            this.imageUrls = imageUrls ?? new List<string>();
+            this.images = images ?? new List<BlogImage>();
         }
 
         public void UpdateStatus(BlogStatus newStatus, int currentUserId)
@@ -59,10 +59,16 @@ namespace Explorer.Blog.Core.Domain
             status = newStatus;
         }
 
-        public void AddImageUrl(string imageUrl)
+        public void AddImage(BlogImage image)
         {
-            imageUrls.Add(imageUrl);
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image), "Image cannot be null.");
+            }
+
+            images.Add(image);
         }
+
 
     }
 
