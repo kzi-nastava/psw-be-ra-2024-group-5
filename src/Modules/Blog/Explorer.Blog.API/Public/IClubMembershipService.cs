@@ -11,5 +11,8 @@ namespace Explorer.Blog.API.Public
 {
     public interface IClubMembershipService
     {
+        Result<PagedResult<ClubMembershipDto>> GetPaged(int page, int pageSize);
+        Result<ClubMembershipDto> Create(ClubMembershipDto clubMembership);
+        Result Delete(int id);
     }
 }

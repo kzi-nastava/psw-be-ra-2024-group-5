@@ -11,9 +11,14 @@ using System.Threading.Tasks;
 
 namespace Explorer.Blog.Core.UseCases
 {
-    public class ClubMembershipService : BaseService<ClubMembershipDto,ClubMembership>,IClubMembershipService
+    public class ClubMembershipService : CrudService<ClubMembershipDto,ClubMembership>,IClubMembershipService
     {
-        public ClubMembershipService(IMapper mapper) : base(mapper) { }
+        public ClubMembershipService(ICrudRepository<ClubMembership> crudRepository, IMapper mapper) : base(crudRepository, mapper)
+        {
+        }
+
+
+        //public ClubMembershipService(IMapper mapper) : base(mapper) { }
         //public Result<ClubDto> AddMember(ClubDto club, User user)
         //{
         //    club.Members.Add(user);
