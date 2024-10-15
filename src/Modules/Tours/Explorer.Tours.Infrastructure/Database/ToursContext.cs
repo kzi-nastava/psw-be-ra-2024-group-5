@@ -13,6 +13,11 @@ public class ToursContext : DbContext
     {
         modelBuilder.HasDefaultSchema("tours");
 
+        modelBuilder.Entity<Tour>().HasIndex(t => t.Id).IsUnique();
         modelBuilder.Entity<Equipment>().HasIndex(e => e.Id).IsUnique();
+        
+        modelBuilder.Entity<Tour>()
+            .HasMany(t => t.Equipments)
+            .WithMany();
     }
 }
