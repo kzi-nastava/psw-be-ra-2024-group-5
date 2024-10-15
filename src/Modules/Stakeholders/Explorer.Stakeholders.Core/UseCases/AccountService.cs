@@ -33,7 +33,7 @@ public class AccountService : IAccountService
 
     public Result<PagedResult<AccountDto>> GetPaged(int page, int pageSize)
     {
-        if (page < 1 || pageSize < 1) return Result.Fail(FailureCode.InvalidArgument);
+        if (page < 0 || pageSize < 0) return Result.Fail(FailureCode.InvalidArgument);
         List<AccountDto> result = new List<AccountDto>();
 
         try
