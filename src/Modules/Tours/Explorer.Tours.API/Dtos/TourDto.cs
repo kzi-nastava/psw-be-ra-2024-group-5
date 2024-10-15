@@ -7,6 +7,7 @@ public class TourDto {
     public string? Description { get; set; }
     public TourLevel Level { get; set; }
     public TourStatus Status { get; set; }
-    public List<TourTagDto> Tags { get; set; }
+    //public List<TourTagDto> Tags { get; set; }
     public double Price { get; set; }
+    //public int AuthorId { get; set; }
 }
