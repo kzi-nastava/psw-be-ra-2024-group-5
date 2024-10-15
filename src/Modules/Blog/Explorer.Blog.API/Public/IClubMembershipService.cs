@@ -9,12 +9,7 @@ using System.Threading.Tasks;
 
 namespace Explorer.Blog.API.Public
 {
-    public interface IClubService
+    public interface IClubMembershipService
     {
-        Result<PagedResult<ClubDto>> GetPaged(int page, int pageSize);
-        Result<ClubDto> Create(ClubDto club);
-        Result<ClubDto> Update(ClubDto club);
-        Result Delete(int id);
-
     }
 }

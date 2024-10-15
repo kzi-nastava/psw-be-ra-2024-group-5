@@ -18,17 +18,5 @@ namespace Explorer.Blog.Core.UseCases
         public ClubService(ICrudRepository<Club> crudRepository, IMapper mapper) : base(crudRepository, mapper)
         {
         }
-
-        public Result<ClubDto> AddMember(ClubDto club,User user)
-        {
-            club.Members.Add(user);
-            return club;
-        }
-
-        public Result<ClubDto> RemoveMember(ClubDto club,User user)
-        {
-            club.Members.Remove(user);
-            return club;
-        }
     }
 }
