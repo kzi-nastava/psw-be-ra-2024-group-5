@@ -18,24 +18,5 @@ namespace Explorer.Blog.Core.UseCases
         {
         }
 
-        public Result<ClubDto> Create(ClubDto club)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Result Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Result<ClubDto> Update(ClubDto club)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Result<ClubDto> Get()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
