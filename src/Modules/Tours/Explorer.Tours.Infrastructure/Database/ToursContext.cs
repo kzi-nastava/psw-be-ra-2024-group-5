@@ -13,12 +13,15 @@ public class ToursContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("tours");
+
+        ConfigureTour(modelBuilder);
     }
 
-    /* private static void ConfigureStakeholder(ModelBuilder modelBuilder) {
+    private static void ConfigureTour(ModelBuilder modelBuilder) {
         modelBuilder.Entity<KeyPoint>()
             .HasOne<Tour>()
-            .WithOne()
-            .HasForeignKey<Person>(s => s.UserId);
-    } */
+            .WithMany() 
+            .HasForeignKey(k => k.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
+    } 
 }
