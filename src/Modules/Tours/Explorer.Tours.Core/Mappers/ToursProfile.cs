@@ -8,14 +8,9 @@ public class ToursProfile : Profile {
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
 
         CreateMap<KeyPointDto, KeyPoint>()
-            .ForCtorParam("name", opt => opt.MapFrom(src => src.Name))
-            .ForCtorParam("description", opt => opt.MapFrom(src => src.Description))
-            .ForCtorParam("latitude", opt => opt.MapFrom(src => src.Latitude))
-            .ForCtorParam("longitude", opt => opt.MapFrom(src => src.Longitude))
-            .ForCtorParam("image", opt => opt.MapFrom(src => ConvertToByteArray(src.Image)))
+            .ConstructUsing(src => new KeyPoint(src.Name, src.Description, src.Latitude, src.Longitude, ConvertToByteArray(src.Image), src.TourId))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertToBase64String(src.Image)));
-
     }
 
     private byte[] ConvertToByteArray(string base64Image) {

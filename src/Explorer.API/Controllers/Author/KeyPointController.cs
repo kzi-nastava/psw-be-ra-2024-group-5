@@ -14,10 +14,10 @@ namespace Explorer.API.Controllers.Author {
             _keyPointService = keyPointService;
         }
 
-        [HttpPost]
+        /* [HttpPost]
         public ActionResult<KeyPointDto> Create([FromForm] KeyPointDto keyPoint) {
             var result = _keyPointService.Create(keyPoint);
             return CreateResponse(result);
-        }
+        } */
     }
 }

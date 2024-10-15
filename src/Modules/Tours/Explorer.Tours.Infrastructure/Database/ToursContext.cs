@@ -14,4 +14,11 @@ public class ToursContext : DbContext
     {
         modelBuilder.HasDefaultSchema("tours");
     }
+
+    /* private static void ConfigureStakeholder(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<KeyPoint>()
+            .HasOne<Tour>()
+            .WithOne()
+            .HasForeignKey<Person>(s => s.UserId);
+    } */
 }
