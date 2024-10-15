@@ -1,5 +1,6 @@
 ﻿using Explorer.Blog.API.Dtos;
 using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.Core.Domain;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace Explorer.Blog.API.Public
         Result<ClubDto> Create(ClubDto club);
         Result<ClubDto> Update(ClubDto club);
         Result Delete(int id);
+        Result<ClubDto> AddMember(ClubDto club,User user);
+        Result<ClubDto> RemoveMember(ClubDto club,User user);
 
     }
 }

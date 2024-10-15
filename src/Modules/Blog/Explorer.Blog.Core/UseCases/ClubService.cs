@@ -3,6 +3,7 @@ using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.Blog.Core.Domain;
 using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.Core.Domain;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,16 @@ namespace Explorer.Blog.Core.UseCases
         {
         }
 
+        public Result<ClubDto> AddMember(ClubDto club,User user)
+        {
+            club.Members.Add(user);
+            return club;
+        }
+
+        public Result<ClubDto> RemoveMember(ClubDto club,User user)
+        {
+            club.Members.Remove(user);
+            return club;
+        }
     }
 }

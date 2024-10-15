@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Explorer.Blog.Core.Domain
 {
@@ -13,18 +14,22 @@ namespace Explorer.Blog.Core.Domain
         public string Name { get; private set; }
         public string Description { get; private set; }
         public string ImageDirectory {  get; private set; }
+        public List<User> Members { get; private set; }
         public Club()
         {
             Name = string.Empty;
             Description = string.Empty;
             ImageDirectory = string.Empty;
+            Members = new List<User>();
         }
 
-        public Club(string name, string description, string imageDirectory) 
-        { 
+        public Club(string name, string description, string imageDirectory,List<User> members) 
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Invalid Name.");
             Name = name; 
             Description = description; 
-            ImageDirectory = imageDirectory; 
+            ImageDirectory = imageDirectory;
+            Members = members;
         }
     }
 }
