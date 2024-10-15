@@ -14,6 +14,8 @@ public class ToursContext : DbContext
     {
         modelBuilder.HasDefaultSchema("tours");
 
+        modelBuilder.Entity<KeyPoint>().HasIndex(k => k.Id).IsUnique();
+
         ConfigureTour(modelBuilder);
     }
 

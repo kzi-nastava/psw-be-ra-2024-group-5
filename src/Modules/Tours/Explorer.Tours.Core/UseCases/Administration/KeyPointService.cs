@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
@@ -13,15 +14,19 @@ public class KeyPointService : BaseService<KeyPointDto, KeyPoint>, IKeyPointServ
         _keyPointRepository = keyPointRepository;
     }
 
-    public Result<List<KeyPointDto>> Create(List<KeyPointDto> keyPointDtos) {
-        List<KeyPoint> keyPoints = MapToDomain(keyPointDtos);
-        List<KeyPointDto> retVal = new List<KeyPointDto>();
+    public Result<List<KeyPointDto>> Create(int tourId, List<KeyPointDto> keyPointDtos) {
+        try {
+            List<KeyPointDto> retVal = new List<KeyPointDto>();
 
-        foreach (var keyPoint in keyPoints) {
-            var savedKeyPoint = _keyPointRepository.Create(keyPoint);
-            retVal.Add(MapToDto(savedKeyPoint));
+            foreach (var keyPointDto in keyPointDtos) {
+                keyPointDto.TourId = tourId;
+                var savedKeyPoint = _keyPointRepository.Create(MapToDomain(keyPointDto));
+                retVal.Add(MapToDto(savedKeyPoint));
+            }
+            return retVal;
         }
-
-        return retVal;
+        catch (ArgumentException e) {
+            return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
+        }
     }
 }
