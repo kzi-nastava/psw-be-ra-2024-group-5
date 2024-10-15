@@ -12,5 +12,10 @@ public class ToursProfile : Profile {
             .ConstructUsing(src => new KeyPoint(src.Name, src.Description, src.Latitude, src.Longitude, Base64Converter.ConvertToByteArray(src.Image), src.TourId))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
+
+        CreateMap<FacilityDto, Facility>()
+            .ConstructUsing(src => new Facility(src.Name, src.Description, src.Longitude, src.Latitude, Base64Converter.ConvertToByteArray(src.Image), src.Type))
+            .ReverseMap()
+            .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
     }
 }
