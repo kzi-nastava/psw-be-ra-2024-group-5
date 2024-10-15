@@ -5,5 +5,5 @@ using FluentResults;
 namespace Explorer.Tours.API.Public.Administration;
 
 public interface IKeyPointService {
-    Result<KeyPointDto> Create(KeyPointDto keyPointDto);
+    public Result<List<KeyPointDto>> Create(List<KeyPointDto> keyPointDtos);
 }

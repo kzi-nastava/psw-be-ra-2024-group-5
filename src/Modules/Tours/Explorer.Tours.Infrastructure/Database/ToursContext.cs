@@ -13,5 +13,15 @@ public class ToursContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("tours");
+
+        ConfigureTour(modelBuilder);
     }
+
+    private static void ConfigureTour(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<KeyPoint>()
+            .HasOne<Tour>()
+            .WithMany() 
+            .HasForeignKey(k => k.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
+    } 
 }
