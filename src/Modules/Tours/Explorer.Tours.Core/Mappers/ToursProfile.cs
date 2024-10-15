@@ -1,13 +1,19 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Utilities;
 using Microsoft.AspNetCore.Http;
 
-public class ToursProfile : Profile {
-    public ToursProfile() {
-        CreateMap<EquipmentDto, Equipment>().ReverseMap();
+namespace Explorer.Tours.Core.Mappers;
 
+public class ToursProfile : Profile
+{
+    public ToursProfile()
+    {
+        CreateMap<TourDto, Tour>().ReverseMap();
+        CreateMap<TourTagDto, TourTag>().ReverseMap();
+        CreateMap<EquipmentDto, Equipment>().ReverseMap();
+        
         CreateMap<KeyPointDto, KeyPoint>()
             .ForCtorParam("name", opt => opt.MapFrom(src => src.Name))
             .ForCtorParam("description", opt => opt.MapFrom(src => src.Description))
@@ -17,5 +23,6 @@ public class ToursProfile : Profile {
             .ForCtorParam("tourId", opt => opt.MapFrom(src => src.TourId))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
+    
     }
 }
