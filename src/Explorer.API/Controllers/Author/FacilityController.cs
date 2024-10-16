@@ -19,6 +19,19 @@ namespace Explorer.API.Controllers.Author
             _facilityService = facilityService;
         }
 
+        [HttpGet("{page:int}/{pageSize:int}")]
+        public ActionResult<FacilityDto> GetPaged(int page, int pageSize)
+        {
+            var result = _facilityService.GetPaged(page, pageSize);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Message);
+            }
+
+            return Ok(result.Value);
+        }
+
+
         [HttpPost]
         public ActionResult<FacilityDto> Create([FromBody] FacilityDto facility) {
             var result = _facilityService.Create(facility);

@@ -14,17 +14,17 @@ namespace Explorer.Tours.Core.UseCases.Author
 {
     public class FacilityService : BaseService<FacilityDto, Facility>, IFacilityService
     {
-        private readonly ICrudRepository<Facility> _facilityReposistory;
+        private readonly ICrudRepository<Facility> _facilityRepository;
         public FacilityService(ICrudRepository<Facility> facilityRepository, IMapper mapper) : base(mapper)
         {
-            _facilityReposistory = facilityRepository;
+            _facilityRepository = facilityRepository;
         }
         public Result<FacilityDto> Create(FacilityDto facilityDto)
         {
             try {
                 var facility = MapToDomain(facilityDto);
 
-                facility = _facilityReposistory.Create(facility);
+                facility = _facilityRepository.Create(facility);
 
                 return MapToDto(facility);
             }
@@ -32,6 +32,20 @@ namespace Explorer.Tours.Core.UseCases.Author
             {
                 return Result.Fail("Failed to create facility: " + ex.Message);
             }
+        }
+
+        public Result<List<FacilityDto>> GetPaged(int page, int pageSize)
+        {
+            var facilities = _facilityRepository.GetPaged(page, pageSize);
+
+            var facilityDtos = new List<FacilityDto>();
+
+            foreach (var facility in facilities.Results)
+            {
+                facilityDtos.Add(MapToDto(facility));
+            }
+
+            return facilityDtos;
         }
     }
 }
