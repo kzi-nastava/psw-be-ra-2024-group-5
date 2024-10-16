@@ -19,6 +19,13 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
+        //modelBuilder.Entity<Tour>()
+        //    .HasOne<Author>()
+        //    .WithMany()
+        //    .HasForeignKey(k => k.AuthorId)
+        //    .OnDelete(DeleteBehavior.Cascade);
+
+
         modelBuilder.Entity<KeyPoint>()
             .HasOne<Tour>()
             .WithMany() 
@@ -26,18 +33,3 @@ public class ToursContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
-
-//﻿using Explorer.Tours.Core.Domain;
-//using Microsoft.EntityFrameworkCore;
-
-//namespace Explorer.Tours.Infrastructure.Database;
-
-//public class ToursContext : DbContext {
-//    public DbSet<Equipment> Equipment { get; set; }
-
-//    public ToursContext(DbContextOptions<ToursContext> options) : base(options) { }
-
-//    protected override void OnModelCreating(ModelBuilder modelBuilder) {
-//        modelBuilder.HasDefaultSchema("tours");
-//    }
-//}
