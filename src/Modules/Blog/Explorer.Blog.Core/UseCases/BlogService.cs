@@ -78,7 +78,7 @@ namespace Explorer.Blog.Core.UseCases
             }
 
             // Check if the new status is valid
-            if (!Enum.IsDefined(typeof(BlogStatus), newStatus))
+            if (!Enum.IsDefined(typeof(BlogStatusDto), newStatus))
             {
                 return Result.Fail("Invalid blog status.");
             }

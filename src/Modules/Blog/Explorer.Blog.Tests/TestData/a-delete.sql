@@ -1,1 +1,1 @@
-﻿DELETE FROM tours."Equipment";
+﻿TRUNCATE TABLE blog.blogs RESTART IDENTITY;
