@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Explorer.API.Controllers.Author {
     [Authorize(Policy = "authorPolicy")]
-    [Route("api/keypoint")]
+    [Route("api/tours/{tourId}/keypoints")]
     public class KeyPointController : BaseApiController {
         private readonly IKeyPointService _keyPointService;
 
@@ -14,10 +14,10 @@ namespace Explorer.API.Controllers.Author {
             _keyPointService = keyPointService;
         }
 
-        /* [HttpPost]
-        public ActionResult<KeyPointDto> Create([FromForm] KeyPointDto keyPoint) {
-            var result = _keyPointService.Create(keyPoint);
+        [HttpPost]
+        public ActionResult<List<KeyPointDto>> Create(int tourId, [FromBody] List<KeyPointDto> keyPoints) {
+            var result = _keyPointService.Create(tourId, keyPoints);
             return CreateResponse(result);
-        } */
+        } 
     }
 }
