@@ -12,7 +12,6 @@ public class Tour : Entity {
     public TourLevel? Level { get; private set; }
     public TourStatus Status { get; private set; }
     public double Price { get; private set; }
-    public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
     
     public long AuthorId { get; private set; }
 

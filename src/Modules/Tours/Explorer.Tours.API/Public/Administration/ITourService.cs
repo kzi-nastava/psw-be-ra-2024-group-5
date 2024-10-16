@@ -9,5 +9,5 @@ public interface ITourService {
     Result<TourDto> Create(TourDto tour);
     Result<TourDto> Update(TourDto tour);
     Result Delete(int Id);
-
+    Result UpdateTourEquipment(long tourId, List<long> equipmentId);
 }

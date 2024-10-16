@@ -15,19 +15,16 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         _dbContext = dbContext;
     }
 
-    public Result UpdateTourEquipment(int tourId, List<int> equipmentIds)
+    public Result UpdateTourEquipment(long tourId, List<long> equipmentIds)
     {
-        var tour = _dbContext.Tours
-            .FirstOrDefault(t => t.Id == tourId);
+        var tourEquipment = _dbContext.TourEquipment;
         
-        if (tour is null)
-            return Result.Fail("Tour not found");
+        foreach (var te in tourEquipment)
+            if (te.TourId == tourId)
+                tourEquipment.Remove(te);
         
-        var new_equipment = _dbContext.Equipment
-            .Where(e => equipmentIds.Contains((int) e.Id))
-            .ToList();
-        
-        tour.Equipments = new_equipment;
+        foreach (var id in equipmentIds)
+            tourEquipment.Add(new TourEquipment(tourId, id));
         
         _dbContext.SaveChanges();
 
