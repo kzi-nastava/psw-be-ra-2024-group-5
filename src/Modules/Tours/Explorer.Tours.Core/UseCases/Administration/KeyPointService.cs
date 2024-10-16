@@ -10,13 +10,16 @@ namespace Explorer.Tours.Core.UseCases.Administration;
 
 public class KeyPointService : BaseService<KeyPointDto, KeyPoint>, IKeyPointService {
     private readonly ICrudRepository<KeyPoint> _keyPointRepository;
-    public KeyPointService(ICrudRepository<KeyPoint> keyPointRepository, IMapper mapper) : base(mapper) { 
+    private readonly ICrudRepository<Tour> _tourRepository;
+    public KeyPointService(ICrudRepository<KeyPoint> keyPointRepository, ICrudRepository<Tour> tourRepository, IMapper mapper) : base(mapper) { 
         _keyPointRepository = keyPointRepository;
+        _tourRepository = tourRepository;
     }
 
     public Result<List<KeyPointDto>> Create(int tourId, List<KeyPointDto> keyPointDtos) {
         try {
             List<KeyPointDto> retVal = new List<KeyPointDto>();
+            _tourRepository.Get(tourId);
 
             foreach (var keyPointDto in keyPointDtos) {
                 keyPointDto.TourId = tourId;
@@ -24,6 +27,9 @@ public class KeyPointService : BaseService<KeyPointDto, KeyPoint>, IKeyPointServ
                 retVal.Add(MapToDto(savedKeyPoint));
             }
             return retVal;
+        }
+        catch (KeyNotFoundException e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
         }
         catch (ArgumentException e) {
             return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
