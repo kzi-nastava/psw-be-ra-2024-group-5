@@ -8,6 +8,7 @@ namespace Explorer.Blog.API.Dtos
 {
     public class ClubMembershipDto
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
         public int ClubId { get; set; }
     }

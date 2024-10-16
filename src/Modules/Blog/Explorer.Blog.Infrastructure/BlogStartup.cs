@@ -24,11 +24,13 @@ public static class BlogStartup
     private static void SetupCore(IServiceCollection services)
     {
         services.AddScoped<IClubService, ClubService>();
+        services.AddScoped<IClubMembershipService, ClubMembershipService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
     {
         services.AddScoped(typeof(ICrudRepository<Club>), typeof(CrudDatabaseRepository<Club, BlogContext>));
+        services.AddScoped(typeof(ICrudRepository<ClubMembership>), typeof(CrudDatabaseRepository<ClubMembership, BlogContext>));
 
         services.AddDbContext<BlogContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("blog"),
