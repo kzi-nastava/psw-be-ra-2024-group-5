@@ -11,8 +11,9 @@ public class Tour : Entity {
     public TourLevel Level { get; private set; }
     public TourStatus Status { get; private set; }
     public double Price { get; private set; }
+    //public int AuthorId { get; private set; }
 
-    public Tour(string name, string? description,  TourLevel level) {
+    public Tour(string name, string? description,  TourLevel level/*, int authorId*/) {
         if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid Name.");
         
         Name = name;
@@ -20,6 +21,7 @@ public class Tour : Entity {
         Level = level;
         Status = TourStatus.Draft;
         Price = 0.0;
+        //AuthorId = authorId;
     }
 
 }
