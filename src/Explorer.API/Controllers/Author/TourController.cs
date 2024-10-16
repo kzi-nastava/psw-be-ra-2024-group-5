@@ -38,15 +38,5 @@ namespace Explorer.API.Controllers.Author {
             var result = _tourService.Delete(id);
             return CreateResponse(result);
         }
-        
-        [HttpPut("{id:int}/equipment")]
-        public ActionResult UpdateTourEquipment(int id, [FromBody] List<int> equipmentIds)
-        {
-            long tourId = (long)id;
-            List<long> ids = equipmentIds.Select(id => (long)id).ToList();
-            
-            var result = _tourService.UpdateTourEquipment(id, ids);
-            return CreateResponse(result);
-        }
     }
 }
