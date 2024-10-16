@@ -14,7 +14,6 @@ public class ToursProfile : Profile {
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
 
         CreateMap<FacilityDto, Facility>()
-             //.ConstructUsing(src => new Facility(src.Name, src.Description, src.Longitude, src.Latitude, Base64Converter.ConvertToByteArray(src.Image), src.Type))
             .ForCtorParam("name", opt => opt.MapFrom(src => src.Name))
             .ForCtorParam("description", opt => opt.MapFrom(src => src.Description))
             .ForCtorParam("longitude", opt => opt.MapFrom(src => src.Longitude))

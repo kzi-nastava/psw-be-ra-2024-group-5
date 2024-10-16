@@ -22,7 +22,12 @@ namespace Explorer.API.Controllers.Author
         [HttpPost]
         public ActionResult<FacilityDto> Create([FromBody] FacilityDto facility) {
             var result = _facilityService.Create(facility);
-            return CreateResponse(result);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Message); 
+            }
+
+            return Ok(result.Value);
         } 
     }
 }

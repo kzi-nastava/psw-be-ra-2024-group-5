@@ -21,11 +21,17 @@ namespace Explorer.Tours.Core.UseCases.Author
         }
         public Result<FacilityDto> Create(FacilityDto facilityDto)
         {
-            var facility = MapToDomain(facilityDto);
+            try {
+                var facility = MapToDomain(facilityDto);
 
-            facility = _facilityReposistory.Create(facility);
+                facility = _facilityReposistory.Create(facility);
 
-            return MapToDto(facility);
+                return MapToDto(facility);
+            }
+            catch(Exception ex)
+            {
+                return Result.Fail("Failed to create facility: " + ex.Message);
+            }
         }
     }
 }
