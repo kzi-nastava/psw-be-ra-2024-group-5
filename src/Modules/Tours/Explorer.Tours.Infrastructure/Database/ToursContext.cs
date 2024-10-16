@@ -31,6 +31,7 @@ public class ToursContext : DbContext
             .WithMany()
             .HasForeignKey(te => te.EquipmentId);
         
+        modelBuilder.Entity<KeyPoint>().HasIndex(k => k.Id).IsUnique();
         ConfigureTour(modelBuilder);
     }
 

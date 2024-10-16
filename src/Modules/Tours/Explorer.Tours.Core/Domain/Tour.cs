@@ -5,7 +5,8 @@ namespace Explorer.Tours.Core.Domain;
 public enum TourLevel { Beginner, Intermediate, Advanced}
 public enum TourStatus { Draft, Active, Finished, Canceled = -1}
 
-public class Tour : Entity {
+public class Tour : Entity 
+{
     public string? Name { get; private set; }
     public string? Description { get; private set; }
     public string? Tags { get; private set; }
@@ -29,5 +30,5 @@ public class Tour : Entity {
         Price = 0.0;
         AuthorId = authorId;
     }
-
+    
 }
