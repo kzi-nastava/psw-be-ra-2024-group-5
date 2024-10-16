@@ -13,5 +13,6 @@ namespace Explorer.Blog.API.Public
         Result<BlogDTO> CreateBlog(BlogDTO blogDTO);
         Result<BlogDTO> UpdateBlogStatus(int blogId, BlogStatusDto newStatus, int userId);
         string PreviewBlogDescription(string description);
+        Result<BlogDTO> getBlogById(int blogId);
     }
 }

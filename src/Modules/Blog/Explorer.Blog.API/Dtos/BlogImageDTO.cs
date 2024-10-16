@@ -8,7 +8,7 @@ namespace Explorer.Blog.API.Dtos
 {
     public class BlogImageDTO
     {
-        public int imageId { get; set; }
+        public int Id { get; set; }
         public string base64Data { get; set; }
         public string contentType { get; set; }
     }

@@ -24,18 +24,19 @@ namespace Explorer.API.Controllers.Author
             return CreateResponse(result);
         }
 
-        [HttpPut("{id:int}/status")]
-        public ActionResult<BlogDTO> UpdateStatus(int id, [FromBody] BlogStatusDto newStatus, [FromBody] int userId)
+        [HttpPut("{id:int}/status/{userId:int}")]
+        public ActionResult<BlogDTO> UpdateStatus(int id, [FromBody] BlogStatusDto newStatus, int userId)
         {
 
             var result = _blogService.UpdateBlogStatus(id, newStatus, userId);
             return CreateResponse(result);
         }
 
-        [HttpPost("preview")]
-        public ActionResult<string> Preview([FromBody] string description)
+        [HttpGet("preview/{blogId:int}")]
+        public ActionResult<string> Preview(int blogId)
         {
-            var result = _blogService.PreviewBlogDescription(description);
+            var blog = _blogService.getBlogById(blogId);
+            var result = _blogService.PreviewBlogDescription(blog.Value.description);
             return Ok(result);
         }
     }

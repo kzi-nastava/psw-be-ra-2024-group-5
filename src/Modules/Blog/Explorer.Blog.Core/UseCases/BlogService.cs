@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
+using Explorer.Blog.Core.Domain;
 using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
 using Markdig;
@@ -26,9 +27,7 @@ namespace Explorer.Blog.Core.UseCases
         public Result<BlogDTO> CreateBlog(BlogDTO blogDTO)
         {
             if (blogDTO == null)
-            {
                 return Result.Fail("Blog data is required.");
-            }
 
             var imageIds = new List<int>();
             if (blogDTO.imageData != null && blogDTO.imageData.Any())
@@ -38,7 +37,7 @@ namespace Explorer.Blog.Core.UseCases
                     var createImageResult = _blogImageService.CreateImage(imageDto);
                     if (createImageResult.IsSuccess)
                     {
-                        imageIds.Add(createImageResult.Value.imageId);
+                        imageIds.Add(createImageResult.Value.Id);
                     }
                     else
                     {
@@ -64,30 +63,51 @@ namespace Explorer.Blog.Core.UseCases
             return Markdown.ToHtml(description);
         }
 
+        public Result<BlogDTO> getBlogById(int id)
+        {
+            return Get(id);
+        }
+
         public Result<BlogDTO> UpdateBlogStatus(int blogId, BlogStatusDto newStatus, int userId)
         {
-            var blog = Get(blogId);
+            // Fetch the blog from the repository
+            var blogResult = CrudRepository.Get(blogId);
+            if (blogResult == null)
+            {
+                return Result.Fail("Blog not found.");
+            }
 
-            if (blog.IsFailed)
-                return Result.Fail(blog.Errors);
+            // Check if the new status is valid
+            if (!Enum.IsDefined(typeof(BlogStatus), newStatus))
+            {
+                return Result.Fail("Invalid blog status.");
+            }
 
-            var blogDto = blog.Value;
+            // Check if the user is authorized to update the status
+            var blog = blogResult;
+            try
+            {
+                blog.UpdateStatus((BlogStatus)newStatus, userId); // Assuming BlogStatusDto contains Status property of type BlogStatus
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Result.Fail("Unauthorized to change the blog status.").WithError(e.Message);
+            }
 
-            if (blogDto.userId != userId)
-                return Result.Fail("Only blog creator can alter status.");
+            // Update the blog in the repository
+            try
+            {
+                CrudRepository.Update(blog);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail("Failed to update blog status.").WithError(e.Message);
+            }
 
-            if (!Enum.IsDefined(typeof(BlogStatusDto), newStatus))
-                return Result.Fail("Invalid status." + nameof(newStatus));
-            
-            blogDto.status = newStatus;
-
-            var updateResult = Update(blogDto);
-
-            if (updateResult.IsSuccess)
-                return updateResult.Value; 
-
-            else
-                throw new Exception(updateResult.Errors.First().Message);
+            // Map the updated blog to a DTO and return success
+            var updatedBlogDto = _mapper.Map<BlogDTO>(blog);
+            return Result.Ok(updatedBlogDto);
         }
+
     }
 }

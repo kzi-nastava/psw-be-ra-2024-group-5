@@ -2,6 +2,7 @@
 using Markdig;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -13,12 +14,11 @@ namespace Explorer.Blog.Core.Domain
 {
     public class Blog : Entity
     {
-        public int blogId { get; private set; }
         public int userId { get; private set; }
         public string title { get; private set; }
         public string description { get; private set; }
         public DateTime createdDate { get; private set; } 
-        public List<BlogImage> images { get; private set; }
+        public List<BlogImage> images { get; private set; } = new List<BlogImage>(); //ne treba 
         public BlogStatus status { get; private set; }
 
         public string RenderedDescription
@@ -29,7 +29,9 @@ namespace Explorer.Blog.Core.Domain
             }
         }
 
-        public Blog(string title, string description, BlogStatus status,int userId, List<BlogImage> image = null)
+        public Blog() { }
+
+        public Blog(string title, string description, BlogStatus status,int userId)
         {
             this.title = title ?? throw new ArgumentNullException(nameof(title));
             this.description = description ?? throw new ArgumentNullException(nameof(description));
@@ -47,7 +49,7 @@ namespace Explorer.Blog.Core.Domain
             }
             this.userId = userId;
 
-            this.images = images ?? new List<BlogImage>();
+            this.images = new List<BlogImage>();
         }
 
         public void UpdateStatus(BlogStatus newStatus, int currentUserId)
