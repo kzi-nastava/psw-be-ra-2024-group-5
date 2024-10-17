@@ -14,6 +14,7 @@ public class ToursProfile : Profile
             .ForMember(dest => dest.Status, opt => opt.Ignore())
             .ForMember(dest => dest.Price, opt => opt.Ignore())
             .ReverseMap();
+
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
         
         CreateMap<KeyPointDto, KeyPoint>()

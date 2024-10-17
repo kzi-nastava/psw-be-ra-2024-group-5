@@ -19,8 +19,8 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
-        //modelBuilder.Entity<Tour>()
-        //    .HasOne<Author>()
+        //modelBuilder.Entity<Tour>();
+        //    .HasOne<User>()
         //    .WithMany()
         //    .HasForeignKey(k => k.AuthorId)
         //    .OnDelete(DeleteBehavior.Cascade);
@@ -28,7 +28,7 @@ public class ToursContext : DbContext
 
         modelBuilder.Entity<KeyPoint>()
             .HasOne<Tour>()
-            .WithMany() 
+            .WithMany()
             .HasForeignKey(k => k.TourId)
             .OnDelete(DeleteBehavior.Cascade);
     }

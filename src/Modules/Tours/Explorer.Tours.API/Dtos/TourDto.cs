@@ -1,6 +1,7 @@
-﻿namespace Explorer.Tours.API.Dtos;
-public enum TourLevel { Beginner, Intermediate, Advanced }
-public enum TourStatus { Draft, Active, Finished, Canceled = -1 }
+﻿using Explorer.Tours.API.Enum;
+
+namespace Explorer.Tours.API.Dtos;
+
 public class TourDto {
     public int Id { get; set; }
     public string? Name { get; set; }
