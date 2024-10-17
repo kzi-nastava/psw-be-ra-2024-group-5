@@ -5,8 +5,6 @@ using Explorer.Blog.Core.Domain;
 using Explorer.Blog.Core.Domain.RepositoryInterfaces;
 using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Explorer.Blog.Core.UseCases
 {
@@ -17,11 +15,10 @@ namespace Explorer.Blog.Core.UseCases
 
         public BlogCommentService(ICommentRepository repository, IMapper mapper) : base(repository, mapper)
         {
-            _commentRepository= repository;
+            _commentRepository = repository;
             _mapper = mapper;
         }
 
-        // Create a new comment
         public Result<BlogCommentDTO> CreateComment(BlogCommentDTO commentDto)
         {
             if (commentDto == null)
@@ -38,7 +35,6 @@ namespace Explorer.Blog.Core.UseCases
         }
 
 
-        // Get a comment by ID
         public Result<BlogCommentDTO> GetCommentById(int id)
         {
             var result = Get(id);
@@ -49,16 +45,19 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Fail(result.Errors);
         }
 
-        // Update a comment
-        public Result<BlogCommentDTO> UpdateComment( BlogCommentDTO updatedCommentDto)
+        public Result<BlogCommentDTO> UpdateComment(BlogCommentDTO updatedCommentDto)
         {
-            var commentResult = CrudRepository.Get(updatedCommentDto.id);
-            if (commentResult == null)
-                return Result.Fail("Comment not found.");
+            BlogComment existingComment;
 
-            var existingComment = commentResult;
+            try
+            {
+                existingComment = CrudRepository.Get(updatedCommentDto.id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return Result.Fail(new FluentResults.Error("Comment not found").WithMetadata("StatusCode", 404));
+            }
 
-            // Map updated DTO fields to the existing comment
             _mapper.Map(updatedCommentDto, existingComment);
 
             try
@@ -67,32 +66,36 @@ namespace Explorer.Blog.Core.UseCases
             }
             catch (Exception e)
             {
-                return Result.Fail("Failed to update comment.").WithError(e.Message);
+                return Result.Fail(new FluentResults.Error("Failed to update comment").WithMetadata("ErrorMessage", e.Message));
             }
 
             var updatedCommentDtoMapped = _mapper.Map<BlogCommentDTO>(existingComment);
             return Result.Ok(updatedCommentDtoMapped);
         }
 
-        // Delete a comment by ID
+
         public Result<bool> DeleteComment(long commentId)
         {
+
+
             var commentResult = CrudRepository.Get(commentId);
             if (commentResult == null)
-                return Result.Fail("Comment not found.");
+            {
+                return Result.Fail(new FluentResults.Error("Comment not found").WithMetadata("StatusCode", 404));
+            }
 
             try
             {
-                // Umesto da šalješ ceo objekat, prosleđuješ samo ID
                 CrudRepository.Delete(commentId);
             }
             catch (Exception e)
             {
-                return Result.Fail("Failed to delete comment.").WithError(e.Message);
+                return Result.Fail(new FluentResults.Error("Failed to delete comment").WithMetadata("ErrorMessage", e.Message));
             }
 
             return Result.Ok(true);
         }
+
 
 
 
