@@ -12,8 +12,7 @@ namespace Explorer.Blog.API.Public
     {
         Result<BlogCommentDTO> CreateComment(BlogCommentDTO commentDto);
         Result<BlogCommentDTO> GetCommentById(int id);
-      //  Result<IEnumerable<BlogCommentDTO>> GetAllComments();
-        Result<BlogCommentDTO> UpdateComment(int id, BlogCommentDTO commentDto);
+        Result<BlogCommentDTO> UpdateComment( BlogCommentDTO commentDto);
         Result<bool> DeleteComment(long id);
 
         // Metoda koja vraća sve komentare od određenog korisnika

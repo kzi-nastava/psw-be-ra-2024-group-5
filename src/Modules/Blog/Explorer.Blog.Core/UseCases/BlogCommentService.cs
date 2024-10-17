@@ -2,6 +2,7 @@
 using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.Blog.Core.Domain;
+using Explorer.Blog.Core.Domain.RepositoryInterfaces;
 using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
 using System.Collections.Generic;
@@ -12,9 +13,11 @@ namespace Explorer.Blog.Core.UseCases
     public class BlogCommentService : CrudService<BlogCommentDTO, BlogComment>, IBlogCommentService
     {
         private readonly IMapper _mapper;
+        private readonly ICommentRepository _commentRepository;
 
-        public BlogCommentService(ICrudRepository<BlogComment> repository, IMapper mapper) : base(repository, mapper)
+        public BlogCommentService(ICommentRepository repository, IMapper mapper) : base(repository, mapper)
         {
+            _commentRepository= repository;
             _mapper = mapper;
         }
 
@@ -24,7 +27,8 @@ namespace Explorer.Blog.Core.UseCases
             if (commentDto == null)
                 return Result.Fail("Comment data is required.");
 
-            // Call the base Create method from CrudService
+            commentDto.creationTime = DateTime.UtcNow;
+
             var result = Create(commentDto);
 
             if (result.IsSuccess)
@@ -32,6 +36,7 @@ namespace Explorer.Blog.Core.UseCases
 
             return Result.Fail(result.Errors);
         }
+
 
         // Get a comment by ID
         public Result<BlogCommentDTO> GetCommentById(int id)
@@ -45,9 +50,9 @@ namespace Explorer.Blog.Core.UseCases
         }
 
         // Update a comment
-        public Result<BlogCommentDTO> UpdateComment(int commentId, BlogCommentDTO updatedCommentDto)
+        public Result<BlogCommentDTO> UpdateComment( BlogCommentDTO updatedCommentDto)
         {
-            var commentResult = CrudRepository.Get(commentId);
+            var commentResult = CrudRepository.Get(updatedCommentDto.id);
             if (commentResult == null)
                 return Result.Fail("Comment not found.");
 

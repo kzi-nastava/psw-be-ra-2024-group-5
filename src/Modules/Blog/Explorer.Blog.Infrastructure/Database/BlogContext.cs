@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Explorer.Blog.Core.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Explorer.Blog.Infrastructure.Database;
 
@@ -10,4 +11,6 @@ public class BlogContext : DbContext
     {
         modelBuilder.HasDefaultSchema("blog");
     }
+
+    public DbSet<BlogComment> BlogComments { get; set; }
 }

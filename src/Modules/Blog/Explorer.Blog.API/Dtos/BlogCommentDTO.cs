@@ -10,9 +10,14 @@ namespace Explorer.Blog.API.Dtos
     {
         public int id { get;  set; }
         public int userId { get; set; }
-        public string username { get;  set; }
         public string commentText { get;  set; }
         public DateTime creationTime { get;  set; }
         public DateTime? lastEditedTime { get;  set; }
+
+        public BlogCommentDTO()
+        {
+           
+            creationTime = DateTime.UtcNow;
+        }
     }
 }
