@@ -21,7 +21,6 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var newEntity = new List<KeyPointDto> {
             new KeyPointDto {
-                Id = 1,
                 Name = "RFK Novi Sad 1921",
                 Latitude = 45.26679039410911,
                 Longitude = 19.8156045,

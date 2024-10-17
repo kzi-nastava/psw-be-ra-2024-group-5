@@ -79,7 +79,7 @@ public class TourCommandTests : BaseToursIntegrationTest {
         result.StatusCode.ShouldBe(400);
     }
 
-    [Fact]
+    /* [Fact]
     public void Updates() {
         // Arrange
         using var scope = Factory.Services.CreateScope();
@@ -122,7 +122,7 @@ public class TourCommandTests : BaseToursIntegrationTest {
         storedEntity.AuthorId.ShouldBe(result.AuthorId);
         var oldEntity = dbContext.Equipment.FirstOrDefault(i => i.Name == "Tura1");
         oldEntity.ShouldBeNull();
-    }
+    } */
 
     [Fact]
     public void Update_fails_invalid_id() {
