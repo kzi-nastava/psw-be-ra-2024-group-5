@@ -22,6 +22,13 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
+        //modelBuilder.Entity<Tour>();
+        //    .HasOne<User>()
+        //    .WithMany()
+        //    .HasForeignKey(k => k.AuthorId)
+        //    .OnDelete(DeleteBehavior.Cascade);
+
+
         modelBuilder.Entity<KeyPoint>()
             .HasOne<Tour>()
             .WithMany() 
