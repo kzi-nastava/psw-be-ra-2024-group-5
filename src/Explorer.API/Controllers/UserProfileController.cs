@@ -47,7 +47,14 @@ namespace Explorer.API.Controllers
 
         private long GetCurrentUserId()
         {
-            return long.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userIdClaim = User.FindFirst("id")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+
+            return long.Parse(userIdClaim);
         }
     }
 }

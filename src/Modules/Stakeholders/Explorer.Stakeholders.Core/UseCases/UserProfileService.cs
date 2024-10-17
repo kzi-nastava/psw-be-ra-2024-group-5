@@ -23,8 +23,8 @@ public class UserProfileService : CrudService<UserProfileDto, UserProfile>, IUse
         return base.Update(userProfile);
     }
 
-    Result<UserProfileDto> IUserProfileService.Get(long userId)
+    Result<UserProfileDto> IUserProfileService.Get(long id)
     {
-        return base.Get((int)userId); //ovo moze biti problem ?
+        return base.Get((int)id); //ovo moze biti problem ?
     }
 }

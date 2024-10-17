@@ -24,7 +24,7 @@ public class UserProfile : Entity
 
     private void Validate()
     {
-        if (UserId <= 0) throw new ArgumentException("Invalid UserId");
+        if (UserId == 0) throw new ArgumentException("Invalid UserId");
         if (string.IsNullOrWhiteSpace(Name)) throw new ArgumentException("Invalid Name");
         if (string.IsNullOrWhiteSpace(Surname)) throw new ArgumentException("Invalid Surname");
     }
