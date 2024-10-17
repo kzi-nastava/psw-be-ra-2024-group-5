@@ -3,10 +3,12 @@ using Explorer.BuildingBlocks.Infrastructure.Database;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Author;
 using Explorer.Tours.Core.Domain;
+using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.Core.Mappers;
 using Explorer.Tours.Core.UseCases.Administration;
 using Explorer.Tours.Core.UseCases.Author;
 using Explorer.Tours.Infrastructure.Database;
+using Explorer.Tours.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,6 +37,8 @@ public static class ToursStartup
     {
         services.AddScoped(typeof(ICrudRepository<Tour>), typeof(CrudDatabaseRepository<Tour, ToursContext>));
         services.AddScoped(typeof(ICrudRepository<Equipment>), typeof(CrudDatabaseRepository<Equipment, ToursContext>));
+        services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        services.AddScoped<ITourRepository, TourRepository>();
         services.AddScoped(typeof(ICrudRepository<KeyPoint>), typeof(CrudDatabaseRepository<KeyPoint, ToursContext>));
         services.AddScoped(typeof(ICrudRepository<Facility>), typeof(CrudDatabaseRepository<Facility, ToursContext>));
 

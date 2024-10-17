@@ -1,14 +1,22 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
+using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
-public class TourService : CrudService<TourDto, Tour>, ITourService {
-    public TourService(ICrudRepository<Tour> repository, IMapper mapper) : base(repository, mapper) { }
+public class TourService : CrudService<TourDto, Tour>, ITourService 
+{
+    private readonly ITourRepository _repository;
+    
+    public TourService(ITourRepository repository, IMapper mapper) : base(repository, mapper)
+    {
+        _repository = repository;
+    }
+    
     public Result<PagedResult<TourDto>> GetByAuthorId(long id) {
         var tours = GetPaged(0, 0);
         if (tours.IsFailed)
@@ -18,4 +26,11 @@ public class TourService : CrudService<TourDto, Tour>, ITourService {
 
         return result;
     }
+
+    public Result UpdateTourEquipment(long tourId, List<long> equipmentId)
+    {
+        var result = _repository.UpdateTourEquipment(tourId, equipmentId);
+        return result;
+    }
 }
+

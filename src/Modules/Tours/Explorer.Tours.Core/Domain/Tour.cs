@@ -10,6 +10,7 @@ public class Tour : Entity {
     public TourLevel? Level { get; private set; }
     public TourStatus Status { get; private set; }
     public double Price { get; private set; }
+    
     public long AuthorId { get; private set; }
 
     public Tour(string? name, string? description,  TourLevel? level, string? tags, long authorId) {
@@ -26,5 +27,5 @@ public class Tour : Entity {
         Price = 0.0;
         AuthorId = authorId;
     }
-
+    
 }
