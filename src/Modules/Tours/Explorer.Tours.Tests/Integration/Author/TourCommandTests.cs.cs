@@ -163,7 +163,7 @@ public class TourCommandTests : BaseToursIntegrationTest {
         result.StatusCode.ShouldBe(200);
 
         // Assert - Database
-        var storedCourse = dbContext.Tours.FirstOrDefault(i => i.Id == 4);
+        var storedCourse = dbContext.Tours.FirstOrDefault(i => i.Id == 2);
         storedCourse.ShouldBeNull();
     }
 

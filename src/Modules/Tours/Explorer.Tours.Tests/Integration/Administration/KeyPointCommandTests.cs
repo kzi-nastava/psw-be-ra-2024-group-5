@@ -31,7 +31,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = ((ObjectResult)controller.Create(-357, newEntity).Result)?.Value as List<KeyPointDto>;
+        var result = ((ObjectResult)controller.Create(1, newEntity).Result)?.Value as List<KeyPointDto>;
 
         // Assert - Response
         result.ShouldNotBeNull();
@@ -67,7 +67,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = (ObjectResult)controller.Create(-357, newEntity).Result;
+        var result = (ObjectResult)controller.Create(1, newEntity).Result;
 
         // Assert
         result.ShouldNotBeNull();
@@ -90,7 +90,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = (ObjectResult)controller.Create(-357, newEntity).Result;
+        var result = (ObjectResult)controller.Create(1, newEntity).Result;
 
         // Assert
         result.ShouldNotBeNull();
