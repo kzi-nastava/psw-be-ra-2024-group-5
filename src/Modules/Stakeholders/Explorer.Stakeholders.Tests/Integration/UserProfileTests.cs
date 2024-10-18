@@ -16,7 +16,7 @@ namespace Explorer.Stakeholders.Tests.Integration
     {
         public UserProfileTests(StakeholdersTestFactory factory) : base(factory) { }
 
-        /*[Fact]
+        [Fact]
         public void Successfully_gets_profile_by_id()
         {
             // Arrange
@@ -32,7 +32,7 @@ namespace Explorer.Stakeholders.Tests.Integration
             response.Id.ShouldBe(profileId);
             response.Name.ShouldNotBeNullOrEmpty();
             response.Surname.ShouldNotBeNullOrEmpty();
-        }*/
+        }
 
         [Fact]
         public void Successfully_updates_profile()
@@ -44,6 +44,7 @@ namespace Explorer.Stakeholders.Tests.Integration
             var updatedProfile = new UserProfileDto
             {
                 Id = profileId,
+                UserId = profileId,
                 Name = "UpdatedName",
                 Surname = "UpdatedSurname",
                 ProfilePictureUrl = "updated-url.jpg",
@@ -77,7 +78,7 @@ namespace Explorer.Stakeholders.Tests.Integration
             }
         }
 
-        /*[Fact]
+        [Fact]
         public void Successfully_creates_profile()
         {
             // Arrange
@@ -104,14 +105,14 @@ namespace Explorer.Stakeholders.Tests.Integration
             response.ProfilePictureUrl.ShouldBe(newProfile.ProfilePictureUrl);
             response.Biography.ShouldBe(newProfile.Biography);
             response.Motto.ShouldBe(newProfile.Motto);
-        }*/
+        }
         private UserProfileController CreateController(IServiceScope scope)
         {
             var controller = new UserProfileController(scope.ServiceProvider.GetRequiredService<IUserProfileService>());
 
             var claims = new List<Claim>
             {
-                new Claim("id", "1") 
+                new Claim("id", "-11") 
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var user = new ClaimsPrincipal(identity);
