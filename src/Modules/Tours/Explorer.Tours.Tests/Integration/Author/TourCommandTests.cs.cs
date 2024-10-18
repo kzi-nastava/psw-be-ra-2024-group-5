@@ -79,14 +79,14 @@ public class TourCommandTests : BaseToursIntegrationTest {
         result.StatusCode.ShouldBe(400);
     }
 
-    /* [Fact]
+    [Fact]
     public void Updates() {
         // Arrange
         using var scope = Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var updatedEntity = new TourDto {
-            Id = 3,
+            Id = -1,
             Name = "Izmenjena Tura",
             Description = "IZMENE",
             Tags = "izmenjenTag",
@@ -117,12 +117,12 @@ public class TourCommandTests : BaseToursIntegrationTest {
         storedEntity.Name.ShouldBe(result.Name);
         storedEntity.Description.ShouldBe(result.Description);
         storedEntity.Level.ShouldBe(result.Level);
-        storedEntity.Status.ShouldBe(TourStatus.Draft);
-        storedEntity.Price.ShouldBe(0.0);
+        storedEntity.Status.ShouldBe(result.Status);
+        storedEntity.Price.ShouldBe(result.Price);
         storedEntity.AuthorId.ShouldBe(result.AuthorId);
         var oldEntity = dbContext.Equipment.FirstOrDefault(i => i.Name == "Tura1");
         oldEntity.ShouldBeNull();
-    } */
+    }
 
     [Fact]
     public void Update_fails_invalid_id() {
@@ -156,14 +156,14 @@ public class TourCommandTests : BaseToursIntegrationTest {
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
         // Act
-        var result = (OkResult)controller.Delete(2);
+        var result = (OkResult)controller.Delete(-2);
 
         // Assert - Response
         result.ShouldNotBeNull();
         result.StatusCode.ShouldBe(200);
 
         // Assert - Database
-        var storedCourse = dbContext.Tours.FirstOrDefault(i => i.Id == 2);
+        var storedCourse = dbContext.Tours.FirstOrDefault(i => i.Id == -2);
         storedCourse.ShouldBeNull();
     }
 
