@@ -21,7 +21,6 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var newEntity = new List<KeyPointDto> {
             new KeyPointDto {
-                Id = 1,
                 Name = "RFK Novi Sad 1921",
                 Latitude = 45.26679039410911,
                 Longitude = 19.8156045,
@@ -31,7 +30,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = ((ObjectResult)controller.Create(-357, newEntity).Result)?.Value as List<KeyPointDto>;
+        var result = ((ObjectResult)controller.Create(-1, newEntity).Result)?.Value as List<KeyPointDto>;
 
         // Assert - Response
         result.ShouldNotBeNull();
@@ -67,7 +66,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = (ObjectResult)controller.Create(-357, newEntity).Result;
+        var result = (ObjectResult)controller.Create(-1, newEntity).Result;
 
         // Assert
         result.ShouldNotBeNull();
@@ -90,7 +89,7 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         };
 
         // Act
-        var result = (ObjectResult)controller.Create(-357, newEntity).Result;
+        var result = (ObjectResult)controller.Create(-1, newEntity).Result;
 
         // Assert
         result.ShouldNotBeNull();
