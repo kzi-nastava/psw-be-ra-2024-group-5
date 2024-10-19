@@ -1,11 +1,8 @@
 ﻿using Explorer.API.Controllers.Administrator.Administration;
 using Explorer.API.Controllers.Tourist;
-using Explorer.Blog.API.Dtos;
-using Explorer.Blog.API.Public;
-using Explorer.Blog.Infrastructure.Database;
-using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Administration;
-using Explorer.Tours.Infrastructure.Database;
+using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Public;
+using Explorer.Stakeholders.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -15,12 +12,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Blog.Tests.Integration
+namespace Explorer.Stakeholders.Tests.Integration
 {
     [Collection("Sequential")]
-    public class MembershipCommandTests : BaseBlogIntegrationTest
+    public class MembershipCommandTests : BaseStakeholdersIntegrationTest
     {
-        public MembershipCommandTests(BlogTestFactory factory) : base(factory){}
+        public MembershipCommandTests(StakeholdersTestFactory factory) : base(factory){}
 
         //[Fact]
         //public void Creates()
@@ -75,7 +72,7 @@ namespace Explorer.Blog.Tests.Integration
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
 
             // Act
             var result = (OkResult)controller.Delete(-3);

@@ -1,4 +1,4 @@
-﻿using Explorer.Blog.API.Dtos;
+﻿using Explorer.Stakeholders.API.Dtos;
 using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Blog.API.Public
+namespace Explorer.Stakeholders.API.Public
 {
     public interface IClubMembershipService
     {

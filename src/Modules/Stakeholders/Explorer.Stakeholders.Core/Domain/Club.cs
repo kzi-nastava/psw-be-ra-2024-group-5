@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Explorer.Blog.Core.Domain
+namespace Explorer.Stakeholders.Core.Domain
 {
     public class Club : Entity
     {
