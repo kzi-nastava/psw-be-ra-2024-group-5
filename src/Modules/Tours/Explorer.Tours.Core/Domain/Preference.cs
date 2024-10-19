@@ -3,57 +3,62 @@ using System.Collections.Generic;
 
 namespace Explorer.Tours.Core.Domain
 {
-    public class TransportRating : Entity
-    {
-        public TransportMode Mode { get; set; }
-        public int Rating { get; set; }
-    }
 
     public class Preference : Entity
     {
+        public int TouristId { get; private set; }
         public TourDifficulty PreferredDifficulty { get; private set; }
-        public List<TransportRating> TransportRatings { get; private set; } // Sada lista transportnih ocena
+        public int WalkRating { get; private set; }
+        public int BikeRating { get; private set; }
+        public int CarRating { get; private set; }
+        public int BoatRating { get; private set; }
         public List<string> InterestTags { get; private set; }
-        public Preference() { }
 
-        public Preference(TourDifficulty preferredDifficulty, List<TransportRating> transportRatings, List<string> interestTags)
+        public Preference(int touristId, TourDifficulty preferredDifficulty, int walkRating, int bikeRating, int carRating, int boatRating, List<string> interestTags)
         {
+
             if (!Enum.IsDefined(typeof(TourDifficulty), preferredDifficulty))
             {
                 throw new ArgumentException("Invalid tour difficulty. Allowed values are BEGINNER, INTERMEDIATE, and ADVANCED.");
             }
 
-            foreach (var rating in transportRatings)
+            if (walkRating < 0 || walkRating > 3)
             {
-                if (!Enum.IsDefined(typeof(TransportMode), rating.Mode))
-                {
-                    throw new ArgumentException("Invalid transport mode.");
-                }
-
-                if (rating.Rating < 0 || rating.Rating > 3)
-                {
-                    throw new ArgumentException("Transport rating must be between 0 and 3.");
-                }
+                throw new ArgumentException("Walk rating must be between 0 and 3.");
             }
 
+            if (bikeRating < 0 || bikeRating > 3)
+            {
+                throw new ArgumentException("Bike rating must be between 0 and 3.");
+            }
+
+            if (carRating < 0 || carRating > 3)
+            {
+                throw new ArgumentException("Car rating must be between 0 and 3.");
+            }
+
+            if (boatRating < 0 || boatRating > 3)
+            {
+                throw new ArgumentException("Boat rating must be between 0 and 3.");
+            }
+
+           
+            TouristId = touristId;
             PreferredDifficulty = preferredDifficulty;
-            TransportRatings = transportRatings ?? new List<TransportRating>();
-            InterestTags = interestTags ?? new List<string>();
+            WalkRating = walkRating;
+            BikeRating = bikeRating;
+            CarRating = carRating;
+            BoatRating = boatRating;
+            InterestTags = interestTags ?? new List<string>(); // Postavlja praznu listu ako je null
         }
-    }
 
-    public enum TourDifficulty
-    {
-        BEGINNER,
-        INTERMEDIATE,
-        ADVANCED
-    }
 
-    public enum TransportMode
-    {
-        WALKING,
-        CYCLING,
-        CAR,
-        BOAT
+        public enum TourDifficulty
+        {
+            BEGINNER,
+            INTERMEDIATE,
+            ADVANCED
+        }
+
     }
 }

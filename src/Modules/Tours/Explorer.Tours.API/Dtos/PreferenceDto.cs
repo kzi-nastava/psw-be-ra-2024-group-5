@@ -3,23 +3,18 @@ using System.Collections.Generic;
 
 namespace Explorer.Tours.API.Dtos
 {
-    public class TransportRatingDto
-    {
-        public TransportMode Mode { get; set; }
-        public int Rating { get; set; }
-    }
-
+   
     public class PreferenceDto
     {
+        public int Id { get; set; }
+        public int TouristId { get; set; }
         public TourDifficulty PreferredDifficulty { get; set; }
-        public List<TransportRatingDto> TransportRatings { get; set; } // Ažurirano da koristi listu TransportRatingDto
+        public int WalkRating { get; set; }
+        public int BikeRating { get; set; }
+        public int CarRating { get; set; }
+        public int BoatRating { get; set; }
         public List<string> InterestTags { get; set; }
 
-        public PreferenceDto()
-        {
-            TransportRatings = new List<TransportRatingDto>(); // Inicijalizacija liste
-            InterestTags = new List<string>(); // Inicijalizacija liste
-        }
     }
 
     public enum TourDifficulty
@@ -29,11 +24,4 @@ namespace Explorer.Tours.API.Dtos
         ADVANCED
     }
 
-    public enum TransportMode
-    {
-        WALKING,
-        CYCLING,
-        CAR,
-        BOAT
-    }
 }
