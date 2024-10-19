@@ -15,7 +15,7 @@ namespace Explorer.Tours.Core.Domain
         public int TourId { get; private set; }
         public int TouristId { get; private set; }
 
-        public TourReview(int rating, string comment, DateTime visitDate, int tourId, int touristId, byte[]? image = null)
+        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, int tourId, int touristId, byte[]? image = null)
         {
             ValidateRating(rating);
             ValidateComment(comment);
@@ -24,7 +24,7 @@ namespace Explorer.Tours.Core.Domain
             Rating = rating;
             Comment = comment;
             VisitDate = visitDate;
-            ReviewDate = DateTime.UtcNow;
+            ReviewDate = reviewDate;
             TourId = tourId;
             TouristId = touristId;
             Image = image;
