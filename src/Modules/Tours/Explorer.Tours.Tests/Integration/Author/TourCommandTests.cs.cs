@@ -22,13 +22,14 @@ public class TourCommandTests : BaseToursIntegrationTest {
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var newEntity = new TourDto {
+            Id = 0,
             Name = "Nova Tura",
             Description = "Deskripcija nove ture",
             Tags = "Tag prvi, tagDrugi, TagTreci",
             Level = TourLevel.Intermediate,
             Status = TourStatus.Finished,
             Price = 420.69,
-            AuthorId = 2
+            AuthorId = -12
         };
 
         // Act
@@ -68,7 +69,7 @@ public class TourCommandTests : BaseToursIntegrationTest {
             Level = TourLevel.Intermediate,
             Status = TourStatus.Finished,
             Price = 420.69,
-            AuthorId = -1
+            AuthorId = -1000
         };
 
         // Act
@@ -93,7 +94,7 @@ public class TourCommandTests : BaseToursIntegrationTest {
             Level = TourLevel.Advanced,
             Status = TourStatus.Active,
             Price = 1000.0,
-            AuthorId = 3
+            AuthorId = -12
 
         };
 
