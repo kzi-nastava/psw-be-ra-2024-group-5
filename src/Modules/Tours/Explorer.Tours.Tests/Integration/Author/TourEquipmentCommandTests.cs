@@ -31,6 +31,23 @@ public class TourEquipmentCommandTests : BaseToursIntegrationTest
         dbContext.TourEquipment.Count().ShouldBe(2);
     }
     
+    [Fact]
+    public void Remove_all_equipment_from_tour_success()
+    {
+        // Arrange
+        using var scope = Factory.Services.CreateScope();
+        var controller = CreateController(scope);
+        var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
+        List<int> equipmentIds = new List<int>();
+        int tourId = -1;
+
+        // Act
+        var result = controller.UpdateTourEquipment(tourId, equipmentIds);
+        
+        // Assert
+        dbContext.TourEquipment.Count().ShouldBe(0);
+    }
+    
     private static TourEquipmentController CreateController(IServiceScope scope) {
         return new TourEquipmentController(scope.ServiceProvider.GetRequiredService<ITourService>()) {
             ControllerContext = BuildContext("-1")
