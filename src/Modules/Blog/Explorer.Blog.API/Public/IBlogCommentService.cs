@@ -1,10 +1,5 @@
 ﻿using Explorer.Blog.API.Dtos;
 using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Blog.API.Public
 {
@@ -12,10 +7,9 @@ namespace Explorer.Blog.API.Public
     {
         Result<BlogCommentDTO> CreateComment(BlogCommentDTO commentDto);
         Result<BlogCommentDTO> GetCommentById(int id);
-        Result<BlogCommentDTO> UpdateComment( BlogCommentDTO commentDto);
+        Result<BlogCommentDTO> UpdateComment(long id, BlogCommentDTO commentDto);
         Result<bool> DeleteComment(long id);
+        public Result<List<BlogCommentDTO>> GetAllCommentsByUser(long userId);
 
-        // Metoda koja vraća sve komentare od određenog korisnika
-      //  Result<IEnumerable<BlogCommentDTO>> GetCommentsByUserId(int userId);
     }
 }

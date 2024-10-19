@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Explorer.API.Controllers.Author
 {
-    // [Authorize(Policy = "userPolicy")] // Postavi odgovarajuću politiku autentifikacije za korisnike
+    // [Authorize(Policy = "userPolicy")]
     [Route("api/blog/comments")]
     public class BlogCommentController : BaseApiController
     {
@@ -20,24 +20,13 @@ namespace Explorer.API.Controllers.Author
         {
             try
             {
-
-                if (commentDto.userId <= 0 || string.IsNullOrWhiteSpace(commentDto.commentText))
+                if (commentDto.userId < 0 || string.IsNullOrWhiteSpace(commentDto.commentText))
                 {
                     return BadRequest("Invalid userId or commentText");
                 }
 
-                if (commentDto.creationTime.Kind != DateTimeKind.Utc)
-                {
-                    commentDto.creationTime = commentDto.creationTime.ToUniversalTime();
-                }
-
-                if (commentDto.lastEditedTime.HasValue && commentDto.lastEditedTime.Value.Kind != DateTimeKind.Utc)
-                {
-                    commentDto.lastEditedTime = commentDto.lastEditedTime.Value.ToUniversalTime();
-                }
-
-
                 var result = _blogCommentService.CreateComment(commentDto);
+
                 return CreateResponse(result);
             }
             catch (Exception ex)
@@ -46,18 +35,24 @@ namespace Explorer.API.Controllers.Author
             }
         }
 
+
+
         [HttpPut("{id:int}")]
-        public ActionResult<BlogCommentDTO> Update(int id, [FromBody] BlogCommentDTO commentDto)
+        public ActionResult<BlogCommentDTO> Update(long id, [FromBody] BlogCommentDTO commentDto)
         {
             try
             {
-                commentDto.id = id;
-                var result = _blogCommentService.UpdateComment(commentDto);
+
+                var result = _blogCommentService.UpdateComment(id, commentDto);
+
+                if (result.IsFailed && result.Errors.Any(e => e.Metadata.ContainsKey("StatusCode") && (int)e.Metadata["StatusCode"] == 404))
+                {
+                    return NotFound(result.Errors.First().Message);
+                }
 
                 if (result.IsFailed)
                 {
-                    var statusCode = result.Errors.FirstOrDefault()?.Metadata["StatusCode"] as int? ?? 500;
-                    return StatusCode(statusCode, result.Errors.FirstOrDefault()?.Message);
+                    return StatusCode(500, "Error during deletion: " + result.Errors.First().Message);
                 }
 
                 return Ok(result.Value);
@@ -68,14 +63,10 @@ namespace Explorer.API.Controllers.Author
             }
         }
 
-
-
-
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(long id)
         {
             var result = _blogCommentService.DeleteComment(id);
-
 
             if (result.IsFailed && result.Errors.Any(e => e.Metadata.ContainsKey("StatusCode") && (int)e.Metadata["StatusCode"] == 404))
             {
@@ -90,8 +81,17 @@ namespace Explorer.API.Controllers.Author
             return Ok(result.Value);
         }
 
+        [HttpGet("user/{userId}")]
+        public ActionResult<List<BlogCommentDTO>> GetCommentsByUser(long userId)
+        {
+            var result = _blogCommentService.GetAllCommentsByUser(userId);
 
+            if (result.IsFailed)
+            {
+                return StatusCode(500, result.Errors.FirstOrDefault()?.Message);
+            }
 
-
+            return Ok(result.Value);
+        }
     }
 }

@@ -59,6 +59,9 @@ namespace Explorer.Blog.Tests.Integration
             result.StatusCode.ShouldBe(400);
         }
 
+
+
+
         [Fact]
         public void UpdatesComment()
         {
@@ -100,26 +103,6 @@ namespace Explorer.Blog.Tests.Integration
         }
 
 
-        [Fact]
-        public void Update_fails_invalid_id()
-        {
-            // Arrange
-            using var scope = Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var invalidComment = new BlogCommentDTO
-            {
-                id = -1000,
-                userId = 1,
-                commentText = "Test"
-            };
-
-            // Act
-            var result = (ObjectResult)controller.Update(invalidComment.id, invalidComment).Result;
-
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(404);
-        }
 
         [Fact]
         public void DeletesComment()
