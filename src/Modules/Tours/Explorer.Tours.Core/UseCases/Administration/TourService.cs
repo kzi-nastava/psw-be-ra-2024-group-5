@@ -1,6 +1,7 @@
 using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
@@ -16,7 +17,14 @@ public class TourService : CrudService<TourDto, Tour>, ITourService
     {
         _repository = repository;
     }
-    
+
+    public Result<TourDto> CreateTour(TourDto tour) {
+        tour.Status = TourStatus.Draft;
+        tour.Price = 0.0;
+        return Create(tour);
+    }
+
+
     public Result<PagedResult<TourDto>> GetByAuthorId(long id) {
         var tours = GetPaged(0, 0);
         if (tours.IsFailed)

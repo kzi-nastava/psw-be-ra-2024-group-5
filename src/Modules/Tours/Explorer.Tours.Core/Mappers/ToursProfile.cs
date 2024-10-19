@@ -10,10 +10,7 @@ public class ToursProfile : Profile
 {
     public ToursProfile()
     {
-        CreateMap<TourDto, Tour>()
-            .ForMember(dest => dest.Status, opt => opt.Ignore())
-            .ForMember(dest => dest.Price, opt => opt.Ignore())
-            .ReverseMap();
+        CreateMap<TourDto, Tour>().ReverseMap();
 
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
         

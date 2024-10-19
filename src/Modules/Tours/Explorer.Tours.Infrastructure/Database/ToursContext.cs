@@ -1,4 +1,5 @@
 ﻿using Explorer.Tours.Core.Domain;
+using Explorer.Stakeholders.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Explorer.Tours.Infrastructure.Database;
@@ -16,8 +17,10 @@ public class ToursContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("tours");
-        
+
         modelBuilder.Entity<Tour>().HasKey(t => t.Id);
+        //modelBuilder.Entity<Tour>().HasIndex(t => t.Id).IsUnique();
+
         modelBuilder.Entity<Equipment>().HasKey(e => e.Id);
         
         modelBuilder.Entity<TourEquipment>().HasKey(te => new { te.TourId, te.EquipmentId });
@@ -37,14 +40,12 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
-        //modelBuilder.Entity<Tour>()
-        //    .HasOne<Author>()
-        //modelBuilder.Entity<Tour>();
-        //    .HasOne<User>()
-        //    .WithMany()
-        //    .HasForeignKey(k => k.AuthorId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-        
+        modelBuilder.Entity<Tour>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(t => t.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<KeyPoint>()
             .HasOne<Tour>()
             .WithMany() 

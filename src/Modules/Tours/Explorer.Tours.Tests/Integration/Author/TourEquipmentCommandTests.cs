@@ -22,7 +22,7 @@ public class TourEquipmentCommandTests : BaseToursIntegrationTest
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         List<int> equipmentIds = new List<int> { -1, -2 };
-        int tourId = 1;
+        int tourId = -1;
 
         // Act
         var result = controller.UpdateTourEquipment(tourId, equipmentIds);
