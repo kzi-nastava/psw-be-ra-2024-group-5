@@ -15,15 +15,15 @@ namespace Explorer.API.Controllers.Author {
             _tourService = tourService;
         }
 
-        [HttpGet]
-        public ActionResult<PagedResult<TourDto>> GetAll([FromQuery] int page, [FromQuery] int pageSize) {
-            var result = _tourService.GetPaged(page, pageSize);
+        [HttpGet("{authorId:long}")]
+        public ActionResult<PagedResult<TourDto>> GetByAuthor(long authorId) {
+            var result = _tourService.GetByAuthorId(authorId);
             return CreateResponse(result);
         }
 
         [HttpPost]
         public ActionResult<TourDto> Create([FromBody] TourDto tour) {
-            var result = _tourService.Create(tour);
+            var result = _tourService.CreateTour(tour);
             return CreateResponse(result);
         }
 
