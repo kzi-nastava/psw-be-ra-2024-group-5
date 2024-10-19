@@ -18,7 +18,6 @@ namespace Explorer.Blog.Core.Domain
         public string title { get; private set; }
         public string description { get; private set; }
         public DateTime createdDate { get; private set; } 
-        public List<BlogImage> images { get; private set; } = new List<BlogImage>(); //ne treba 
         public BlogStatus status { get; private set; }
 
         public string RenderedDescription
@@ -31,7 +30,7 @@ namespace Explorer.Blog.Core.Domain
 
         public Blog() { }
 
-        public Blog(string title, string description, BlogStatus status,int userId)
+        public Blog(string title, string description,int userId)
         {
             this.title = title ?? throw new ArgumentNullException(nameof(title));
             this.description = description ?? throw new ArgumentNullException(nameof(description));
@@ -40,7 +39,7 @@ namespace Explorer.Blog.Core.Domain
                 throw new ArgumentException("Invalid status value.", nameof(status));
             }
 
-            this.status = status;
+            this.status = BlogStatus.Draft;
             this.createdDate = DateTime.UtcNow;
 
             if (userId <= 0)
@@ -48,8 +47,6 @@ namespace Explorer.Blog.Core.Domain
                 throw new ArgumentOutOfRangeException(nameof(userId), "User ID must be a positive integer.");
             }
             this.userId = userId;
-
-            this.images = new List<BlogImage>();
         }
 
         public void UpdateStatus(BlogStatus newStatus, int currentUserId)
@@ -60,17 +57,6 @@ namespace Explorer.Blog.Core.Domain
             }
             status = newStatus;
         }
-
-        public void AddImage(BlogImage image)
-        {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image), "Image cannot be null.");
-            }
-
-            images.Add(image);
-        }
-
 
     }
 

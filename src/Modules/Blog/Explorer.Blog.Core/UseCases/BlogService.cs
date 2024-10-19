@@ -2,6 +2,7 @@
 using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.Blog.Core.Domain;
+using Explorer.Blog.Core.Utilities;
 using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
 using Markdig;
@@ -17,46 +18,39 @@ namespace Explorer.Blog.Core.UseCases
     public class BlogService : CrudService<BlogDTO, DomainBlog>, IBlogService
     {
         private readonly IMapper _mapper;
-        private readonly IBlogImageService _blogImageService;
-        public BlogService(ICrudRepository<DomainBlog> repository, IMapper mapper, IBlogImageService blogImageService) : base(repository, mapper)
+        private readonly ICrudRepository<DomainBlog> _blogRepository;
+        private readonly ICrudRepository<BlogImage> _blogImageRepository;
+        public BlogService(ICrudRepository<DomainBlog> blogRepository, IMapper mapper, ICrudRepository<BlogImage> blogImageRepository) : base(blogRepository, mapper)
         {
             _mapper = mapper;
-            _blogImageService = blogImageService;
+            _blogRepository = blogRepository;
+            _blogImageRepository = blogImageRepository;
         }
 
         public Result<BlogDTO> CreateBlog(BlogDTO blogDTO)
         {
-            if (blogDTO == null)
-                return Result.Fail("Blog data is required.");
+            var blog = new DomainBlog(blogDTO.title, blogDTO.description, blogDTO.userId);
 
-            var imageIds = new List<int>();
+            _blogRepository.Create(blog);  
+
             if (blogDTO.imageData != null && blogDTO.imageData.Any())
             {
                 foreach (var imageDto in blogDTO.imageData)
                 {
-                    var createImageResult = _blogImageService.CreateImage(imageDto);
-                    if (createImageResult.IsSuccess)
-                    {
-                        imageIds.Add(createImageResult.Value.Id);
-                    }
-                    else
-                    {
-                        return Result.Fail(createImageResult.Errors);
-                    }
+                    var imageBytes = Base64Converter.ConvertToByteArray(imageDto.base64Data);
+
+                    var blogImage = new BlogImage(imageBytes, imageDto.contentType, (int) blog.Id);
+
+                    _blogImageRepository.Create(blogImage);
+
                 }
             }
 
-            blogDTO.imageIds = imageIds;
+            blogDTO.Id = (int) blog.Id;  
 
-            var result = Create(blogDTO);
-
-            if (result.IsSuccess)
-                return Result.Ok(result.Value);
-
-            else
-                return Result.Fail(result.Errors);
-
+            return Result.Ok(blogDTO);
         }
+
 
         public string PreviewBlogDescription(string description)
         {
@@ -70,31 +64,23 @@ namespace Explorer.Blog.Core.UseCases
 
         public Result<BlogDTO> UpdateBlogStatus(int blogId, BlogStatusDto newStatus, int userId)
         {
-            // Fetch the blog from the repository
             var blogResult = CrudRepository.Get(blogId);
             if (blogResult == null)
-            {
                 return Result.Fail("Blog not found.");
-            }
 
-            // Check if the new status is valid
             if (!Enum.IsDefined(typeof(BlogStatusDto), newStatus))
-            {
                 return Result.Fail("Invalid blog status.");
-            }
 
-            // Check if the user is authorized to update the status
             var blog = blogResult;
             try
             {
-                blog.UpdateStatus((BlogStatus)newStatus, userId); // Assuming BlogStatusDto contains Status property of type BlogStatus
+                blog.UpdateStatus((BlogStatus)newStatus, userId); 
             }
             catch (UnauthorizedAccessException e)
             {
                 return Result.Fail("Unauthorized to change the blog status.").WithError(e.Message);
             }
 
-            // Update the blog in the repository
             try
             {
                 CrudRepository.Update(blog);
@@ -104,7 +90,6 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail("Failed to update blog status.").WithError(e.Message);
             }
 
-            // Map the updated blog to a DTO and return success
             var updatedBlogDto = _mapper.Map<BlogDTO>(blog);
             return Result.Ok(updatedBlogDto);
         }

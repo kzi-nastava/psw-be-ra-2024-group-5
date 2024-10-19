@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Explorer.Blog.Core.Utilities;
 
 namespace Explorer.Blog.Core.Mappers
 {
@@ -13,10 +14,16 @@ namespace Explorer.Blog.Core.Mappers
     {
         public ImageProfile()
         {
+            CreateMap<BlogImageDTO, BlogImage>()
+            .ForMember(dest => dest.image, opt => opt.MapFrom(src => Base64Converter.ConvertToByteArray(src.base64Data)))
+            .ForMember(dest => dest.contentType, opt => opt.MapFrom(src => src.contentType))
+            .ForMember(dest => dest.blogId, opt => opt.MapFrom(src => src.blogId))  
+            .ForMember(dest => dest.Id, opt => opt.Ignore());  
+
             CreateMap<BlogImage, BlogImageDTO>()
-                .ForMember(dest => dest.base64Data, opt => opt.MapFrom(src => Convert.ToBase64String(src.data)))
-                .ReverseMap()
-                .ForMember(dest => dest.data, opt => opt.MapFrom(src => Convert.FromBase64String(src.base64Data)));
+                .ForMember(dest => dest.base64Data, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.image)))
+                .ForMember(dest => dest.contentType, opt => opt.MapFrom(src => src.contentType))
+                .ForMember(dest => dest.blogId, opt => opt.MapFrom(src => src.blogId));  
         }
     }
 }

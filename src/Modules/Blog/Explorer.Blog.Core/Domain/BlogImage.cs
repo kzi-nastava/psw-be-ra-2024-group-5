@@ -10,14 +10,17 @@ namespace Explorer.Blog.Core.Domain
 {
     public class BlogImage : Entity
     {
-        public byte[] data { get; private set; }  
+        public byte[] image { get; private set; }  
         public string contentType { get; private set; }
-        //public int blogId { get; private set; }
+        public int blogId { get; private set; }
 
-        public BlogImage(byte[] data, string contentType)
+
+        public BlogImage() { }
+        public BlogImage(byte[] data, string contentType, int blogId)
         {
-            this.data = data ?? throw new ArgumentNullException(nameof(data));
+            this.image = data ?? throw new ArgumentNullException(nameof(data));
             this.contentType = !string.IsNullOrWhiteSpace(contentType) ? contentType : throw new ArgumentNullException(nameof(contentType));
+            this.blogId = blogId < 0 ? throw new Exception("invalid blog id") : blogId;
         }
     }
 }

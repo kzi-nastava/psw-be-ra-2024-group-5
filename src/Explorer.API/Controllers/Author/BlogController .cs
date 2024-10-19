@@ -20,6 +20,11 @@ namespace Explorer.API.Controllers.Author
         [HttpPost]
         public  ActionResult<BlogDTO> CreateBlog([FromBody] BlogDTO blogDTO)
         {
+            if (string.IsNullOrWhiteSpace(blogDTO.title))
+                return BadRequest("Title is required.");
+            else if (string.IsNullOrWhiteSpace(blogDTO.description))
+                return BadRequest("Description is required.");
+
             var result = _blogService.CreateBlog(blogDTO);
             return CreateResponse(result);
         }

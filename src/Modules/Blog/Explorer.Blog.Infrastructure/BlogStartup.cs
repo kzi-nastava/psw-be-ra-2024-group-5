@@ -25,7 +25,6 @@ public static class BlogStartup
     private static void SetupCore(IServiceCollection services)
     {
         services.AddScoped<IBlogService, BlogService>();
-        services.AddScoped<IBlogImageService, BlogImageService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)

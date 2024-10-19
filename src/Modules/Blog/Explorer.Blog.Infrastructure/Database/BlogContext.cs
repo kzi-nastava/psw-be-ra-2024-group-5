@@ -15,10 +15,5 @@ public class BlogContext : DbContext
     {
         modelBuilder.HasDefaultSchema("blog");
 
-        modelBuilder.Entity<BlogDomain>()
-            .HasMany(b => b.images)
-            .WithOne()
-            .HasForeignKey("blogId")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
