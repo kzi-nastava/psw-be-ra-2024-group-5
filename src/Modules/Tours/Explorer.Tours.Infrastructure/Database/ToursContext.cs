@@ -1,5 +1,7 @@
 ﻿using Explorer.Tours.Core.Domain;
 using Microsoft.EntityFrameworkCore;
+using Explorer.Stakeholders.Core.Domain;
+
 
 namespace Explorer.Tours.Infrastructure.Database;
 
@@ -10,15 +12,19 @@ public class ToursContext : DbContext
     public DbSet<TourEquipment> TourEquipment { get; set; }
     public DbSet<KeyPoint> KeyPoint { get; set; }
     public DbSet<Facility> Facilities { get; set; }
+	public DbSet<TouristEquipment> TouristEquipment { get; set; }
 
-    public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
+
+	public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("tours");
         
         modelBuilder.Entity<Tour>().HasKey(t => t.Id);
-        modelBuilder.Entity<Equipment>().HasKey(e => e.Id);
+        modelBuilder.Entity<Equipment>()
+            .ToTable("Equipment", "tours")
+            .HasKey(e => e.Id);
         
         modelBuilder.Entity<TourEquipment>().HasKey(te => new { te.TourId, te.EquipmentId });
         
@@ -33,7 +39,10 @@ public class ToursContext : DbContext
             .HasForeignKey(te => te.EquipmentId);
         
         modelBuilder.Entity<KeyPoint>().HasIndex(k => k.Id).IsUnique();
-        ConfigureTour(modelBuilder);
+
+        ConfigureTouristEquipment(modelBuilder);
+
+		ConfigureTour(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -51,19 +60,27 @@ public class ToursContext : DbContext
             .HasForeignKey(k => k.TourId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
+    private static void ConfigureTouristEquipment(ModelBuilder modelBuilder)
+    {
+		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
+
+		modelBuilder.Entity<TouristEquipment>()
+			.ToTable("TouristEquipment", "tours")
+			.HasKey(te => new { te.TouristId, te.EquipmentId });
+
+		modelBuilder.Entity<TouristEquipment>()
+		   .HasOne<User>()
+		   .WithMany()
+		   .HasForeignKey(te => te.TouristId)
+		   .HasPrincipalKey(u => u.Id);
+
+
+		modelBuilder.Entity<TouristEquipment>()
+			.HasOne<Equipment>()
+			.WithMany()
+			.HasForeignKey(te => te.EquipmentId)
+			.HasPrincipalKey(e => e.Id);
+
+	}
 }
-
-//﻿using Explorer.Tours.Core.Domain;
-//using Microsoft.EntityFrameworkCore;
-
-//namespace Explorer.Tours.Infrastructure.Database;
-
-//public class ToursContext : DbContext {
-//    public DbSet<Equipment> Equipment { get; set; }
-
-//    public ToursContext(DbContextOptions<ToursContext> options) : base(options) { }
-
-//    protected override void OnModelCreating(ModelBuilder modelBuilder) {
-//        modelBuilder.HasDefaultSchema("tours");
-//    }
-//}
