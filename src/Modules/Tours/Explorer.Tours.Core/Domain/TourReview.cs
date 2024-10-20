@@ -12,10 +12,10 @@ namespace Explorer.Tours.Core.Domain
         public DateTime VisitDate { get; private set; }
         public DateTime ReviewDate { get; private set; }
         public byte[]? Image { get; private set; }
-        public int TourId { get; private set; }
-        public int TouristId { get; private set; }
+        public long TourId { get; private set; }
+        public long TouristId { get; private set; }
 
-        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, int tourId, int touristId, byte[]? image = null)
+        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, long tourId, long touristId, byte[]? image = null)
         {
             ValidateRating(rating);
             ValidateComment(comment);
