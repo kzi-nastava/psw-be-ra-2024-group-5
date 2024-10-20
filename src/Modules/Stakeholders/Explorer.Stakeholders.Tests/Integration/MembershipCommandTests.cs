@@ -19,91 +19,43 @@ namespace Explorer.Stakeholders.Tests.Integration
     {
         public MembershipCommandTests(StakeholdersTestFactory factory) : base(factory){}
 
-        //[Fact]
-        //public void Creates()
-        //{
-        //    // Arrange
-        //    using var scope = Factory.Services.CreateScope();
-        //    var controller = CreateController(scope);
-        //    var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-        //    var newEntity = new ClubMembershipDto
-        //    {
-        //        ClubId = 1,
-        //        UserId = 1
-        //    };
+        [Fact]
+        public void Add_user_to_club_success()
+        {
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
+            int userId = -1;
+            int clubId = -1;
 
-        //    // Act
-        //    var result = ((ObjectResult)controller.Create(newEntity).Result)?.Value as ClubMembershipDto;
+            // Act
+            var result = controller.CreateMembership(clubId, userId);
 
-        //    // Assert - Response
-        //    result.ShouldNotBeNull();
-        //    result.Id.ShouldNotBe(0);
-        //    result.UserId.ShouldBe(newEntity.UserId);
-        //    result.ClubId.ShouldBe(newEntity.ClubId);
+            // Assert
+            dbContext.Memberships.Count().ShouldBe(1);
+        }
 
-        //    // Assert - Database
-        //    var storedEntity = dbContext.Memberships.FirstOrDefault(i => i.UserId == newEntity.UserId && i.ClubId == newEntity.ClubId);
-        //    storedEntity.ShouldNotBeNull();
-        //    storedEntity.Id.ShouldBe(result.Id);
-        //}
-
-        //[Fact]
-        //public void Create_fails_invalid_data()
-        //{
-        //    // Arrange
-        //    using var scope = Factory.Services.CreateScope();
-        //    var controller = CreateController(scope);
-        //    var updatedEntity = new ClubMembershipDto
-        //    {
-        //        ClubId = 1
-        //    };
-
-        //    // Act
-        //    var result = (ObjectResult)controller.Create(updatedEntity).Result;
-
-        //    // Assert
-        //    result.ShouldNotBeNull();
-        //    result.StatusCode.ShouldBe(400);
-        //}
 
         [Fact]
-        public void Deletes()
+        public void Remove_user_from_club_success()
         {
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
+            int userId = -1;
+            int clubId = -1;
 
             // Act
-            var result = (OkResult)controller.Delete(-3);
-
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(200);
-
-            // Assert - Database
-            var storedCourse = dbContext.Memberships.FirstOrDefault(i => i.Id == -3);
-            storedCourse.ShouldBeNull();
-        }
-
-        [Fact]
-        public void Delete_fails_invalid_id()
-        {
-            // Arrange
-            using var scope = Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-
-            // Act
-            var result = (ObjectResult)controller.Delete(-1000);
+            var result = controller.DeleteMembership(clubId, userId);
 
             // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(404);
+            dbContext.Memberships.Count().ShouldBe(0);
         }
 
         private static ClubMembershipController CreateController(IServiceScope scope)
         {
-            return new ClubMembershipController(scope.ServiceProvider.GetRequiredService<IClubMembershipService>())
+            return new ClubMembershipController(scope.ServiceProvider.GetRequiredService<IClubService>())
             {
                 ControllerContext = BuildContext("-1")
             };

@@ -28,5 +28,19 @@ public class StakeholdersContext : DbContext
             .HasOne<User>()
             .WithOne()
             .HasForeignKey<Person>(s => s.UserId);
+
+        modelBuilder.Entity<ClubMembership>()
+        .ToTable("Memberships", "stakeholders")
+        .HasKey(cm => new { cm.UserId, cm.ClubId });
+
+        modelBuilder.Entity<ClubMembership>()
+            .HasOne<Club>()
+            .WithMany()
+            .HasForeignKey(cm => cm.ClubId);
+
+        modelBuilder.Entity<ClubMembership>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(cm => cm.UserId);
     }
 }

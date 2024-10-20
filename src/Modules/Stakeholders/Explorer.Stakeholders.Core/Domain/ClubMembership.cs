@@ -7,16 +7,11 @@ using System.Threading.Tasks;
 
 namespace Explorer.Stakeholders.Core.Domain
 {
-    public class ClubMembership : Entity
+    public class ClubMembership
     {
-        public int ClubId { get; private set; }
-        public int UserId { get; private set; }
-        public ClubMembership() 
-        {
-            UserId = 0;
-            ClubId = 0;
-        }
-        public ClubMembership(int clubId, int userId) 
+        public long ClubId { get; private set; }
+        public long UserId { get; private set; }
+        public ClubMembership(long clubId, long userId) 
         {
             ClubId = clubId;
             UserId = userId;

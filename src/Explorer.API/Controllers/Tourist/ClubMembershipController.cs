@@ -8,34 +8,58 @@ namespace Explorer.API.Controllers.Tourist
 {
     [Authorize(Policy = "touristPolicy")]
     [Route("api/tourist/membership")]
+    //[Route("api/tours/{tourId:int}/equipment")]
     public class ClubMembershipController : BaseApiController
     {
-        private readonly IClubMembershipService _clubMembershipService;
+        private readonly IClubService _clubService;
 
-        public ClubMembershipController(IClubMembershipService clubMembershipService)
+        public ClubMembershipController(IClubService clubService)
         {
-            _clubMembershipService = clubMembershipService;
+            _clubService = clubService;
         }
 
         [HttpGet]
-        public ActionResult<PagedResult<ClubMembershipDto>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
+        //public ActionResult<PagedResult<ClubMembershipDto>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
+        public void test1()
         {
-            var result = _clubMembershipService.GetPaged(page, pageSize);
-            return CreateResponse(result);
+            //var result = _clubMembershipService.GetPaged(page, pageSize);
+            //return CreateResponse(result);
         }
 
         [HttpPost]
-        public ActionResult<ClubMembershipDto> Create([FromBody] ClubMembershipDto clubMembership)
+        //public ActionResult<ClubMembershipDto> Create([FromBody] ClubMembershipDto clubMembership)
+        public ActionResult CreateMembership(int clubId, int userId)
         {
-            var result = _clubMembershipService.Create(clubMembership);
+            long ciD = (long)clubId;
+            long tId = (long)userId;
+
+            var result = _clubService.CreateMembership(ciD, tId);
             return CreateResponse(result);
         }
+        //public ActionResult CreateClubMembership(int tourId, [FromBody] List<int> equipmentIds)
+        //{
+        //    long id = (long)tourId;
+        //    List<long> ids = equipmentIds.Select(id => (long)id).ToList();
+
+        //    var result = _tourService.UpdateTourEquipment(id, ids);
+        //    return CreateResponse(result);
 
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        //public ActionResult Delete(int id)
+        public ActionResult DeleteMembership(int clubId, int userId)
         {
-            var result = _clubMembershipService.Delete(id);
+            long ciD = (long)clubId;
+            long tId = (long)userId;
+
+            var result = _clubService.DeleteMembership(ciD, tId);
             return CreateResponse(result);
         }
+        //public ActionResult DeleteClubMembership(int tourId, [FromBody] List<int> equipmentIds)
+        //{
+        //    long id = (long)tourId;
+        //    List<long> ids = equipmentIds.Select(id => (long)id).ToList();
+
+        //    var result = _tourService.UpdateTourEquipment(id, ids);
+        //    return CreateResponse(result);
     }
 }
