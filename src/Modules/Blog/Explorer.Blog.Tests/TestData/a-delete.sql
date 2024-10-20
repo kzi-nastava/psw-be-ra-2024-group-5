@@ -1,1 +1,2 @@
-﻿DELETE FROM blog."Clubs";
+DELETE FROM blog."BlogComments";
+DELETE FROM blog."Clubs";

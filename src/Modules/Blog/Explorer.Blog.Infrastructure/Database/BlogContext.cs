@@ -12,4 +12,6 @@ public class BlogContext : DbContext
     {
         modelBuilder.HasDefaultSchema("blog");
     }
+
+    public DbSet<BlogComment> BlogComments { get; set; }
 }
