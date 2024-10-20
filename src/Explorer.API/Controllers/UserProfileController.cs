@@ -16,12 +16,6 @@ namespace Explorer.API.Controllers
         {
             _userProfileService = userProfileService;
         }
-        [HttpPost]
-        public ActionResult<UserProfileDto> Create([FromBody] UserProfileDto userProfile)
-        {
-            var result = _userProfileService.Create(userProfile);
-            return CreateResponse(result);
-        }
 
         [HttpGet("{id:int}")]
         public ActionResult<UserProfileDto> GetProfile(long id)
@@ -41,7 +35,7 @@ namespace Explorer.API.Controllers
             }
 
             userProfile.Id = id;
-            var result = _userProfileService.Update(userProfile);
+            var result = _userProfileService.Update(GetCurrentUserId(), userProfile);
             return CreateResponse(result);
         }
 

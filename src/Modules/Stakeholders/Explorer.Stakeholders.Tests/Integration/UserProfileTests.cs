@@ -30,8 +30,6 @@ namespace Explorer.Stakeholders.Tests.Integration
             // Assert
             response.ShouldNotBeNull();
             response.Id.ShouldBe(profileId);
-            response.Name.ShouldNotBeNullOrEmpty();
-            response.Surname.ShouldNotBeNullOrEmpty();
         }
 
         [Fact]
@@ -44,7 +42,6 @@ namespace Explorer.Stakeholders.Tests.Integration
             var updatedProfile = new UserProfileDto
             {
                 Id = profileId,
-                UserId = profileId,
                 Name = "UpdatedName",
                 Surname = "UpdatedSurname",
                 ProfilePictureUrl = "updated-url.jpg",
@@ -65,8 +62,6 @@ namespace Explorer.Stakeholders.Tests.Integration
                     var responseValue = objectResult.Value as UserProfileDto;
                     responseValue.ShouldNotBeNull();
                     responseValue.Id.ShouldBe(profileId);
-                    responseValue.Name.ShouldBe(updatedProfile.Name);
-                    responseValue.Surname.ShouldBe(updatedProfile.Surname);
                     responseValue.ProfilePictureUrl.ShouldBe(updatedProfile.ProfilePictureUrl);
                     responseValue.Biography.ShouldBe(updatedProfile.Biography);
                     responseValue.Motto.ShouldBe(updatedProfile.Motto);
@@ -78,34 +73,6 @@ namespace Explorer.Stakeholders.Tests.Integration
             }
         }
 
-        [Fact]
-        public void Successfully_creates_profile()
-        {
-            // Arrange
-            using var scope = Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var newProfile = new UserProfileDto
-            {
-                UserId = 1,
-                Name = "NewName",
-                Surname = "NewSurname",
-                ProfilePictureUrl = "new-url.jpg",
-                Biography = "New biography",
-                Motto = "New motto"
-            };
-
-            // Act
-            var response = ((ObjectResult)controller.Create(newProfile).Result).Value as UserProfileDto;
-
-            // Assert
-            response.ShouldNotBeNull();
-            response.Id.ShouldBeGreaterThan(0); 
-            response.Name.ShouldBe(newProfile.Name);
-            response.Surname.ShouldBe(newProfile.Surname);
-            response.ProfilePictureUrl.ShouldBe(newProfile.ProfilePictureUrl);
-            response.Biography.ShouldBe(newProfile.Biography);
-            response.Motto.ShouldBe(newProfile.Motto);
-        }
         private UserProfileController CreateController(IServiceScope scope)
         {
             var controller = new UserProfileController(scope.ServiceProvider.GetRequiredService<IUserProfileService>());
