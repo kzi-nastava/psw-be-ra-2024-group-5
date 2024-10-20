@@ -22,9 +22,9 @@ namespace Explorer.Blog.Infrastructure
             return services;
         }
 
-
         private static void SetupCore(IServiceCollection services)
         {
+            services.AddScoped<IClubService, ClubService>();
             services.AddScoped<IBlogCommentService, BlogCommentService>();
             services.AddScoped<ICommentRepository, CommentRepository>();
 
@@ -32,6 +32,7 @@ namespace Explorer.Blog.Infrastructure
 
         private static void SetupInfrastructure(IServiceCollection services)
         {
+            services.AddScoped(typeof(ICrudRepository<Club>), typeof(CrudDatabaseRepository<Club, BlogContext>));
             services.AddScoped(typeof(ICrudRepository<BlogComment>), typeof(CrudDatabaseRepository<BlogComment, BlogContext>));
 
             services.AddDbContext<BlogContext>(opt =>
