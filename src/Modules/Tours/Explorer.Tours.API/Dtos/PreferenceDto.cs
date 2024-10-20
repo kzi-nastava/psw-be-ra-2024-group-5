@@ -6,7 +6,7 @@ namespace Explorer.Tours.API.Dtos
    
     public class PreferenceDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int TouristId { get; set; }
         public TourDifficulty PreferredDifficulty { get; set; }
         public int WalkRating { get; set; }

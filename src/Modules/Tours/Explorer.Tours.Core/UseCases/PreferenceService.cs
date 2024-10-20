@@ -16,6 +16,26 @@ namespace Explorer.Tours.Core.UseCases
     {
         public PreferenceService(ICrudRepository<Preference> repository, IMapper mapper) : base(repository, mapper) { }
 
-       
+        public Result<List<PreferenceDto>> GetAll()
+        {
+            // Ako želite sve rezultate, možete koristiti int.MaxValue kao veličinu stranice
+            var pagedResult = GetPaged(1, int.MaxValue);
+
+            if (pagedResult.IsFailed)
+            {
+                return Result.Fail<List<PreferenceDto>>(pagedResult.Errors);
+            }
+
+            return Result.Ok(pagedResult.Value.Results);
+        }
+
+        public Result<PagedResult<PreferenceDto>> GetPaged(int pageIndex, int pageSize)
+        {
+            return base.GetPaged(pageIndex, pageSize);
+        }
+
+
+
+
     }
 }

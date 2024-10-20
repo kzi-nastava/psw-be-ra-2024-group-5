@@ -1,4 +1,5 @@
-﻿using Explorer.Tours.API.Dtos;
+﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Tours.API.Dtos;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,11 @@ namespace Explorer.Tours.API.Public
         Result<PreferenceDto> Update(PreferenceDto preference);
 
         Result Delete(int id);
+
+        Result<List<PreferenceDto>> GetAll();
+
+        Result<PagedResult<PreferenceDto>> GetPaged(int pageIndex, int pageSize);
+
+
     }
 }

@@ -30,13 +30,32 @@ namespace Explorer.API.Controllers.Tourist
         {
             var result = _preferenceService.Update(preference);
             return CreateResponse(result);
-        }
+        } 
 
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
             var result = _preferenceService.Delete(id);
-            return CreateResponse(result);
+            if (result.IsSuccess)
+            {
+                return Ok(); // Vraća 200 OK
+            }
+            return NotFound(); // Vraća 404 Not Found ako nije pronađena preferenca
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int pageIndex = 0, int pageSize = 10)
+        {
+            var result = _preferenceService.GetPaged(pageIndex, pageSize);
+
+            if (result.IsFailed)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(result.Value);
+        }
+
+
     }
 }

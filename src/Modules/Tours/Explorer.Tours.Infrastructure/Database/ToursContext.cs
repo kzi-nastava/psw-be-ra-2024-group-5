@@ -38,6 +38,7 @@ public class ToursContext : DbContext
         
         modelBuilder.Entity<KeyPoint>().HasIndex(k => k.Id).IsUnique();
         ConfigureTour(modelBuilder);
+        ConfigurePreference(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -53,6 +54,26 @@ public class ToursContext : DbContext
             .HasForeignKey(k => k.TourId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
+    private static void ConfigurePreference(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Preference>()
+            .HasKey(p => p.Id);
+
+        // Konfigurišemo entitet Preference da koristi tabelu Users iz šeme stakeholders
+        modelBuilder.Entity<Preference>()
+            .HasOne<User>() // Definišemo vezu prema entitetu User
+            .WithMany() // Definišemo da User može imati više Preference
+            .HasForeignKey(p => p.TouristId) // Definišemo stranu koja sadrži ključ
+            .OnDelete(DeleteBehavior.Cascade) // Postavljamo ponašanje pri brisanju
+            .HasConstraintName("FK_Preferences_User_TouristId") // Ime strane
+            .HasPrincipalKey(u => u.Id); // Glavni ključ za User
+
+        // Ignorišemo kreiranje tabele za User entitet
+        modelBuilder.Ignore<User>();
+    }
+
+
 }
 
 //﻿using Explorer.Tours.Core.Domain;

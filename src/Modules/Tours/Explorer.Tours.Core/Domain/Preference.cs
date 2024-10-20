@@ -6,7 +6,7 @@ namespace Explorer.Tours.Core.Domain
 
     public class Preference : Entity
     {
-        public int TouristId { get; private set; }
+        public long TouristId { get; private set; }
         public TourDifficulty PreferredDifficulty { get; private set; }
         public int WalkRating { get; private set; }
         public int BikeRating { get; private set; }
@@ -14,7 +14,7 @@ namespace Explorer.Tours.Core.Domain
         public int BoatRating { get; private set; }
         public List<string> InterestTags { get; private set; }
 
-        public Preference(int touristId, TourDifficulty preferredDifficulty, int walkRating, int bikeRating, int carRating, int boatRating, List<string> interestTags)
+        public Preference(long touristId, TourDifficulty preferredDifficulty, int walkRating, int bikeRating, int carRating, int boatRating, List<string> interestTags)
         {
 
             if (!Enum.IsDefined(typeof(TourDifficulty), preferredDifficulty))
