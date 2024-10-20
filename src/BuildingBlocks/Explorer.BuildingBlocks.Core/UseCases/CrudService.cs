@@ -44,7 +44,7 @@ public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> wh
             var result = CrudRepository.Create(MapToDomain(entity));
             return MapToDto(result);
         }
-        catch (ArgumentException e)
+        catch (Exception e)
         {
             return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
         }

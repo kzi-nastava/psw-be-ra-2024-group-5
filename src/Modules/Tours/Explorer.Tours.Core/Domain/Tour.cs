@@ -18,7 +18,7 @@ public class Tour : Entity {
         if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
         if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
         if(level == null) throw new ArgumentNullException("Invalid level");
-        if(long.IsNegative(authorId)) throw new ArgumentNullException("Invalid author id");
+        //if(long.IsNegative(authorId)) throw new ArgumentNullException("Invalid author id");
         Name = name;
         Description = description;
         Tags = tags;
