@@ -29,7 +29,7 @@ namespace Explorer.Blog.Tests.Integration
             var newEntity = new BlogDTO
             {
                 userId = 23,
-                title = "New Blog",
+                title = "New BlogPost",
                 description = "This is a test blog.",
                 status = BlogStatusDto.Draft,
                 createdDate = DateTime.UtcNow,
@@ -59,7 +59,7 @@ namespace Explorer.Blog.Tests.Integration
             var newEntity = new BlogDTO
             {
                 userId = 23,
-                title = "Test Blog with One Image.",
+                title = "Test BlogPost with One Image.",
                 description = "This is a test blog with one image.",
                 status = BlogStatusDto.Published,
                 createdDate = DateTime.UtcNow,
@@ -97,7 +97,7 @@ namespace Explorer.Blog.Tests.Integration
             var newEntity = new BlogDTO
             {
                 userId = 23,
-                title = "Test Blog with Images.",
+                title = "Test BlogPost with Images.",
                 description = "This is a test blog with image.",
                 status = BlogStatusDto.Published,
                 createdDate = DateTime.UtcNow,

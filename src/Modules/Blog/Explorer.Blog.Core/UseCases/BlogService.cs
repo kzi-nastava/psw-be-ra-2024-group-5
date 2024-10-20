@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DomainBlog = Explorer.Blog.Core.Domain.Blog;
+using DomainBlog = Explorer.Blog.Core.Domain.BlogPost;
 
 namespace Explorer.Blog.Core.UseCases
 {
@@ -66,7 +66,7 @@ namespace Explorer.Blog.Core.UseCases
         {
             var blogResult = CrudRepository.Get(blogId);
             if (blogResult == null)
-                return Result.Fail("Blog not found.");
+                return Result.Fail("BlogPost not found.");
 
             if (!Enum.IsDefined(typeof(BlogStatusDto), newStatus))
                 return Result.Fail("Invalid blog status.");

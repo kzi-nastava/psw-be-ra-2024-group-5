@@ -1,6 +1,6 @@
 ﻿using Explorer.Blog.Core.Domain;
 using Microsoft.EntityFrameworkCore;
-using BlogDomain = Explorer.Blog.Core.Domain.Blog;
+using BlogDomain = Explorer.Blog.Core.Domain.BlogPost;
 
 namespace Explorer.Blog.Infrastructure.Database;
 
