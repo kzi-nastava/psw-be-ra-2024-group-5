@@ -14,5 +14,6 @@ namespace Explorer.Blog.API.Public
         Result<BlogDTO> UpdateBlogStatus(int blogId, BlogStatusDto newStatus, int userId);
         string PreviewBlogDescription(string description);
         Result<BlogDTO> getBlogById(int blogId);
+        Result<List<BlogDTO>> getAll(int page, int pageSize);
     }
 }

@@ -17,6 +17,13 @@ namespace Explorer.API.Controllers.Author
             _blogService = blogService;
         }
 
+        [HttpGet]
+        public ActionResult<PagedResult<BlogDTO>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            var result = _blogService.getAll(page, pageSize);
+            return CreateResponse(result);
+        }
+
         [HttpPost]
         public  ActionResult<BlogDTO> CreateBlog([FromBody] BlogDTO blogDTO)
         {

@@ -94,5 +94,50 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok(updatedBlogDto);
         }
 
+        public Result<List<BlogDTO>> getAll(int page, int pageSize)
+        {
+            try
+            {
+                var pageBlogs = CrudRepository.GetPaged(page, pageSize);
+
+                var blogDtos = pageBlogs.Results.Select(blog =>
+                {
+                    var blogDto = _mapper.Map<BlogDTO>(blog);
+
+                    blogDto.description = Markdown.ToHtml(blogDto.description);
+
+                    var pagedImages = _blogImageRepository.GetPaged(page, pageSize);
+                    var blogImages = pagedImages.Results.Where(img => img.blogId == blog.Id).ToList();
+
+                    if (blogImages.Any())
+                    {
+                        var images = blogImages.Select(image => new BlogImageDTO
+                        {
+                            Id = (int)image.Id,
+                            blogId = image.blogId,
+                            base64Data = Base64Converter.ConvertFromByteArray(image.image),
+                            contentType = image.contentType
+                        }).ToList();
+
+                        blogDto.imageData = images;
+                    }
+                    else
+                    {
+                        blogDto.imageData = new List<BlogImageDTO>();
+                    }
+                    
+                    return blogDto;
+                }).ToList();
+
+                var pagedResult = new PagedResult<BlogDTO>(blogDtos, pageBlogs.TotalCount);
+
+                return Result.Ok<List<BlogDTO>>(blogDtos);
+
+            }
+            catch (Exception e)
+            {
+                return Result.Fail($"An error ocurred while retriving blogs: {e.Message}");
+            }
+        }
     }
 }
