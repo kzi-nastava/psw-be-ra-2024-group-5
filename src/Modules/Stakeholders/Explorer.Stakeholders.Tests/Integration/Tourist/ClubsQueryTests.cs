@@ -1,7 +1,7 @@
 ﻿using Explorer.API.Controllers.Administrator.Administration;
 using Explorer.API.Controllers.Tourist;
-using Explorer.Blog.API.Dtos;
-using Explorer.Blog.API.Public;
+using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Public;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
@@ -14,11 +14,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Blog.Tests.Integration;
+namespace Explorer.Stakeholders.Tests.Integration;
 [Collection("Sequential")]
-public class ClubQueryTests : BaseBlogIntegrationTest
+public class ClubQueryTests : BaseStakeholdersIntegrationTest
 {
-    public ClubQueryTests(BlogTestFactory factory) : base(factory) { }
+    public ClubQueryTests(StakeholdersTestFactory factory) : base(factory) { }
 
     [Fact]
     public void Retrieves_all()
