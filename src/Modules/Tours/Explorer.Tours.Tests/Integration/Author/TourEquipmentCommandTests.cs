@@ -49,7 +49,7 @@ public class TourEquipmentCommandTests : BaseToursIntegrationTest
     }
     
     private static TourEquipmentController CreateController(IServiceScope scope) {
-        return new TourEquipmentController(scope.ServiceProvider.GetRequiredService<ITourService>()) {
+        return new TourEquipmentController(scope.ServiceProvider.GetRequiredService<ITourService>(), scope.ServiceProvider.GetRequiredService<IEquipmentService>()) {
             ControllerContext = BuildContext("-1")
         };
     } 
