@@ -59,7 +59,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var controller = CreateController(scope);
             var updatedPreference = new PreferenceDto
             {
-                TouristId = -1, // Invalid ID, dobro je
+                TouristId = -1, // Invalid ID, dobro je, 
                 PreferredDifficulty = TourDifficulty.ADVANCED,
                 WalkRating = 3,
                 BikeRating = 3,
@@ -73,9 +73,8 @@ namespace Explorer.Tours.Tests.Integration.Tourist
 
             // Assert
             result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(200); // Expecting 400 for invalid data
+            result.StatusCode.ShouldBe(200); 
         }
-
 
 
         [Fact]
@@ -86,7 +85,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
-            // Kreiraj preferenciju koju ćeš obrisati koristeći PreferenceDto
+           
             var preferenceDto = new PreferenceDto
             {
                 Id = 735331,
@@ -99,11 +98,11 @@ namespace Explorer.Tours.Tests.Integration.Tourist
                 InterestTags = new List<string> { "Nature", "Adventure" }
             };
 
-            // Pretpostavljam da postoji metoda za kreiranje preferencije u kontroleru
+          
             controller.Create(preferenceDto);
 
             // Act
-            var deleteResult = (OkResult)controller.Delete((int)preferenceDto.Id); // Konvertuj ID iz long u int
+            var deleteResult = (OkResult)controller.Delete((int)preferenceDto.Id); // id iz long u int
 
             // Assert - Response
             deleteResult.ShouldNotBeNull();
@@ -113,10 +112,6 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var storedPreference = dbContext.Preferences.FirstOrDefault(p => p.Id == preferenceDto.Id);
             storedPreference.ShouldBeNull(); // Trebalo bi biti null nakon brisanja
         }
-
-
-
-
 
 
         private static PreferenceController CreateController(IServiceScope scope)

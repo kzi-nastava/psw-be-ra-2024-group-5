@@ -62,12 +62,12 @@ public class ToursContext : DbContext
 
         // Konfigurišemo entitet Preference da koristi tabelu Users iz šeme stakeholders
         modelBuilder.Entity<Preference>()
-            .HasOne<User>() // Definišemo vezu prema entitetu User
-            .WithMany() // Definišemo da User može imati više Preference
-            .HasForeignKey(p => p.TouristId) // Definišemo stranu koja sadrži ključ
-            .OnDelete(DeleteBehavior.Cascade) // Postavljamo ponašanje pri brisanju
-            .HasConstraintName("FK_Preferences_User_TouristId") // Ime strane
-            .HasPrincipalKey(u => u.Id); // Glavni ključ za User
+            .HasOne<User>() 
+            .WithMany() 
+            .HasForeignKey(p => p.TouristId) 
+            .OnDelete(DeleteBehavior.Cascade) 
+            .HasConstraintName("FK_Preferences_User_TouristId")
+            .HasPrincipalKey(u => u.Id); 
 
         // Ignorišemo kreiranje tabele za User entitet
         modelBuilder.Ignore<User>();

@@ -40,7 +40,7 @@ namespace Explorer.API.Controllers.Tourist
             {
                 return Ok(); // Vraća 200 OK
             }
-            return NotFound(); // Vraća 404 Not Found ako nije pronađena preferenca
+            return NotFound(); 
         }
 
         [HttpGet]
