@@ -34,7 +34,14 @@ public class CrudDatabaseRepository<TEntity, TDbContext> : ICrudRepository<TEnti
     public TEntity Create(TEntity entity)
     {
         _dbSet.Add(entity);
-        DbContext.SaveChanges();
+        try 
+        {
+            DbContext.SaveChanges();
+        }
+        catch (DbUpdateException e) 
+        {
+            throw new KeyNotFoundException(e.Message);
+        }
         return entity;
     }
 
