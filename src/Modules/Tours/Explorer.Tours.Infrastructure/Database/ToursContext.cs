@@ -1,7 +1,6 @@
 ﻿using Explorer.Tours.Core.Domain;
 using Explorer.Stakeholders.Core.Domain;
 using Microsoft.EntityFrameworkCore;
-using Explorer.Stakeholders.Core.Domain;
 
 
 namespace Explorer.Tours.Infrastructure.Database;
@@ -24,13 +23,8 @@ public class ToursContext : DbContext
         modelBuilder.HasDefaultSchema("tours");
 
         modelBuilder.Entity<Tour>().HasKey(t => t.Id);
-        modelBuilder.Entity<Equipment>()
-            .ToTable("Equipment", "tours")
-            .HasKey(e => e.Id);
-
-            
+        modelBuilder.Entity<Equipment>().HasKey(e => e.Id);
         modelBuilder.Entity<KeyPoint>().HasKey(k => k.Id);
-        modelBuilder.Entity<TourEquipment>().HasKey(te => new { te.TourId, te.EquipmentId });
         
         ConfigureTour(modelBuilder);
         ConfigurePreference(modelBuilder);
@@ -91,23 +85,23 @@ public class ToursContext : DbContext
     {
 		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
 
-		modelBuilder.Entity<TouristEquipment>()
-			.ToTable("TouristEquipment", "tours")
-			.HasKey(te => new { te.TouristId, te.EquipmentId });
+		modelBuilder.Entity<TouristEquipment>().HasKey(te => new { te.TouristId, te.EquipmentId });
 
 		modelBuilder.Entity<TouristEquipment>()
 		   .HasOne<User>()
 		   .WithMany()
 		   .HasForeignKey(te => te.TouristId)
-		   .HasPrincipalKey(u => u.Id);
+            .HasPrincipalKey(u => u.Id)
+            //.OnDelete(DeleteBehavior.Cascade);
 
 
-		modelBuilder.Entity<TouristEquipment>()
+        modelBuilder.Entity<TouristEquipment>()
 			.HasOne<Equipment>()
 			.WithMany()
 			.HasForeignKey(te => te.EquipmentId)
-			.HasPrincipalKey(e => e.Id);
+            .HasPrincipalKey(e => e.Id)
+            //.OnDelete(DeleteBehavior.Cascade);
 
-        
-	}
+
+    }
 }
