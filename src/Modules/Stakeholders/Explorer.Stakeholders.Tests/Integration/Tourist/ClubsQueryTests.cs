@@ -14,33 +14,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Stakeholders.Tests.Integration;
-[Collection("Sequential")]
-public class ClubQueryTests : BaseStakeholdersIntegrationTest
+namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
-    public ClubQueryTests(StakeholdersTestFactory factory) : base(factory) { }
-
-    [Fact]
-    public void Retrieves_all()
+    [Collection("Sequential")]
+    public class ClubQueryTests : BaseStakeholdersIntegrationTest
     {
-        // Arrange
-        using var scope = Factory.Services.CreateScope();
-        var controller = CreateController(scope);
+        public ClubQueryTests(StakeholdersTestFactory factory) : base(factory) { }
 
-        // Act
-        var result = ((ObjectResult)controller.GetAll(0, 0).Result)?.Value as PagedResult<ClubDto>;
-
-        // Assert
-        result.ShouldNotBeNull();
-        result.Results.Count.ShouldBe(2);
-        result.TotalCount.ShouldBe(2);
-    }
-
-    private static ClubController CreateController(IServiceScope scope)
-    {
-        return new ClubController(scope.ServiceProvider.GetRequiredService<IClubService>())
+        [Fact]
+        public void Retrieves_all()
         {
-            ControllerContext = BuildContext("-1")
-        };
+            // Arrange
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            // Act
+            var result = ((ObjectResult)controller.GetAll(0, 0).Result)?.Value as PagedResult<ClubDto>;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Results.Count.ShouldBe(2);
+            result.TotalCount.ShouldBe(2);
+        }
+
+        private static ClubController CreateController(IServiceScope scope)
+        {
+            return new ClubController(scope.ServiceProvider.GetRequiredService<IClubService>())
+            {
+                ControllerContext = BuildContext("-1")
+            };
+        }
     }
 }

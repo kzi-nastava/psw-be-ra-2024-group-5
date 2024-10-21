@@ -4,13 +4,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Explorer.Stakeholders.Infrastructure.Database;
 
 public class StakeholdersContext : DbContext
-{
-
-    public DbSet<Club> Clubs { get; set; }
-    public DbSet<ClubMembership> Memberships { get; set; }
+{  
     public DbSet<User> Users { get; set; }
     public DbSet<Person> People { get; set; }
     public DbSet<Club> Clubs { get; set; }
+    public DbSet<ClubMembership> Memberships { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 

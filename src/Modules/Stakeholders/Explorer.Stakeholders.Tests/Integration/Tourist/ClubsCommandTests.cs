@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Stakeholders.Tests.Integration
+namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
     [Collection("Sequential")]
     public class ClubsCommandTests : BaseStakeholdersIntegrationTest
@@ -50,25 +50,25 @@ namespace Explorer.Stakeholders.Tests.Integration
             storedEntity.Id.ShouldBe(result.Id);
         }
 
-        //[Fact]
-        //public void Create_fails_invalid_data()
-        //{
-        //    // Arrange
-        //    using var scope = Factory.Services.CreateScope();
-        //    var controller = CreateController(scope);
-        //    var updatedEntity = new ClubDto
-        //    {
-        //        Name = "a",
-        //        ImageDirectory = "none"
-        //    };
+        [Fact]
+        public void Create_fails_invalid_data()
+        {
+            // Arrange
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var updatedEntity = new ClubDto
+            {
+                Name = "a",
+                ImageDirectory = "none"
+            };
 
-        //    // Act
-        //    var result = (ObjectResult)controller.Create(updatedEntity).Result;
+            // Act
+            var result = (ObjectResult)controller.Create(updatedEntity).Result;
 
-        //    // Assert
-        //    result.ShouldNotBeNull();
-        //    result.StatusCode.ShouldBe(400);
-        //}
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(400);
+        }
 
         [Fact]
         public void Updates()
