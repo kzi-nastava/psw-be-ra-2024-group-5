@@ -44,11 +44,7 @@ public static class ToursStartup
         services.AddScoped<ITourRepository, TourRepository>();
         services.AddScoped(typeof(ICrudRepository<KeyPoint>), typeof(CrudDatabaseRepository<KeyPoint, ToursContext>));
         services.AddScoped(typeof(ICrudRepository<Facility>), typeof(CrudDatabaseRepository<Facility, ToursContext>));
-        //services.AddScoped(typeof(ICrudRepository<TourReview>), typeof(CrudDatabaseRepository<TourReview, ToursContext>));
-        
-        // Dodajemo specifiènu registraciju za ITourReviewRepository
         services.AddScoped<ITourReviewRepository, TourReviewDatabaseRepository>();
-        // Takoðe registrujemo TourReviewDatabaseRepository kao ICrudRepository<TourReview>
         services.AddScoped<ICrudRepository<TourReview>>(sp => sp.GetRequiredService<ITourReviewRepository>());
 
         services.AddDbContext<ToursContext>(opt =>
