@@ -12,12 +12,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Stakeholders.Tests.Integration
+namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
     [Collection("Sequential")]
     public class MembershipCommandTests : BaseStakeholdersIntegrationTest
     {
-        public MembershipCommandTests(StakeholdersTestFactory factory) : base(factory){}
+        public MembershipCommandTests(StakeholdersTestFactory factory) : base(factory) { }
 
         [Fact]
         public void Add_user_to_club_success()
@@ -25,8 +25,8 @@ namespace Explorer.Stakeholders.Tests.Integration
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
-            int userId = -1;
-            int clubId = -1;
+            int userId = -11;
+            int clubId = -2;
 
             // Act
             var result = controller.CreateMembership(clubId, userId);

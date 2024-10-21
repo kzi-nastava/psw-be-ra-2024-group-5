@@ -52,16 +52,18 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             {
                 var memberships = _dbContext.Memberships;
                 //TO CHANGE
+                Result result = Result.Fail($"The specified user could not be found");
                 foreach (var member in memberships)
                 {
                     if (member.UserId == userId && member.ClubId == clubId)
                     {
                         memberships.Remove(member);
-                        _dbContext.SaveChanges();
-                        return Result.Ok();
+                        result = Result.Ok();
+                        break;
                     }
                 }
-                return Result.Fail($"The specified user could not be found");
+                _dbContext.SaveChanges();
+                return result;
 
             }
             catch (Exception ex)

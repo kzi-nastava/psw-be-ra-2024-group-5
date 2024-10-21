@@ -18,14 +18,6 @@ namespace Explorer.API.Controllers.Tourist
             _clubService = clubService;
         }
 
-        [HttpGet]
-        //public ActionResult<PagedResult<ClubMembershipDto>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
-        public void test1()
-        {
-            //var result = _clubMembershipService.GetPaged(page, pageSize);
-            //return CreateResponse(result);
-        }
-
         [HttpPost]
         //public ActionResult<ClubMembershipDto> Create([FromBody] ClubMembershipDto clubMembership)
         public ActionResult CreateMembership(int clubId, int userId)
@@ -44,7 +36,7 @@ namespace Explorer.API.Controllers.Tourist
         //    var result = _tourService.UpdateTourEquipment(id, ids);
         //    return CreateResponse(result);
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete]
         //public ActionResult Delete(int id)
         public ActionResult DeleteMembership(int clubId, int userId)
         {
