@@ -2,6 +2,7 @@
 using Explorer.Stakeholders.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Explorer.Tours.Infrastructure.Database;
 
 public class ToursContext : DbContext
@@ -12,8 +13,11 @@ public class ToursContext : DbContext
     public DbSet<TourEquipment> TourEquipment { get; set; }
     public DbSet<KeyPoint> KeyPoint { get; set; }
     public DbSet<Facility> Facilities { get; set; }
+    public DbSet<Preference> Preferences { get; set; }
+	public DbSet<TouristEquipment> TouristEquipment { get; set; }
 
-    public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
+
+	public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,7 +33,9 @@ public class ToursContext : DbContext
         modelBuilder.Entity<TourReview>().HasKey(t => t.Id);
 
         ConfigureTour(modelBuilder);
+        ConfigurePreference(modelBuilder);
         ConfigureTourEquipment(modelBuilder);
+        ConfigureTouristEquipment(modelBuilder);
         ConfigureTourReview(modelBuilder);
     }
 
@@ -51,6 +57,23 @@ public class ToursContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
     }
 
+    private static void ConfigurePreference(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+           .ToTable("Users", "stakeholders")
+           .Metadata.SetIsTableExcludedFromMigrations(true);
+
+        modelBuilder.Entity<Preference>()
+            .HasKey(p => p.Id);
+
+        // Konfigurišemo entitet Preference da koristi tabelu Users iz šeme stakeholders
+        modelBuilder.Entity<Preference>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.TouristId)
+            .OnDelete(DeleteBehavior.Cascade); 
+    }
+
     private static void ConfigureTourEquipment(ModelBuilder modelBuilder) {
         modelBuilder.Entity<TourEquipment>()
             .HasKey(te => new { te.TourId, te.EquipmentId });
@@ -64,6 +87,24 @@ public class ToursContext : DbContext
             .HasOne<Equipment>()
             .WithMany()
             .HasForeignKey(te => te.EquipmentId);
+    }
+    private static void ConfigureTouristEquipment(ModelBuilder modelBuilder)
+    {
+		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
+
+		modelBuilder.Entity<TouristEquipment>().HasKey(te => new { te.TouristId, te.EquipmentId });
+
+        modelBuilder.Entity<TouristEquipment>()
+           .HasOne<User>()
+           .WithMany()
+           .HasForeignKey(te => te.TouristId);
+
+
+        modelBuilder.Entity<TouristEquipment>()
+            .HasOne<Equipment>()
+            .WithMany()
+            .HasForeignKey(te => te.EquipmentId);
+
     }
 
     private static void ConfigureTourReview(ModelBuilder modelBuilder)
