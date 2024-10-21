@@ -23,7 +23,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newPreference = new PreferenceDto
             {
-                TouristId = 1,
+                TouristId = -11,
                 PreferredDifficulty = TourDifficulty.INTERMEDIATE,
                 WalkRating = 3,
                 BikeRating = 2,

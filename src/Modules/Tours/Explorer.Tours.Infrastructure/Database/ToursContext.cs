@@ -48,20 +48,19 @@ public class ToursContext : DbContext
 
     private static void ConfigurePreference(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+           .ToTable("Users", "stakeholders")
+           .Metadata.SetIsTableExcludedFromMigrations(true);
+
         modelBuilder.Entity<Preference>()
             .HasKey(p => p.Id);
 
         // Konfigurišemo entitet Preference da koristi tabelu Users iz šeme stakeholders
         modelBuilder.Entity<Preference>()
-            .HasOne<User>() 
-            .WithMany() 
-            .HasForeignKey(p => p.TouristId) 
-            .OnDelete(DeleteBehavior.Cascade) 
-            .HasConstraintName("FK_Preferences_User_TouristId")
-            .HasPrincipalKey(u => u.Id); 
-
-        // Ignorišemo kreiranje tabele za User entitet
-        modelBuilder.Ignore<User>();
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.TouristId)
+            .OnDelete(DeleteBehavior.Cascade); 
     }
 
     private static void ConfigureTourEquipment(ModelBuilder modelBuilder) {
