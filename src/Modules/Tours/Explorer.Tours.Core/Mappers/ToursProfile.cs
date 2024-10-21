@@ -13,6 +13,7 @@ public class ToursProfile : Profile
         CreateMap<TourDto, Tour>().ReverseMap();
 
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
+        CreateMap<PreferenceDto, Preference>().ReverseMap();
         
         CreateMap<KeyPointDto, KeyPoint>()
             .ForCtorParam("name", opt => opt.MapFrom(src => src.Name))

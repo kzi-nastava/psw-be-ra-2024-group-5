@@ -11,6 +11,7 @@ public class ToursContext : DbContext
     public DbSet<TourEquipment> TourEquipment { get; set; }
     public DbSet<KeyPoint> KeyPoint { get; set; }
     public DbSet<Facility> Facilities { get; set; }
+    public DbSet<Preference> Preferences { get; set; }
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
@@ -23,6 +24,7 @@ public class ToursContext : DbContext
         modelBuilder.Entity<KeyPoint>().HasKey(k => k.Id);
         
         ConfigureTour(modelBuilder);
+        ConfigurePreference(modelBuilder);
         ConfigureTourEquipment(modelBuilder);
     }
 
@@ -42,6 +44,23 @@ public class ToursContext : DbContext
             .WithMany() 
             .HasForeignKey(k => k.TourId)
             .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigurePreference(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+           .ToTable("Users", "stakeholders")
+           .Metadata.SetIsTableExcludedFromMigrations(true);
+
+        modelBuilder.Entity<Preference>()
+            .HasKey(p => p.Id);
+
+        // Konfigurišemo entitet Preference da koristi tabelu Users iz šeme stakeholders
+        modelBuilder.Entity<Preference>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.TouristId)
+            .OnDelete(DeleteBehavior.Cascade); 
     }
 
     private static void ConfigureTourEquipment(ModelBuilder modelBuilder) {
