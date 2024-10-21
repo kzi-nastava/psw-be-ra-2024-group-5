@@ -34,7 +34,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
 			var result = controller.UpdateTouristEquipment(touristId, equipmentIds);
 
 			// Assert
-			dbContext.TouristEquipment.Count().ShouldBe(3);
+			dbContext.TouristEquipment.Count().ShouldBe(4);
 		}
 
 		private static TouristController CreateController(IServiceScope scope)

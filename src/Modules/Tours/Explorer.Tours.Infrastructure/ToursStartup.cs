@@ -32,6 +32,7 @@ public static class ToursStartup
     private static void SetupCore(IServiceCollection services)
     {
         services.AddScoped<ITourService, TourService>();
+        services.AddScoped<ITouristService, TouristService>();
         services.AddScoped<IEquipmentService, EquipmentService>();
         services.AddScoped<IKeyPointService, KeyPointService>();
         services.AddScoped<IFacilityService, FacilityService>();

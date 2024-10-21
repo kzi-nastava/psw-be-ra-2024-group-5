@@ -87,21 +87,16 @@ public class ToursContext : DbContext
 
 		modelBuilder.Entity<TouristEquipment>().HasKey(te => new { te.TouristId, te.EquipmentId });
 
-		modelBuilder.Entity<TouristEquipment>()
-		   .HasOne<User>()
-		   .WithMany()
-		   .HasForeignKey(te => te.TouristId)
-            .HasPrincipalKey(u => u.Id)
-            //.OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<TouristEquipment>()
+           .HasOne<User>()
+           .WithMany()
+           .HasForeignKey(te => te.TouristId);
 
 
         modelBuilder.Entity<TouristEquipment>()
-			.HasOne<Equipment>()
-			.WithMany()
-			.HasForeignKey(te => te.EquipmentId)
-            .HasPrincipalKey(e => e.Id)
-            //.OnDelete(DeleteBehavior.Cascade);
-
+            .HasOne<Equipment>()
+            .WithMany()
+            .HasForeignKey(te => te.EquipmentId);
 
     }
 }
