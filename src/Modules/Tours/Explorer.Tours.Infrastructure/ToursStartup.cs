@@ -37,8 +37,6 @@ public static class ToursStartup
         services.AddScoped<IKeyPointService, KeyPointService>();
         services.AddScoped<IFacilityService, FacilityService>();
         services.AddScoped<IPreferenceService, PreferenceService>();
-
-	}
         services.AddScoped<ITourReviewService, TourReviewService>();
     }
 
