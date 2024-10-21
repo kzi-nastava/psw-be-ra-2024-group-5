@@ -25,10 +25,10 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
 		public Result<bool> UpdateEquipmentToTourist(long touristId, List<long> equipmentIds)
 		{
-			if (touristId <= 0 || equipmentIds == null || !equipmentIds.Any())
+			/*if (touristId <= 0 || equipmentIds == null || !equipmentIds.Any())
 			{
 				return Result.Fail<bool>(FailureCode.InvalidArgument).WithError("Invalid tourist ID or equipment IDs.");
-			}
+			}*/
 
 			return _touristRepository.UpdateEquipmentToTourist(touristId, equipmentIds);
 		}
