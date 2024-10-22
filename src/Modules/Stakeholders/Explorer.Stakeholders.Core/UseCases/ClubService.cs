@@ -23,14 +23,16 @@ namespace Explorer.Stakeholders.Core.UseCases
 
         public Result CreateMembership(long clubId, long userId)
         {
-            var result = _clubRepository.CreateMembership(clubId, userId);
-            return result;
+            Result<ClubMembership?> result = _clubRepository.CreateMembership(clubId, userId);
+            if (result != null) return Result.Ok();
+            return Result.Fail("An error occurred while attempting to create the membership.");
         }
 
         public Result DeleteMembership(long clubId, long userId)
         {
-            var result = _clubRepository.DeleteMembership(clubId, userId);
-            return result;
+            bool result = _clubRepository.DeleteMembership(clubId, userId);
+            if (result) return Result.Ok();
+            return Result.Fail("An error occurred while attempting to delete the membership.");
         }
     }
 }

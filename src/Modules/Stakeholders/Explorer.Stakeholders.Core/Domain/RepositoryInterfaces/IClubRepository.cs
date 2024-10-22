@@ -10,7 +10,7 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
 {
     public interface IClubRepository : ICrudRepository<Club>
     {
-        Result DeleteMembership(long clubId, long userId);
-        Result CreateMembership(long clubId, long userId);
+        bool DeleteMembership(long clubId, long userId);
+        ClubMembership? CreateMembership(long clubId, long userId);
     }
 }
