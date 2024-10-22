@@ -5,6 +5,7 @@ using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
 using FluentResults;
+using System.Net;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
@@ -34,5 +35,27 @@ public class KeyPointService : BaseService<KeyPointDto, KeyPoint>, IKeyPointServ
         catch (ArgumentException e) {
             return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
         }
+    }
+
+    public Result<PagedResult<KeyPointDto>> GetPaged(int tourId, int page, int pageSize) {
+        try {
+            _tourRepository.Get(tourId);
+        }
+        catch (KeyNotFoundException e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
+
+        var result = _keyPointRepository.GetPaged(page, pageSize);
+
+        List<KeyPoint> keyPoints = new List<KeyPoint>();
+            
+        foreach (var keyPoint in result.Results) { 
+            if (keyPoint.TourId == tourId) 
+                keyPoints.Add(keyPoint);
+        }
+
+        PagedResult<KeyPoint> filteredResult = new PagedResult<KeyPoint>(keyPoints, keyPoints.Count);
+
+        return MapToDto(filteredResult);
     }
 }

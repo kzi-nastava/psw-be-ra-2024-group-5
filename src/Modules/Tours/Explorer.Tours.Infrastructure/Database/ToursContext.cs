@@ -23,6 +23,7 @@ public class ToursContext : DbContext
     {
         modelBuilder.HasDefaultSchema("tours");
 
+        modelBuilder.Entity<Tour>().HasIndex(t => t.Id).IsUnique();
         modelBuilder.Entity<Tour>().HasKey(t => t.Id);
         modelBuilder.Entity<Equipment>().HasKey(e => e.Id);
         modelBuilder.Entity<KeyPoint>().HasKey(k => k.Id);
