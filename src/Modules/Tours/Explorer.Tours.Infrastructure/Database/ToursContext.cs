@@ -7,6 +7,7 @@ namespace Explorer.Tours.Infrastructure.Database;
 
 public class ToursContext : DbContext
 {
+    public DbSet<TourReview> TourReviews { get; set; }
     public DbSet<Tour> Tours { get; set; }
     public DbSet<Equipment> Equipment { get; set; }
     public DbSet<TourEquipment> TourEquipment { get; set; }
@@ -26,10 +27,16 @@ public class ToursContext : DbContext
         modelBuilder.Entity<Equipment>().HasKey(e => e.Id);
         modelBuilder.Entity<KeyPoint>().HasKey(k => k.Id);
         
+                
+        modelBuilder.Entity<KeyPoint>().HasIndex(k => k.Id).IsUnique();
+
+        modelBuilder.Entity<TourReview>().HasKey(t => t.Id);
+
         ConfigureTour(modelBuilder);
         ConfigurePreference(modelBuilder);
         ConfigureTourEquipment(modelBuilder);
         ConfigureTouristEquipment(modelBuilder);
+        ConfigureTourReview(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -98,5 +105,40 @@ public class ToursContext : DbContext
             .WithMany()
             .HasForeignKey(te => te.EquipmentId);
 
+    }
+
+    private static void ConfigureTourReview(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+        .ToTable("Users", "stakeholders")
+        .Metadata.SetIsTableExcludedFromMigrations(true);
+
+        modelBuilder.Entity<TourReview>()
+        .HasOne<User>()
+        .WithMany()
+        .HasForeignKey(tr => tr.TouristId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TourReview>()
+            .HasOne<Tour>()
+            .WithMany()
+            .HasForeignKey(tr => tr.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TourReview>()
+            .Property(tr => tr.Rating)
+            .IsRequired();
+
+        modelBuilder.Entity<TourReview>()
+            .Property(tr => tr.Comment)
+            .IsRequired();
+
+        modelBuilder.Entity<TourReview>()
+            .Property(tr => tr.VisitDate)
+            .IsRequired();
+
+        modelBuilder.Entity<TourReview>()
+            .Property(tr => tr.ReviewDate)
+            .IsRequired();
     }
 }

@@ -37,8 +37,8 @@ public static class ToursStartup
         services.AddScoped<IKeyPointService, KeyPointService>();
         services.AddScoped<IFacilityService, FacilityService>();
         services.AddScoped<IPreferenceService, PreferenceService>();
-
-	}
+        services.AddScoped<ITourReviewService, TourReviewService>();
+    }
 
 	private static void SetupInfrastructure(IServiceCollection services)
     {
@@ -52,6 +52,8 @@ public static class ToursStartup
 		services.AddScoped<ITouristRepository, TouristRepository>();
 
 
+        services.AddScoped<ITourReviewRepository, TourReviewDatabaseRepository>();
+        services.AddScoped<ICrudRepository<TourReview>>(sp => sp.GetRequiredService<ITourReviewRepository>());
 
 		services.AddDbContext<ToursContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("tours"),
