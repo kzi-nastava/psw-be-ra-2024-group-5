@@ -9,6 +9,9 @@ public class StakeholdersContext : DbContext
     public DbSet<Person> People { get; set; }
     public DbSet<UserProfile> Profiles { get; set; }
     public DbSet<Club> Clubs { get; set; }
+
+    public DbSet<AppRating> AppRating { get; set; }
+
     public DbSet<ClubMembership> Memberships { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}

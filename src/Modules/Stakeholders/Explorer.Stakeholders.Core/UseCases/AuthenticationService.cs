@@ -37,6 +37,11 @@ public class AuthenticationService : IAuthenticationService
         return _tokenGenerator.GenerateAccessToken(user, personId);
     }
 
+    public Result<object> GetUserById(long userId)
+    {
+        return _userRepository.GetUserById(userId);
+    }
+
     public Result<AuthenticationTokensDto> RegisterTourist(AccountRegistrationDto account)
     {
         if(_userRepository.Exists(account.Username)) return Result.Fail(FailureCode.NonUniqueUsername);
