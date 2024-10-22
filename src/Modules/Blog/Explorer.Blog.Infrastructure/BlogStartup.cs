@@ -23,14 +23,12 @@ namespace Explorer.Blog.Infrastructure {
             services.AddScoped(typeof(ICrudRepository<BlogPost>), typeof(CrudDatabaseRepository<BlogPost, BlogContext>));
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped(typeof(ICrudRepository<BlogImage>), typeof(CrudDatabaseRepository<BlogImage, BlogContext>));
-            services.AddScoped<IClubService, ClubService>();
             services.AddScoped<IBlogCommentService, BlogCommentService>();
             services.AddScoped<ICommentRepository, CommentRepository>();
 
         }
 
         private static void SetupInfrastructure(IServiceCollection services) {
-            services.AddScoped(typeof(ICrudRepository<Club>), typeof(CrudDatabaseRepository<Club, BlogContext>));
             services.AddScoped(typeof(ICrudRepository<BlogComment>), typeof(CrudDatabaseRepository<BlogComment, BlogContext>));
 
             services.AddDbContext<BlogContext>(opt =>

@@ -17,7 +17,9 @@ public class TourService : CrudService<TourDto, Tour>, ITourService
     {
         _repository = repository;
     }
-
+    public Result<TourDto> GetById(int id) {
+        return Get(id);
+    }
     public Result<TourDto> CreateTour(TourDto tour) {
         tour.Status = TourStatus.Draft;
         tour.Price = 0.0;

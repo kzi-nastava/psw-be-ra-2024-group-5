@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace Explorer.Blog.Core.Domain
+namespace Explorer.Stakeholders.Core.Domain
 {
     public class Club : Entity
     {
         public string Name { get; private set; }
-        public string? Description { get; private set; }
-        public string? ImageDirectory {  get; private set; }
+        public string Description { get; private set; }
+        public string ImageDirectory {  get; private set; }
         public Club()
         {
             Name = string.Empty;
@@ -20,11 +21,12 @@ namespace Explorer.Blog.Core.Domain
             ImageDirectory = string.Empty;
         }
 
-        public Club(string name, string? description, string? imageDirectory) 
-        { 
+        public Club(string name, string description, string imageDirectory) 
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Invalid Name.");
             Name = name; 
             Description = description; 
-            ImageDirectory = imageDirectory; 
+            ImageDirectory = imageDirectory;
         }
     }
 }

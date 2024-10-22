@@ -1,8 +1,8 @@
 ﻿using Explorer.API.Controllers.Administrator.Administration;
 using Explorer.API.Controllers.Tourist;
-using Explorer.Blog.API.Dtos;
-using Explorer.Blog.API.Public;
-using Explorer.Blog.Infrastructure.Database;
+using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Public;
+using Explorer.Stakeholders.Infrastructure.Database;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Infrastructure.Database;
@@ -15,12 +15,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Blog.Tests.Integration
+namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
     [Collection("Sequential")]
-    public class ClubsCommandTests : BaseBlogIntegrationTest
+    public class ClubsCommandTests : BaseStakeholdersIntegrationTest
     {
-        public ClubsCommandTests(BlogTestFactory factory) : base(factory) { }
+        public ClubsCommandTests(StakeholdersTestFactory factory) : base(factory) { }
 
         [Fact]
         public void Creates()
@@ -28,7 +28,7 @@ namespace Explorer.Blog.Tests.Integration
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             var newEntity = new ClubDto
             {
                 Name = "Klub 1",
@@ -50,25 +50,25 @@ namespace Explorer.Blog.Tests.Integration
             storedEntity.Id.ShouldBe(result.Id);
         }
 
-        //[Fact]
-        //public void Create_fails_invalid_data()
-        //{
-        //    // Arrange
-        //    using var scope = Factory.Services.CreateScope();
-        //    var controller = CreateController(scope);
-        //    var updatedEntity = new ClubDto
-        //    {
-        //        Name = "a",
-        //        ImageDirectory = "none"
-        //    };
+        [Fact]
+        public void Create_fails_invalid_data()
+        {
+            // Arrange
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var updatedEntity = new ClubDto
+            {
+                Name = "a",
+                ImageDirectory = "none"
+            };
 
-        //    // Act
-        //    var result = (ObjectResult)controller.Create(updatedEntity).Result;
+            // Act
+            var result = (ObjectResult)controller.Create(updatedEntity).Result;
 
-        //    // Assert
-        //    result.ShouldNotBeNull();
-        //    result.StatusCode.ShouldBe(400);
-        //}
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(400);
+        }
 
         [Fact]
         public void Updates()
@@ -76,7 +76,7 @@ namespace Explorer.Blog.Tests.Integration
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             var updatedEntity = new ClubDto
             {
                 Id = -1,
@@ -129,7 +129,7 @@ namespace Explorer.Blog.Tests.Integration
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
 
             // Act
             var result = (OkResult)controller.Delete(-2);

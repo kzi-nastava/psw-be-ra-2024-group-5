@@ -94,7 +94,7 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok(updatedBlogDto);
         }
 
-        public Result<List<BlogDTO>> getAll(int page, int pageSize)
+        public Result<PagedResult<BlogDTO>> getAll(int page, int pageSize)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace Explorer.Blog.Core.UseCases
 
                 var pagedResult = new PagedResult<BlogDTO>(blogDtos, pageBlogs.TotalCount);
 
-                return Result.Ok<List<BlogDTO>>(blogDtos);
+                return Result.Ok(pagedResult);
 
             }
             catch (Exception e)

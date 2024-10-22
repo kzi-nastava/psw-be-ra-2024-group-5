@@ -1,4 +1,5 @@
 ﻿using Explorer.Blog.API.Dtos;
+using Explorer.BuildingBlocks.Core.UseCases;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,6 @@ namespace Explorer.Blog.API.Public
         Result<BlogDTO> UpdateBlogStatus(int blogId, BlogStatusDto newStatus, int userId);
         string PreviewBlogDescription(string description);
         Result<BlogDTO> getBlogById(int blogId);
-        Result<List<BlogDTO>> getAll(int page, int pageSize);
+        Result<PagedResult<BlogDTO>> getAll(int page, int pageSize);
     }
 }
