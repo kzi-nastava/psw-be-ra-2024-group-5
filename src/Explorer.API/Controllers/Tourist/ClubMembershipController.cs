@@ -19,7 +19,6 @@ namespace Explorer.API.Controllers.Tourist
         }
 
         [HttpPost]
-        //public ActionResult<ClubMembershipDto> Create([FromBody] ClubMembershipDto clubMembership)
         public ActionResult CreateMembership(int clubId, int userId)
         {
             long ciD = (long)clubId;
@@ -28,16 +27,8 @@ namespace Explorer.API.Controllers.Tourist
             var result = _clubService.CreateMembership(ciD, tId);
             return CreateResponse(result);
         }
-        //public ActionResult CreateClubMembership(int tourId, [FromBody] List<int> equipmentIds)
-        //{
-        //    long id = (long)tourId;
-        //    List<long> ids = equipmentIds.Select(id => (long)id).ToList();
-
-        //    var result = _tourService.UpdateTourEquipment(id, ids);
-        //    return CreateResponse(result);
 
         [HttpDelete]
-        //public ActionResult Delete(int id)
         public ActionResult DeleteMembership(int clubId, int userId)
         {
             long ciD = (long)clubId;
@@ -46,12 +37,5 @@ namespace Explorer.API.Controllers.Tourist
             var result = _clubService.DeleteMembership(ciD, tId);
             return CreateResponse(result);
         }
-        //public ActionResult DeleteClubMembership(int tourId, [FromBody] List<int> equipmentIds)
-        //{
-        //    long id = (long)tourId;
-        //    List<long> ids = equipmentIds.Select(id => (long)id).ToList();
-
-        //    var result = _tourService.UpdateTourEquipment(id, ids);
-        //    return CreateResponse(result);
     }
 }
