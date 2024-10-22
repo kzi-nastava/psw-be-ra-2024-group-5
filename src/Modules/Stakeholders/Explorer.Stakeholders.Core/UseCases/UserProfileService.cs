@@ -56,19 +56,38 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
     public Result<UserProfileDto> Get(long id)
     {
+        UserProfile userProfile = null;
+        Person person = null;
+
         try
         {
-            var userProfile = _userProfileRepository.Get(id);
+            userProfile = _userProfileRepository.Get(id);
+        }
+        catch (KeyNotFoundException)
+        {
+            userProfile = null;
+        }
 
-            var person = GetPersonByUserId(userProfile.UserId);
-
+        if (userProfile != null)
+        {
+            person = GetPersonByUserId(userProfile.UserId);
             return Result.Ok(_mapper.Map<UserProfileDto>((userProfile, person)));
         }
-        catch (KeyNotFoundException ex)
+
+        person = GetPersonByUserId(id);
+        if (person == null)
         {
             return Result.Fail<UserProfileDto>("Profile not found.");
         }
+
+        var emptyProfile = new UserProfile();
+        emptyProfile.setUserId(person.UserId);
+        emptyProfile.setBiography(string.Empty);
+        emptyProfile.setMotto(string.Empty);
+
+        return Result.Ok(_mapper.Map<UserProfileDto>((emptyProfile, person)));
     }
+
 
     private UserProfile GetUserProfileByUserId(long userId)
     {
