@@ -1,3 +1,4 @@
+using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.BuildingBlocks.Infrastructure.Database;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
@@ -29,5 +30,21 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         _dbContext.SaveChanges();
 
         return Result.Ok();
+    }
+
+
+    public Result<PagedResult<Equipment>> GetTourEquipment(long tourId) {
+        var tourEquipment = _dbContext.TourEquipment.ToList();
+        var allEquipment = _dbContext.Equipment.ToList();
+        var equipment = new List<Equipment>();
+
+        foreach (var te in tourEquipment)
+            if (te.TourId == tourId) {
+                var foundEquipment = allEquipment.FirstOrDefault(e => e.Id == te.EquipmentId);
+                if (foundEquipment != null)
+                    equipment.Add(foundEquipment);
+            }
+
+        return new PagedResult<Equipment>(equipment, equipment.Count);
     }
 }

@@ -33,4 +33,11 @@ public class TourEquipmentController : BaseApiController
         var result = _tourService.UpdateTourEquipment(id, ids);
         return CreateResponse(result);
     }
+
+    [HttpGet("{tourId:int}")]
+    public ActionResult<PagedResult<EquipmentDto>> GetTourEquipment(int tourId) {
+        long id = (long)tourId;
+        var result = _tourService.GetTourEquipment(id);
+        return CreateResponse(result);
+    }
 }

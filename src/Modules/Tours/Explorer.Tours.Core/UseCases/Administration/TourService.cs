@@ -12,10 +12,12 @@ namespace Explorer.Tours.Core.UseCases.Administration;
 public class TourService : CrudService<TourDto, Tour>, ITourService 
 {
     private readonly ITourRepository _repository;
-    
+    private readonly IMapper equipmentMapper;
+
     public TourService(ITourRepository repository, IMapper mapper) : base(repository, mapper)
     {
         _repository = repository;
+        equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
     }
 
     public Result<TourDto> CreateTour(TourDto tour) {
@@ -39,6 +41,13 @@ public class TourService : CrudService<TourDto, Tour>, ITourService
     {
         var result = _repository.UpdateTourEquipment(tourId, equipmentId);
         return result;
+    }
+
+    public Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId) {
+        var result = _repository.GetTourEquipment(tourId); 
+        var dtos = equipmentMapper.Map<List<EquipmentDto>>(result.Value.Results);
+
+        return new PagedResult<EquipmentDto>(dtos, dtos.Count);
     }
 }
 
