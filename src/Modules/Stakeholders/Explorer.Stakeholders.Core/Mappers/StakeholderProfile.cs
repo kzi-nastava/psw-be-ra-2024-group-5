@@ -36,5 +36,7 @@ public class StakeholderProfile : Profile
         CreateMap<UserProfileDto, Person>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname));
+
+            CreateMap<ClubDto, Club>().ReverseMap();
     }
 }
