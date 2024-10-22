@@ -31,6 +31,18 @@ namespace Explorer.API.Controllers.Author
             return Ok(result.Value);
         }
 
+        [HttpGet("{id:long}")]
+        public ActionResult<FacilityDto> Get(long id)
+        {
+            var result = this._facilityService.Get(id);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Message);
+            }
+
+            return Ok(result.Value);
+        }
+
 
         [HttpPost]
         public ActionResult<FacilityDto> Create([FromBody] FacilityDto facility) {
@@ -41,6 +53,19 @@ namespace Explorer.API.Controllers.Author
             }
 
             return Ok(result.Value);
-        } 
+        }
+
+        [HttpPut]
+        public ActionResult<FacilityDto> Update([FromBody] FacilityDto facility)
+        {
+            var result = _facilityService.Update(facility);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Message);
+            }
+
+            return Ok(result.Value);
+        }
+
     }
 }

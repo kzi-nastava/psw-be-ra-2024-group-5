@@ -76,6 +76,66 @@ namespace Explorer.Tours.Tests.Integration.Administration
             result.StatusCode.ShouldBe(400);
         }
 
+        [Fact]
+        public void Updates()
+        {
+            // Arrange
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
+            var newEntity = new FacilityDto
+            {
+                Id = -1,
+                Name = "Novi parking",
+                Description = "Description",
+                Type = FacilityType.Parking,
+                Image = "wLrYBfsNR6mHf8+DV5xnUA==",
+                Longitude = 0,
+                Latitude = 0,
+            };
+
+            // Act
+            var result = ((ObjectResult)controller.Update(newEntity).Result)?.Value as FacilityDto;
+
+            // Assert - Response
+            result.ShouldNotBeNull();
+            result.Id.ShouldNotBe(0);
+            result.Name.ShouldBe(newEntity.Name);
+            result.Name.ShouldNotBeNull();
+
+            // Assert - Database
+            var storedEntity = dbContext.Facilities.FirstOrDefault(i => i.Name == newEntity.Name);
+            storedEntity.ShouldNotBeNull();
+            storedEntity.Id.ShouldBe(result.Id);
+            storedEntity.Latitude.ShouldBe(result.Latitude);
+        }
+
+        [Fact]
+        public void Updates_not_found()
+        {
+            // Arrange
+            using var scope = Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
+            var newEntity = new FacilityDto
+            {
+                Id = -535,
+                Name = "Novi parking",
+                Description = "Description",
+                Type = FacilityType.Parking,
+                Image = "wLrYBfsNR6mHf8+DV5xnUA==",
+                Longitude = 0,
+                Latitude = 0,
+            };
+
+            // Act
+            var result = ((ObjectResult)controller.Update(newEntity).Result);
+
+            // Assert - Response
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldNotBe(200);
+        }
+
         private static FacilityController CreateController(IServiceScope scope)
         {
             return new FacilityController(scope.ServiceProvider.GetRequiredService<IFacilityService>())

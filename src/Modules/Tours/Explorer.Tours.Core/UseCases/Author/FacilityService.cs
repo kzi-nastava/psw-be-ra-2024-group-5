@@ -47,5 +47,35 @@ namespace Explorer.Tours.Core.UseCases.Author
 
             return facilityDtos;
         }
+
+        public Result<FacilityDto> Update(FacilityDto facilityDto)
+        {
+            try
+            {
+                var facility = MapToDomain(facilityDto);
+
+                _facilityRepository.Update(facility);
+
+                return MapToDto(facility);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail("Failed to update existing facility: " + ex.Message);
+            }
+        }
+
+        public Result<FacilityDto> Get(long id)
+        {
+            try
+            {
+                var facility = _facilityRepository.Get(id);
+
+                return MapToDto(facility);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail("Failed to get existing facility: " + ex.Message);
+            }
+        }
     }
 }
