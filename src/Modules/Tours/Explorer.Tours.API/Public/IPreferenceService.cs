@@ -22,6 +22,13 @@ namespace Explorer.Tours.API.Public
 
         Result<PagedResult<PreferenceDto>> GetPaged(int pageIndex, int pageSize);
 
+        Task<Result<PagedResult<PreferenceDto>>> GetPagedByUserId(long userId, int pageIndex, int pageSize);
+
+
+        //Task<Result<PagedResult<PreferenceDto>>> GetPagedByUserId(long userId, int pageIndex, int pageSize);
+
+
+
 
     }
 }
