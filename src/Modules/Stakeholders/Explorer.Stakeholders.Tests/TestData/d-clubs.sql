@@ -1,6 +1,6 @@
 INSERT INTO stakeholders."Clubs"(
-	"Id", "Name", "Description", "ImageDirectory")
-	VALUES (-1, 'Klub 1', 'Deskripcija 1', 'none');
+	"Id", "Name", "Description", "ImageDirectory","OwnerId")
+	VALUES (-1, 'Klub 1', 'Deskripcija 1', 'none', -1);
 INSERT INTO stakeholders."Clubs"(
-	"Id", "Name", "Description", "ImageDirectory")
-	VALUES (-2, 'Klub 2', 'Deskripcija 2', 'none');
+	"Id", "Name", "Description", "ImageDirectory","OwnerId")
+	VALUES (-2, 'Klub 2', 'Deskripcija 2', 'none', -11);

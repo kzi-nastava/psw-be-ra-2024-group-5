@@ -33,7 +33,8 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
             {
                 Name = "Klub 1",
                 Description = "Deskripcija 1",
-                ImageDirectory = "none"
+                ImageDirectory = "none",
+                OwnerId = -1
             };
 
             // Act
@@ -43,6 +44,7 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
             result.ShouldNotBeNull();
             result.Id.ShouldNotBe(0);
             result.Name.ShouldBe(newEntity.Name);
+            result.OwnerId.ShouldBe(newEntity.OwnerId);
 
             // Assert - Database
             var storedEntity = dbContext.Clubs.FirstOrDefault(i => i.Name == newEntity.Name);
@@ -82,7 +84,8 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
                 Id = -1,
                 Name = "Klub Update",
                 Description = "Updatovani klub",
-                ImageDirectory = "test"
+                ImageDirectory = "test",
+                OwnerId = -11
             };
 
             // Act
@@ -94,6 +97,7 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
             result.Name.ShouldBe(updatedEntity.Name);
             result.Description.ShouldBe(updatedEntity.Description);
             result.ImageDirectory.ShouldBe(updatedEntity.ImageDirectory);
+            result.OwnerId.ShouldBe(updatedEntity.OwnerId);
 
             // Assert - Database
             var storedEntity = dbContext.Clubs.FirstOrDefault(i => i.Name == "Klub Update");

@@ -29,7 +29,16 @@ namespace Explorer.API.Controllers.Tourist
             [HttpPost]
             public ActionResult<ClubDto> Create([FromBody] ClubDto club)
             {
-                var result = _clubService.Create(club);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "personId");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("user ID not found.");
+                }
+                // Assign the extracted user ID to the ownerId field
+                var userId = long.Parse(userIdClaim.Value);
+                club.OwnerId = userId;
+
+            var result = _clubService.Create(club);
                 return CreateResponse(result);
             }
 
