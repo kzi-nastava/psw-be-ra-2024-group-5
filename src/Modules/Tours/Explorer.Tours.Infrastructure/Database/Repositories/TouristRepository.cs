@@ -8,16 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Explorer.Tours.API.Dtos;
+using Explorer.BuildingBlocks.Core.UseCases;
+using AutoMapper;
 
 namespace Explorer.Tours.Infrastructure.Database.Repositories
 {
 	public class TouristRepository : CrudDatabaseRepository<Equipment, ToursContext>, ITouristRepository
 	{
 		private readonly ToursContext _dbContext;
+		private readonly IMapper _mapper;
 
-		public TouristRepository(ToursContext dbContext) : base(dbContext)
+		public TouristRepository(ToursContext dbContext, IMapper mapper) : base(dbContext)
 		{
 			_dbContext = dbContext;
+			_mapper = mapper;
 		}
 
 		public Result<bool> UpdateEquipmentToTourist(long touristId, List<long> equipmentIds)
@@ -45,6 +50,16 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
 
 			_dbContext.SaveChanges();
 			return Result.Ok(true);
+		}
+
+		public List<Equipment> GetEquipmentsByIds(List<long> equipmentIds)
+		{
+			return _dbContext.Equipment.Where(e => equipmentIds.Contains(e.Id)).ToList();
+		}
+
+		public List<TouristEquipment> GetTouristEquipments(long touristId)
+		{
+			return _dbContext.TouristEquipment.Where(te => te.TouristId.Equals(touristId)).ToList();
 		}
 	}
 }

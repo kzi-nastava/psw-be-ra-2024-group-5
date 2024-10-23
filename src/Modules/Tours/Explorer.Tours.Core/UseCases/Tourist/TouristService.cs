@@ -17,10 +17,27 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 	public class TouristService : CrudService<TouristEquipment, Equipment>, ITouristService
 	{
 		private readonly ITouristRepository _touristRepository;
+		private readonly IMapper _mapper;
 
 		public TouristService(ITouristRepository repository, IMapper mapper) : base(repository, mapper)
 		{
 			_touristRepository = repository;
+			_mapper = mapper;
+		}
+
+		public Result<PagedResult<EquipmentDto>> GetTouristEquipment(long touristId)
+		{
+			var touristEquipments = _touristRepository.GetTouristEquipments(touristId);
+
+			var equipmentIds = touristEquipments.Select(te => te.EquipmentId).ToList();
+
+			var equipments = _touristRepository.GetEquipmentsByIds(equipmentIds);
+
+			var equipmentDtos = _mapper.Map<List<EquipmentDto>>(equipments);
+
+			var pagedResult = new PagedResult<EquipmentDto>(equipmentDtos, equipmentDtos.Count);
+
+			return Result.Ok(pagedResult);
 		}
 
 		public Result<bool> UpdateEquipmentToTourist(long touristId, List<long> equipmentIds)
