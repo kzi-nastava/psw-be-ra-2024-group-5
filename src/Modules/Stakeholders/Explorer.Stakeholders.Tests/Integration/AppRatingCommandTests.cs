@@ -80,7 +80,7 @@ namespace Explorer.Tours.Tests.Integration
             result.StatusCode.ShouldBe(200);
 
             // Assert - Database
-            var storedCourse = dbContext.AppRating.FirstOrDefault(i => i.Id == 2);
+            var storedCourse = dbContext.AppRating.FirstOrDefault(i => i.Id == -2);
             storedCourse.ShouldBeNull();
         }
 
