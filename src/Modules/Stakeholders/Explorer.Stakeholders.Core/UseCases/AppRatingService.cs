@@ -11,7 +11,7 @@ namespace Explorer.Stakeholders.Core.UseCases
 {
     public class AppRatingService : CrudService<AppRatingDto, AppRating>, IAppRatingService
     {
-        public AppRatingService(ICrudRepository<AppRating> repository, IMapper mapper) : base(repository, mapper) { }
+      
 
         private readonly IAppRatingRepository _appRatingRepository;
 
@@ -22,7 +22,7 @@ namespace Explorer.Stakeholders.Core.UseCases
         }
 
 
-        public Result<AppRatingDto> Create(AppRatingDto appRatingDto)
+        public override Result<AppRatingDto> Create(AppRatingDto appRatingDto)
         {
             var existingRating = _appRatingRepository.GetByUser(appRatingDto.UserId);
 

@@ -38,7 +38,7 @@ namespace Explorer.Tours.Tests.Integration
             result.Comment.ShouldBe(newEntity.Comment);
 
             // Assert - Database
-            var storedEntity = dbContext.AppRating.FirstOrDefault(i => i.Grade == newEntity.Grade);
+            var storedEntity = dbContext.AppRating.FirstOrDefault(i => i.Comment == newEntity.Comment && i.UserId == newEntity.UserId);
             storedEntity.ShouldNotBeNull();
             storedEntity.Id.ShouldBe(result.Id);
         }

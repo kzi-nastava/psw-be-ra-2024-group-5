@@ -44,31 +44,9 @@ public class UserDatabaseRepository : IUserRepository
         return _dbContext.Users.Any(user => user.Id == userId);
     }
 
-    public Result<object> GetUserById(long userId)
+    public User? Get(long userId)
     {
-        try
-        {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
-
-            if (user != null)
-            {
-                var credentialsDto = new CredentialsDto
-                {
-                    Username = user.Username,
-                    Password = user.Password,
-                };
-
-                return Result.Ok((object)credentialsDto);
-            }
-            else
-            {
-                return Result.Fail("User not found.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return Result.Fail($"Error: {ex.Message}");
-        }
+        return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
 
 }

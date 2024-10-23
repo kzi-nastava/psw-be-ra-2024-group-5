@@ -9,6 +9,6 @@ public interface IUserRepository
     long GetPersonId(long userId);
     public bool UserExistsById(long userId);
 
-    Result<object> GetUserById(long userId);
+    User? Get(long userId);
 
 }

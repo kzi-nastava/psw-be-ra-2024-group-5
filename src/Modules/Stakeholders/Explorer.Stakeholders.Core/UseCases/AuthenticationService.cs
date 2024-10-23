@@ -39,7 +39,29 @@ public class AuthenticationService : IAuthenticationService
 
     public Result<object> GetUserById(long userId)
     {
-        return _userRepository.GetUserById(userId);
+        try
+        {
+            var user = _userRepository.Get(userId);
+
+            if (user != null)
+            {
+                var credentialsDto = new CredentialsDto
+                {
+                    Username = user.Username,
+                    Password = user.Password,
+                };
+
+                return Result.Ok((object)credentialsDto);
+            }
+            else
+            {
+                return Result.Fail("User not found.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"Error: {ex.Message}");
+        }
     }
 
     public Result<AuthenticationTokensDto> RegisterTourist(AccountRegistrationDto account)

@@ -22,7 +22,7 @@ namespace Explorer.Stakeholders.Tests.Integration
             var controller = CreateController(scope);
 
             // Act
-            var result = ((ObjectResult)controller.GetAll(0, 0).Result)?.Value as PagedResult<AppRatingDto>;
+            var result = ((ObjectResult)controller.GetAll(1, 16).Result)?.Value as PagedResult<AppRatingDto>;
 
             // Assert
             result.ShouldNotBeNull();
