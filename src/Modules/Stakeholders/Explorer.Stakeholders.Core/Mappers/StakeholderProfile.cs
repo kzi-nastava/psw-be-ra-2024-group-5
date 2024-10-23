@@ -18,12 +18,12 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
 
         CreateMap<(UserProfile, Person), UserProfileDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Item1.Id))  
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Item1.UserId))  
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item2.Name))  
-            .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Item2.Surname))  
-            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.Item1.ProfilePictureUrl))  
-            .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.Item1.Biography))  
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Item1.Id))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Item1.UserId))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item2.Name))
+            .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Item2.Surname))
+            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.Item1.ProfilePictureUrl))
+            .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.Item1.Biography))
             .ForMember(dest => dest.Motto, opt => opt.MapFrom(src => src.Item1.Motto));
 
         CreateMap<UserProfileDto, UserProfile>()
@@ -37,6 +37,8 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname));
 
-            CreateMap<ClubDto, Club>().ReverseMap();
+        CreateMap<ClubDto, Club>().ReverseMap();
+
+        CreateMap<AppRatingDto, AppRating>().ReverseMap();
     }
 }
