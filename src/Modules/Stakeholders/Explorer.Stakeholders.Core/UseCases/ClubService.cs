@@ -20,6 +20,28 @@ namespace Explorer.Stakeholders.Core.UseCases
         {
             _clubRepository = clubRepository;
         }
+        //extremely unefficient,can't do MapToDto since BaseService only uses Club 
+        public Result<List<ClubMembershipDto>> GetAllMemberships() 
+        {
+            List<ClubMembership> memberships = _clubRepository.GetAllMemberships();
+
+            List<ClubMembershipDto> membershipsDto = new List<ClubMembershipDto>();
+
+            foreach (var member in memberships) 
+            {
+                ClubMembershipDto memberDto = new ClubMembershipDto
+                {
+                    ClubId = member.ClubId,
+                    UserId = member.UserId
+                };
+                membershipsDto.Add(memberDto);
+            }
+
+            Result<List<ClubMembershipDto>> result = membershipsDto;
+
+            if (result.IsFailed) return Result.Fail(result.Errors);
+            return Result.Ok(result.Value);
+        }
 
         public Result CreateMembership(long clubId, long userId)
         {

@@ -12,5 +12,6 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     {
         bool DeleteMembership(long clubId, long userId);
         ClubMembership? CreateMembership(long clubId, long userId);
+        List<ClubMembership> GetAllMemberships();
     }
 }

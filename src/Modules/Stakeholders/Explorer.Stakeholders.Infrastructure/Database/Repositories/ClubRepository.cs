@@ -18,6 +18,11 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         {
             _dbContext = dbContext;
         }
+        //temp
+        public List<ClubMembership> GetAllMemberships()
+        {
+            return _dbContext.Memberships.ToList();
+        }
 
         public ClubMembership? CreateMembership(long clubId, long userId)
         {
@@ -54,5 +59,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             _dbContext.SaveChanges();
             return true;      
         }
+
+        
     }
 }
