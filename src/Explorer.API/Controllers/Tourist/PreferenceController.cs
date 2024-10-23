@@ -4,6 +4,7 @@ using Explorer.Tours.API.Public;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Explorer.API.Controllers.Tourist
 {
@@ -42,11 +43,24 @@ namespace Explorer.API.Controllers.Tourist
             }
             return NotFound(); 
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageIndex = 0, int pageSize = 10)
         {
-            var result = _preferenceService.GetPaged(pageIndex, pageSize);
+            // Ekstrakcija user ID-a iz JWT tokena
+            var userId = User.FindFirst("id")?.Value;  
+
+            if (userId == null)
+            {
+                return BadRequest("User ID not found.");
+            }
+
+            // Pretvaranje userId u long
+            if (!long.TryParse(userId, out long parsedUserId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
+
+            var result = await _preferenceService.GetPagedByUserId(parsedUserId, pageIndex, pageSize);
 
             if (result.IsFailed)
             {
@@ -55,6 +69,7 @@ namespace Explorer.API.Controllers.Tourist
 
             return Ok(result.Value);
         }
+
 
 
     }
