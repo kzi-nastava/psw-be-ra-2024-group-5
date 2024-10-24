@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Explorer.BuildingBlocks.Infrastructure\Explorer.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Stakeholders\Explorer.Stakeholders.Core\Explorer.Stakeholders.Core.csproj" />
     <ProjectReference Include="..\Explorer.Tours.Core\Explorer.Tours.Core.csproj" />
   </ItemGroup>
 
@@ -15,4 +16,8 @@
     <Folder Include="Database\Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentResults" Version="3.15.2" />
+  </ItemGroup>
 </Project>

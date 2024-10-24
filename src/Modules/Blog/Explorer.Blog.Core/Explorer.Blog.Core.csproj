@@ -7,12 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Stakeholders\Explorer.Stakeholders.Core\Explorer.Stakeholders.Core.csproj" />
     <ProjectReference Include="..\Explorer.Blog.API\Explorer.Blog.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\RepositoryInterfaces\" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentResults" Version="3.15.2" />
     <Folder Include="UseCases\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.37.0" />
   </ItemGroup>
 
 </Project>

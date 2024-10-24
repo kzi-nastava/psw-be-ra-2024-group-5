@@ -4,9 +4,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Explorer.Stakeholders.Infrastructure.Database;
 
 public class StakeholdersContext : DbContext
-{
+{  
     public DbSet<User> Users { get; set; }
     public DbSet<Person> People { get; set; }
+    public DbSet<UserProfile> Profiles { get; set; }
+    public DbSet<Club> Clubs { get; set; }
+
+    public DbSet<AppRating> AppRating { get; set; }
+
+    public DbSet<ClubMembership> Memberships { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
@@ -25,5 +31,24 @@ public class StakeholdersContext : DbContext
             .HasOne<User>()
             .WithOne()
             .HasForeignKey<Person>(s => s.UserId);
+
+        modelBuilder.Entity<UserProfile>()
+            .HasOne<User>()
+            .WithOne()
+            .HasForeignKey<UserProfile>(s => s.UserId);
+
+        modelBuilder.Entity<ClubMembership>()
+        .ToTable("Memberships", "stakeholders")
+        .HasKey(cm => new { cm.UserId, cm.ClubId });
+
+        modelBuilder.Entity<ClubMembership>()
+            .HasOne<Club>()
+            .WithMany()
+            .HasForeignKey(cm => cm.ClubId);
+
+        modelBuilder.Entity<ClubMembership>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(cm => cm.UserId);
     }
 }
