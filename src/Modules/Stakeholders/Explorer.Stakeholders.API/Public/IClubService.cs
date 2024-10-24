@@ -15,6 +15,7 @@ namespace Explorer.Stakeholders.API.Public
         Result<ClubDto> Create(ClubDto club);
         Result<ClubDto> Update(ClubDto club);
         Result Delete(int id);
+        Result<List<ClubMembershipDto>> GetAllMemberships();
         Result DeleteMembership(long clubId, long userId);
         Result CreateMembership(long clubId, long userId);
 

@@ -3,6 +3,7 @@ using Explorer.Stakeholders.API.Public;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Explorer.Stakeholders.Core.Domain;
 
 namespace Explorer.API.Controllers.Tourist
 {
@@ -16,6 +17,13 @@ namespace Explorer.API.Controllers.Tourist
         public ClubMembershipController(IClubService clubService)
         {
             _clubService = clubService;
+        }
+
+        [HttpGet]
+        public ActionResult<List<ClubMembership>> GetAllMemberships()
+        {
+            var result = _clubService.GetAllMemberships();
+            return CreateResponse(result);
         }
 
         [HttpPost]

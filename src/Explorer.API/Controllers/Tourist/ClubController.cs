@@ -29,7 +29,7 @@ namespace Explorer.API.Controllers.Tourist
             [HttpPost]
             public ActionResult<ClubDto> Create([FromBody] ClubDto club)
             {
-                var result = _clubService.Create(club);
+            var result = _clubService.Create(club);
                 return CreateResponse(result);
             }
 

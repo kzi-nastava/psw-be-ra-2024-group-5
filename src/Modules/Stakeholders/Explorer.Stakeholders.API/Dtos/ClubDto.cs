@@ -12,6 +12,7 @@ namespace Explorer.Stakeholders.API.Dtos
         public string Name {  get; set; }
         public string? Description { get; set; }
         public string? ImageDirectory {  get; set; }
+        public long OwnerId { get; set; }
 
     }
 }
