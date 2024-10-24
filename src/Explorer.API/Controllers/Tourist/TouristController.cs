@@ -1,4 +1,5 @@
-﻿using Explorer.Tours.API.Dtos;
+﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -25,5 +26,12 @@ namespace Explorer.API.Controllers.Tourist
 
 			return CreateResponse(result);
 		}
+
+		[HttpGet]
+		public ActionResult<PagedResult<EquipmentDto>> GetTouristEqupment(int touristId) { 
+			var result = _touristService.GetTouristEquipment(touristId);
+			return CreateResponse<PagedResult<EquipmentDto>>(result);
+		}
+
 	}
 }

@@ -12,5 +12,8 @@ namespace Explorer.Tours.Core.Domain.RepositoryInterfaces
 	public interface ITouristRepository : ICrudRepository<Equipment>
 	{
 		Result<bool> UpdateEquipmentToTourist(long touristId, List<long> equipmentIds);
+		public List<Equipment> GetEquipmentsByIds(List<long> equipmentIds);
+
+		public List<TouristEquipment> GetTouristEquipments(long touristId);
 	}
 }
