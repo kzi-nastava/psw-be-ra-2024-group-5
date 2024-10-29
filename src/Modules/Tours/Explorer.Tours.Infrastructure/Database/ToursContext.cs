@@ -157,6 +157,11 @@ public class ToursContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<OrderItem>()
+            .HasOne<Tour>()
+            .WithMany()
+            .HasForeignKey(oi => oi.TourId);
+
+        modelBuilder.Entity<OrderItem>()
             .Property(oi => oi.Price)
             .HasColumnType("jsonb");
 

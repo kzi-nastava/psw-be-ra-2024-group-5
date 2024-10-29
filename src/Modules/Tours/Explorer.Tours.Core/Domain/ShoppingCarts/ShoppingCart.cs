@@ -20,5 +20,14 @@ namespace Explorer.Tours.Core.Domain.ShoppingCarts
             Items = new List<OrderItem>();
             TotalPrice = new Money(0, Currency.Rsd);
         }
+
+        public void AddItemToCart(OrderItem orderItem)
+        {
+            if (Items.Contains(orderItem))
+                throw new Exception("Items list already contains that item");
+
+            TotalPrice = TotalPrice.Add(orderItem.Price);
+            Items.Add(orderItem);
+        }
     }
 }
