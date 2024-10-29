@@ -9,20 +9,20 @@ using Explorer.BuildingBlocks.Core.Domain;
 namespace Explorer.Tours.Core.Domain {
 
     public class Position : ValueObject {
-        public double Lat { get; set; }
-        public double Long { get; set; }
+        public double Latitude { get; init; }
+        public double Longitude { get; init; }
 
         private Position() { }
 
         [JsonConstructor]
         public Position(double lat, double lon) {
-            Lat = lat;
-            Long = lon;
+            Latitude = lat;
+            Longitude = lon;
         }
 
         protected override IEnumerable<object> GetEqualityComponents() {
-            yield return Lat;
-            yield return Long;
+            yield return Latitude;
+            yield return Longitude;
         }
     }
 }
