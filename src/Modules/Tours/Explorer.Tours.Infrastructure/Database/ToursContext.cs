@@ -15,9 +15,10 @@ public class ToursContext : DbContext
     public DbSet<Facility> Facilities { get; set; }
     public DbSet<Preference> Preferences { get; set; }
 	public DbSet<TouristEquipment> TouristEquipment { get; set; }
+    public DbSet<TourExecution> TourExecutions { get; set; }
 
 
-	public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
+    public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +35,7 @@ public class ToursContext : DbContext
         modelBuilder.Entity<TourReview>().HasKey(t => t.Id);
 
         ConfigureTour(modelBuilder);
+        ConfigureTourExecution(modelBuilder);
         ConfigurePreference(modelBuilder);
         ConfigureTourEquipment(modelBuilder);
         ConfigureTouristEquipment(modelBuilder);
@@ -55,6 +57,21 @@ public class ToursContext : DbContext
             .HasOne<Tour>()
             .WithMany() 
             .HasForeignKey(k => k.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigureTourExecution(ModelBuilder modelBuilder) {
+
+        modelBuilder.Entity<TourExecution>()
+            .HasKey(te => te.Id);
+
+        modelBuilder.Entity<TourExecution>()
+            .Property(te => te.LastUserPosition)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<TourExecution>()
+            .HasOne(te => te.Tour)
+            .WithMany()
             .OnDelete(DeleteBehavior.Cascade);
     }
 
@@ -89,6 +106,7 @@ public class ToursContext : DbContext
             .WithMany()
             .HasForeignKey(te => te.EquipmentId);
     }
+    
     private static void ConfigureTouristEquipment(ModelBuilder modelBuilder)
     {
 		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
