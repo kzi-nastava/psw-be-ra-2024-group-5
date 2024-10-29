@@ -73,6 +73,17 @@ public class ToursContext : DbContext
             .HasOne(te => te.Tour)
             .WithMany()
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TourExecution>()
+            .HasMany(te => te.KeyPointProgresses)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<KeyPointProgress>()
+            .HasOne(kp => kp.KeyPoint)
+            .WithOne()
+            .HasForeignKey<KeyPointProgress>(kp => kp.KeyPointId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     private static void ConfigurePreference(ModelBuilder modelBuilder)

@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 
 namespace Explorer.Tours.Core.Domain.RepositoryInterfaces {
     public interface ITourExecutionRepository : ICrudRepository<TourExecution> {
+        public new TourExecution Update(TourExecution entity);
     }
 }
