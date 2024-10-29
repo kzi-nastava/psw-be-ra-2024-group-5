@@ -24,5 +24,15 @@ namespace Explorer.Tours.Core.Domain {
             Status = TourExecutionStatus.Active;
             Tour = tour;
         }
+
+        public void Complete() {
+            Status = TourExecutionStatus.Completed;
+            SessionEnd = DateTime.Now;
+        }
+
+        public void Abandon() {
+            Status = TourExecutionStatus.Abandoned;
+            SessionEnd = DateTime.Now;
+        }
     }
 }
