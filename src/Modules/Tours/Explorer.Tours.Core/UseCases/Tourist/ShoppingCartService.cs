@@ -1,4 +1,5 @@
-﻿using Explorer.Tours.API.Dtos;
+﻿using Explorer.Stakeholders.API.Internal;
+using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
@@ -15,16 +16,29 @@ namespace Explorer.Tours.Core.UseCases.Tourist
     public class ShoppingCartService: IShoppingCartService
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository) {
+        private readonly ITourRepository _tourRepository;
+        private readonly IUserService _userService;
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, ITourRepository tourRepository)
+        {
             _shoppingCartRepository = shoppingCartRepository;
+            _userService = userService;
+            _tourRepository = tourRepository;
         }
 
         public Result<ShoppingCartDto> Create(long touristId)
         {
             try
             {
+                if (!_userService.CheckTouristExists(touristId))
+                    return Result.Fail("Tourist doesnt exist!");
+
+                var existingCart = _shoppingCartRepository.GetByUserId(touristId);
+
+                if (existingCart != null)
+                    return Result.Fail("Shopping cart already exists for that tourist!");
+
                 var shoppingCart = new ShoppingCart(touristId);
-                
+
                 shoppingCart = _shoppingCartRepository.Create(shoppingCart);
 
                 return MapShoppingCartToDto(shoppingCart);
@@ -40,6 +54,14 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             try
             {
                 var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
+
+                if (shoppingCart == null)
+                   return Result.Fail("Shopping cart doesnt exist!");
+
+                var tour = _tourRepository.Get(orderItemDto.TourId);
+
+                if (tour == null)
+                    return Result.Fail("Tour doesnt exist!");
 
                 var price = new Money(orderItemDto.Price.Amount, orderItemDto.Price.Currency);
                 var orderItem = new OrderItem(orderItemDto.TourId, orderItemDto.TourName, price);
@@ -68,7 +90,6 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 return Result.Fail(ex.Message);
             }
         }
-
 
         private ShoppingCartDto MapShoppingCartToDto(ShoppingCart shoppingCart)
         {

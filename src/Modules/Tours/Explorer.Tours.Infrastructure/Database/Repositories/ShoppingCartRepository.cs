@@ -25,7 +25,6 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
                 .Include(sc => sc.Items!)
                 .FirstOrDefault();
 
-            if(shoppingCart == null) throw new KeyNotFoundException("Not found: " + id);
             return shoppingCart;
         }
 
@@ -35,7 +34,6 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
                 .Include(sc => sc.Items!)
                 .FirstOrDefault();
 
-            if (shoppingCart == null) throw new KeyNotFoundException("Not found: " + touristId);
             return shoppingCart;
         }
     }
