@@ -1,6 +1,7 @@
 ﻿using Explorer.Tours.Core.Domain;
 using Explorer.Stakeholders.Core.Domain;
 using Microsoft.EntityFrameworkCore;
+using Explorer.Tours.Core.Domain.ShoppingCarts;
 
 
 namespace Explorer.Tours.Infrastructure.Database;
@@ -14,9 +15,10 @@ public class ToursContext : DbContext
     public DbSet<KeyPoint> KeyPoint { get; set; }
     public DbSet<Facility> Facilities { get; set; }
     public DbSet<Preference> Preferences { get; set; }
-	public DbSet<TouristEquipment> TouristEquipment { get; set; }
     public DbSet<TourExecution> TourExecutions { get; set; }
-
+	public DbSet<TouristEquipment> TouristEquipment { get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
@@ -40,6 +42,7 @@ public class ToursContext : DbContext
         ConfigureTourEquipment(modelBuilder);
         ConfigureTouristEquipment(modelBuilder);
         ConfigureTourReview(modelBuilder);
+        ConfigureShoppingCarts(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -170,5 +173,29 @@ public class ToursContext : DbContext
         modelBuilder.Entity<TourReview>()
             .Property(tr => tr.ReviewDate)
             .IsRequired();
+    }
+
+    private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ShoppingCart>()
+            .HasKey(sc => sc.Id);
+
+        modelBuilder.Entity<ShoppingCart>()
+            .HasMany(sc => sc.Items)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne<Tour>()
+            .WithMany()
+            .HasForeignKey(oi => oi.TourId);
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(oi => oi.Price)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<ShoppingCart>()
+            .Property(sc => sc.TotalPrice)
+            .HasColumnType("jsonb");
     }
 }
