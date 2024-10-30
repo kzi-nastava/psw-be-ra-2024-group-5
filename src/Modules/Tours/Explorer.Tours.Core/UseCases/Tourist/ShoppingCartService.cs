@@ -55,6 +55,20 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             }
         }
 
+        public Result<ShoppingCartDto> GetByUserId(long touristId)
+        {
+            try
+            {
+                var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
+
+                return MapShoppingCartToDto(shoppingCart);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(ex.Message);
+            }
+        }
+
 
         private ShoppingCartDto MapShoppingCartToDto(ShoppingCart shoppingCart)
         {

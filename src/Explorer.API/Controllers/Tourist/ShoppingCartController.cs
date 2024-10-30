@@ -28,10 +28,24 @@ namespace Explorer.API.Controllers.Tourist
             return Ok(result.Value);
         }
 
+        [Authorize(Policy = "touristPolicy")]
         [HttpPost("addItem/{touristId:long}")]
         public ActionResult<FacilityDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)
         {
             var result = this._shoppingCartService.AddToCart(orderItemDto ,touristId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Message);
+            }
+
+            return Ok(result.Value);
+        }
+
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{touristId:long}")]
+        public ActionResult<FacilityDto> GetByTouristId(long touristId)
+        {
+            var result = this._shoppingCartService.GetByUserId(touristId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors.FirstOrDefault()?.Message);
