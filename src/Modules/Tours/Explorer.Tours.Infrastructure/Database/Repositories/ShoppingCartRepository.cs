@@ -28,5 +28,15 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
             if(shoppingCart == null) throw new KeyNotFoundException("Not found: " + id);
             return shoppingCart;
         }
+
+        public ShoppingCart GetByUserId(long touristId)
+        {
+            var shoppingCart = DbContext.ShoppingCarts.Where(sc => sc.TouristId == touristId)
+                .Include(sc => sc.Items!)
+                .FirstOrDefault();
+
+            if (shoppingCart == null) throw new KeyNotFoundException("Not found: " + touristId);
+            return shoppingCart;
+        }
     }
 }
