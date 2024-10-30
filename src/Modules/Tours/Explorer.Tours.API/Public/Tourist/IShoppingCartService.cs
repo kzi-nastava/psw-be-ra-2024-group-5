@@ -12,6 +12,7 @@ namespace Explorer.Tours.API.Public.Tourist
     {
         Result<ShoppingCartDto> Create(long userId);
         Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId);
+        Result<ShoppingCartDto> RemoveFromCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> GetByUserId(long touristId);
     }
 }

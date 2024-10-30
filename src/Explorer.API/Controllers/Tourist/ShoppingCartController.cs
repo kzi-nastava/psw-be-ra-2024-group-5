@@ -41,7 +41,20 @@ namespace Explorer.API.Controllers.Tourist
             return Ok(result.Value);
         }
 
-        [Authorize(Policy = "touristPolicy")]
+		[Authorize(Policy = "touristPolicy")]
+		[HttpDelete("addItem/{touristId:long}")]
+        public ActionResult<FacilityDto> RemoveItemToCart(OrderItemDto orderItemDto, long touristId)
+        {
+			var result = this._shoppingCartService.RemoveFromCart(orderItemDto, touristId);
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result.Errors.FirstOrDefault()?.Message);
+			}
+
+			return Ok(result.Value);
+		}
+
+		[Authorize(Policy = "touristPolicy")]
         [HttpGet("tourist/{touristId:long}")]
         public ActionResult<FacilityDto> GetByTouristId(long touristId)
         {

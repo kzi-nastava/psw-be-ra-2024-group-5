@@ -29,5 +29,13 @@ namespace Explorer.Tours.Core.Domain.ShoppingCarts
             TotalPrice = TotalPrice.Add(orderItem.Price);
             Items.Add(orderItem);
         }
-    }
+		public void RemoveItemFromCart(OrderItem orderItem)
+		{
+			if (!Items.Contains(orderItem))
+				throw new Exception("Items list does not contain that item");
+
+			TotalPrice = TotalPrice.Subtract(orderItem.Price);
+			Items.Remove(orderItem);
+		}
+	}
 }
