@@ -16,6 +16,24 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         _dbContext = dbContext;
     }
 
+    public Tour? GetById(int id) {
+        return DbContext.Tours.Where(t => t.Id == id)
+            .Include(t => t.KeyPoints)
+            .FirstOrDefault();
+    }
+
+    public List<Tour>? GetByAuthorId(int authorId) {
+        return DbContext.Tours.Where(t => t.AuthorId == authorId)
+            .Include(t => t.KeyPoints)
+            .ToList();
+    }
+
+    public new Tour Update(Tour tour) {
+        DbContext.Entry(tour).State = EntityState.Modified;
+        DbContext.SaveChanges();
+        return tour;
+    }
+
     public Result UpdateTourEquipment(long tourId, List<long> equipmentIds)
     {
         var tourEquipment = _dbContext.TourEquipment;
