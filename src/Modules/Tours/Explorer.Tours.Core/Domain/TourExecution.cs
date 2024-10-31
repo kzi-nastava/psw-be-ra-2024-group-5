@@ -31,38 +31,41 @@ namespace Explorer.Tours.Core.Domain {
 
         private void Complete() {
             Status = TourExecutionStatus.Completed;
-            SessionEnd = DateTime.Now;
+            SessionEnd = DateTime.UtcNow;
         }
 
         public void Abandon() {
             Status = TourExecutionStatus.Abandoned;
-            SessionEnd = DateTime.Now;
+            SessionEnd = DateTime.UtcNow;
         }
 
-        public KeyPoint? Progress(Position newPosition) {
-            ChangePosition(newPosition);
+        public KeyPointProgress? Progress(Position newPosition) {
+            LastActivity = DateTime.UtcNow;
 
-            foreach (var kp in KeyPointProgresses.Where(kp => kp.VisitTime == null)) {
-                if(GeoCalculator.IsClose(LastUserPosition, new Position(kp.KeyPoint.Latitude, kp.KeyPoint.Longitude), 15)){
-                    kp.ConfirmVisit();
+            return CheckKeyPointReached(newPosition);
+        }
 
-                    if(AreAllKeyPointsVisited())
+        List<KeyPoint> keyPoints = new List<KeyPoint> {
+            new KeyPoint(1, "a", "a", 0, 0, new byte[1], 1)
+        };
+        private KeyPointProgress? CheckKeyPointReached(Position newPosition) {
+            foreach (var keyPoint in GetNonCompleted()) {
+                if (GeoCalculator.IsClose(newPosition, new Position(keyPoint.Latitude, keyPoint.Longitude), 15)) {
+                    var newProgress = new KeyPointProgress(keyPoint);
+                    KeyPointProgresses.Add(newProgress);
+
+                    if(GetNonCompleted().Count() == 0)
                         Complete();
 
-                    return kp.KeyPoint;
+                    return newProgress;
                 }
             }
 
             return null;
         }
 
-        private void ChangePosition(Position newPosition) {
-            LastActivity = DateTime.Now;
-            LastUserPosition = newPosition;
-        }
-
-        private bool AreAllKeyPointsVisited() {
-            return !KeyPointProgresses.Any(kp => kp.VisitTime == null);
+        private IEnumerable<KeyPoint> GetNonCompleted() {
+            return keyPoints.Where(kp => !KeyPointProgresses.Any(kpp => kpp.KeyPoint.Id == kp.Id));
         }
     }
 }

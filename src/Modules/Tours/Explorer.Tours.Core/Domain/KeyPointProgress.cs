@@ -13,10 +13,7 @@ namespace Explorer.Tours.Core.Domain {
         public KeyPointProgress() { }
         public KeyPointProgress(KeyPoint keyPoint) { 
             KeyPoint = keyPoint;
-        }
-
-        public void ConfirmVisit() {
-            VisitTime = DateTime.Now;
+            VisitTime = DateTime.UtcNow;
         }
     }
 }
