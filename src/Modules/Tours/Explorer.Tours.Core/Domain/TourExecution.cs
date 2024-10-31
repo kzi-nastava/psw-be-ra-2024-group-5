@@ -16,17 +16,17 @@ namespace Explorer.Tours.Core.Domain {
         public TourExecutionStatus Status { get; private set; }
         public DateTime? SessionEnd { get; private set; } = null;
         public DateTime? LastActivity { get; private set; } = null;
-        public Tour Tour { get; init; }
+        public long TourId { get; init; }
 
         public ICollection<KeyPointProgress> KeyPointProgresses { get; set; } = new List<KeyPointProgress>();
 
         private TourExecution() { }
 
-        public TourExecution(long userId, Position lastUserPosition, Tour tour) {
+        public TourExecution(long userId, Position lastUserPosition, long tourId) {
             UserId = userId;
             LastUserPosition = lastUserPosition;
             Status = TourExecutionStatus.Active;
-            Tour = tour;
+            TourId = tourId;
         }
 
         private void Complete() {
@@ -39,22 +39,19 @@ namespace Explorer.Tours.Core.Domain {
             SessionEnd = DateTime.UtcNow;
         }
 
-        public KeyPointProgress? Progress(Position newPosition) {
+        public KeyPointProgress? Progress(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
             LastActivity = DateTime.UtcNow;
 
-            return CheckKeyPointReached(newPosition);
+            return CheckKeyPointReached(newPosition, keyPoints);
         }
 
-        List<KeyPoint> keyPoints = new List<KeyPoint> {
-            new KeyPoint(1, "a", "a", 0, 0, new byte[1], 1)
-        };
-        private KeyPointProgress? CheckKeyPointReached(Position newPosition) {
-            foreach (var keyPoint in GetNonCompleted()) {
+        private KeyPointProgress? CheckKeyPointReached(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
+            foreach (var keyPoint in GetNonCompleted(keyPoints)) {
                 if (GeoCalculator.IsClose(newPosition, new Position(keyPoint.Latitude, keyPoint.Longitude), 15)) {
                     var newProgress = new KeyPointProgress(keyPoint);
                     KeyPointProgresses.Add(newProgress);
 
-                    if(GetNonCompleted().Count() == 0)
+                    if(GetNonCompleted(keyPoints).Count() == 0)
                         Complete();
 
                     return newProgress;
@@ -64,8 +61,8 @@ namespace Explorer.Tours.Core.Domain {
             return null;
         }
 
-        private IEnumerable<KeyPoint> GetNonCompleted() {
-            return keyPoints.Where(kp => !KeyPointProgresses.Any(kpp => kpp.KeyPoint.Id == kp.Id));
+        private IEnumerable<KeyPoint> GetNonCompleted(IEnumerable<KeyPoint> allKeyPoints) {
+            return allKeyPoints.Where(kp => !KeyPointProgresses.Any(kpp => kpp.KeyPoint.Id == kp.Id));
         }
     }
 }

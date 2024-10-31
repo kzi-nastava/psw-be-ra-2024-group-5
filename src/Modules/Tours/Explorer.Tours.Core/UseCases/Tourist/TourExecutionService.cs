@@ -19,21 +19,23 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
 
         private readonly ITourRepository _tourRepository;
         private readonly ITourExecutionRepository _tourExecutionRepository;
+        private readonly ICrudRepository<KeyPoint> _keyPointRepository;
 
-        public TourExecutionService(ITourRepository tourRepository, ITourExecutionRepository tourExecutionRepository, IMapper mapper) {
+        public TourExecutionService(ITourRepository tourRepository, ITourExecutionRepository tourExecutionRepository, ICrudRepository<KeyPoint> keyPointRepository, IMapper mapper) {
             _tourRepository = tourRepository;
             _tourExecutionRepository = tourExecutionRepository;
+            _keyPointRepository = keyPointRepository;   
             _mapper = mapper;
         }
 
         public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto) {
             try {
-                var tour = _tourRepository.Get(tourExecutionDto.TourId);
+                var tour = _tourRepository.GetPaged(1, int.MaxValue).Results.Find(t => t.Id == tourExecutionDto.TourId);
 
                 var tourExecution = new TourExecution(
                     tourExecutionDto.UserId,
                     new Position(tourExecutionDto.Latitude, tourExecutionDto.Longitude),
-                    tour);
+                    tourExecutionDto.TourId);
 
                 var createdTourExecution = _tourExecutionRepository.Create(tourExecution);
                 tourExecutionDto.Id = createdTourExecution.Id;
@@ -49,7 +51,8 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
             try {
                 var currentSession = _tourExecutionRepository.Get(tourExecution.Id);
 
-                var completedKeyPoint = currentSession.Progress(new Position(tourExecution.Latitude, tourExecution.Longitude));
+                var completedKeyPoint = currentSession.Progress(new Position(tourExecution.Latitude, tourExecution.Longitude), 
+                    _keyPointRepository.GetPaged(1, int.MaxValue).Results.Where(kp => kp.TourId == tourExecution.TourId));
 
                 _tourExecutionRepository.Update(currentSession);
 

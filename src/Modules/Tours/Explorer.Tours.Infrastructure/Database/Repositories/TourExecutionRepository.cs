@@ -18,5 +18,14 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
             DbContext.SaveChanges();
             return entity;
         }
+
+        public new TourExecution Get(long id) {
+            var tourExecution = DbContext.TourExecutions.Where(te => te.Id == id)
+                                                        .Include(te => te.KeyPointProgresses)
+                                                        .FirstOrDefault();
+            if (tourExecution == null)
+                throw new KeyNotFoundException("Not found: " + id);
+            return tourExecution;
+        }
     }
 }
