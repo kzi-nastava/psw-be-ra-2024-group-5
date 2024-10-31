@@ -30,8 +30,6 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
 
         public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto) {
             try {
-                var tour = _tourRepository.GetPaged(1, int.MaxValue).Results.Find(t => t.Id == tourExecutionDto.TourId);
-
                 var tourExecution = new TourExecution(
                     tourExecutionDto.UserId,
                     new Position(tourExecutionDto.Latitude, tourExecutionDto.Longitude),
@@ -50,15 +48,20 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
         public Result<KeyPointProgressDto> Progress(TourExecutionDto tourExecution) {
             try {
                 var currentSession = _tourExecutionRepository.Get(tourExecution.Id);
+                var tour = _tourRepository.GetById((int) currentSession.TourId);
 
                 var completedKeyPoint = currentSession.Progress(new Position(tourExecution.Latitude, tourExecution.Longitude), 
-                    _keyPointRepository.GetPaged(1, int.MaxValue).Results.Where(kp => kp.TourId == tourExecution.TourId));
+                    tour.KeyPoints);
 
                 _tourExecutionRepository.Update(currentSession);
 
                 return _mapper.Map<KeyPointProgressDto>(completedKeyPoint);
-            }catch (Exception e) {
+            }
+            catch (KeyNotFoundException e) {
                 return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+            catch (ArgumentNullException e) {
+                return Result.Fail(FailureCode.Internal).WithError(e.Message);
             }
         }
     }
