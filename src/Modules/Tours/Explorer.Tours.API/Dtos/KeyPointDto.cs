@@ -23,4 +23,14 @@
         Image = image;
         TourId = tourId;
     }
+    public KeyPointDto(double latitude, double longitude, string name, string? description, string? image, long tourId) {
+        Latitude = latitude;
+        Longitude = longitude;
+        Name = name;
+        Description = description;
+        Image = image;
+        TourId = tourId;
+    }
+
+    public KeyPointDto() { }
 }
