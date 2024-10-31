@@ -14,4 +14,5 @@ public interface ITourService {
     Result Delete(int Id);
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);
+    Result PublishTour(int tourId);
 }

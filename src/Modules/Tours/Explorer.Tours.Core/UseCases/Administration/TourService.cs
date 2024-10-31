@@ -135,5 +135,22 @@ public class TourService : BaseService<TourDto, Tour>, ITourService
         }
         return tourDtos;
     }
+
+    public Result PublishTour(int tourId)
+    {
+        var tour = _repository.GetById(tourId);
+        if (tour == null)
+        {
+            return Result.Fail(FailureCode.NotFound).WithError("Tour not found.");
+        }
+
+        if (!tour.Publish())
+        {
+            return Result.Fail("Tour cannot be published. Ensure all requirements are met.");
+        }
+
+        _repository.Update(tour);
+        return Result.Ok();
+    }
 }
 
