@@ -10,14 +10,14 @@ using FluentResults;
 
 namespace Explorer.Stakeholders.Core.UseCases;
 
-public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerService
+public class FollowingService : BaseService<FollowingDto, Following>, IFollowingService
 {
     private readonly IMapper _mapper;
-    private readonly ICrudRepository<Follower> _followerRepository;
+    private readonly ICrudRepository<Following> _followerRepository;
     private readonly ICrudRepository<User> _userRepository;
     private readonly ICrudRepository<Person> _personRepository;
 
-    public FollowerService(ICrudRepository<Follower> followerRepository, ICrudRepository<User> userRepository,
+    public FollowingService(ICrudRepository<Following> followerRepository, ICrudRepository<User> userRepository,
         ICrudRepository<Person> personRepository, IMapper mapper) : base(mapper)
     {
         _followerRepository = followerRepository;
@@ -25,7 +25,7 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
         _personRepository = personRepository;
         _mapper = mapper;
     }
-    public Result<FollowerDto> AddFollower(long userId, long followedUserId)
+    public Result<FollowingDto> AddFollower(long userId, long followedUserId)
     {
         var user = _userRepository.Get(userId);
         var followedUser = _userRepository.Get(followedUserId);
@@ -40,11 +40,11 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
             return Result.Fail("User is already following.");
         }
 
-        var follower = new Follower(userId, followedUserId);
+        var follower = new Following(userId, followedUserId);
         _followerRepository.Create(follower);
-        return _mapper.Map<FollowerDto>((follower));
+        return _mapper.Map<FollowingDto>((follower));
     }
-    public Result<FollowerDto> RemoveFollower(long userId, long followedUserId)
+    public Result<FollowingDto> RemoveFollower(long userId, long followedUserId)
     {
         var existingFollower = GetFollowerByUserAndFollowerId(userId, followedUserId);
 
@@ -54,10 +54,10 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
         }
 
         _followerRepository.Delete(existingFollower.Id);
-        return _mapper.Map<FollowerDto>((existingFollower));
+        return _mapper.Map<FollowingDto>((existingFollower));
     }
 
-    private Follower GetFollowerByUserAndFollowerId(long userId, long followedUserId)
+    private Following GetFollowerByUserAndFollowerId(long userId, long followedUserId)
     {
         return _followerRepository
             .GetPaged(1, int.MaxValue)
@@ -108,7 +108,7 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
         return pagedPersons.Results.FirstOrDefault(person => person.UserId == userId);
     }
 
-    private bool IsAlreadyFollowing(long userId, long followerId)
+    public bool IsAlreadyFollowing(long userId, long followerId)
     {
         return _followerRepository
             .GetPaged(1, int.MaxValue)

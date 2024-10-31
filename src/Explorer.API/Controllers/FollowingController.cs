@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Explorer.API.Controllers;
 
 [Route("api/administration/followers")]
-public class FollowerController: BaseApiController
+public class FollowingController: BaseApiController
 {
-    private readonly IFollowerService _followerService;
+    private readonly IFollowingService _followerService;
 
-    public FollowerController(IFollowerService followerService)
+    public FollowingController(IFollowingService followerService)
     {
         _followerService = followerService;
     }
@@ -59,6 +59,20 @@ public class FollowerController: BaseApiController
 
         var result = _followerService.GetPagedFollowersByUserId(userId, page, pageSize);
         return CreateResponse(result);
+    }
+
+    [HttpGet("isFollowing/{userId}/{followedUserId}")]
+    [Authorize]
+    public ActionResult<bool> IsFollowing(long userId, long followedUserId)
+    {
+        var currentUserId = GetCurrentUserId();
+        if (userId != currentUserId)
+        {
+            return Forbid();
+        }
+
+        var result = _followerService.IsAlreadyFollowing(userId, followedUserId);
+        return Ok(result);
     }
 
     private long GetCurrentUserId()

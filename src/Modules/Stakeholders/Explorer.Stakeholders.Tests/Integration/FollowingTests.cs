@@ -16,9 +16,9 @@ using Shouldly;
 namespace Explorer.Stakeholders.Tests.Integration;
 
 [Collection("Sequential")]
-public class FollowerTests: BaseStakeholdersIntegrationTest
+public class FollowingTests: BaseStakeholdersIntegrationTest
 {
-    public FollowerTests(StakeholdersTestFactory factory): base(factory) { }
+    public FollowingTests(StakeholdersTestFactory factory): base(factory) { }
 
     [Fact]
     public void successfully_adds_follower()
@@ -116,8 +116,8 @@ public class FollowerTests: BaseStakeholdersIntegrationTest
         response.Results.Count.ShouldBe(1);
     }
 
-    private static FollowerController CreateController(IServiceScope scope)
+    private static FollowingController CreateController(IServiceScope scope)
     {
-        return new FollowerController(scope.ServiceProvider.GetRequiredService<IFollowerService>());
+        return new FollowingController(scope.ServiceProvider.GetRequiredService<IFollowingService>());
     }
 }

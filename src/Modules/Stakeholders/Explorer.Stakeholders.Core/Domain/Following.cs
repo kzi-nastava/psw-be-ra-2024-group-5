@@ -2,12 +2,12 @@
 
 namespace Explorer.Stakeholders.Core.Domain;
 
-public class Follower : Entity
+public class Following : Entity
 {
     public long UserId { get; private set; }
     public long FollowedUserId { get; private set; }
 
-    public Follower(long userId, long followedUserId)
+    public Following(long userId, long followedUserId)
     {
         UserId = userId;
         FollowedUserId = followedUserId;
