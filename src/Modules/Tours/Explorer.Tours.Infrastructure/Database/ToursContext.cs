@@ -44,21 +44,21 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
-        modelBuilder.Entity<User>()
-            .ToTable("Users", "stakeholders")
-            .Metadata.SetIsTableExcludedFromMigrations(true);
+        modelBuilder.Entity<Tour>()
+            .HasMany(t => t.KeyPoints)
+            .WithOne()
+            .HasForeignKey(kp => kp.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Tour>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(t => t.AuthorId)
+            .HasMany(t => t.Reviews)
+            .WithOne()
+            .HasForeignKey(r => r.TourId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<KeyPoint>()
-            .HasOne<Tour>()
-            .WithMany() 
-            .HasForeignKey(k => k.TourId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Tour>()
+            .Property(t => t.Price)
+            .HasColumnType("jsonb");
     }
 
     private static void ConfigurePreference(ModelBuilder modelBuilder)

@@ -33,9 +33,9 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [HttpPut("{id:int}")]
-        public ActionResult<TourDto> Update([FromBody] TourDto tour) {
-            var result = _tourService.Update(tour);
+        [HttpPut("{id:long}")]
+        public ActionResult<TourDto> Update([FromBody] TourDto tour, long id) {
+            var result = _tourService.Update(tour, id);
             return CreateResponse(result);
         }
 

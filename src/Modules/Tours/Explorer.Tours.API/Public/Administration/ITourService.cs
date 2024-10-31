@@ -10,7 +10,7 @@ public interface ITourService {
     Result<List<TourDto>> GetByAuthorId(int id);
     Result<TourDto> GetById(int id);
     Result<TourDto> Create(TourDto tour);
-    Result<TourDto> Update(TourDto tour);
+    Result<TourDto> Update(TourDto tour, long id);
     Result Delete(int Id);
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);

@@ -24,7 +24,7 @@ public class Tour : Entity {
 
     public Tour() { }
 
-    public Tour(string? name, string? description,  TourLevel? level, string? tags, long authorId, double length, TourTransport tourTransport, double duration) {
+    public Tour(string? name, string? description,  TourLevel? level, string? tags, long authorId, double? length, TourTransport? tourTransport, double? duration) {
         //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
         //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
         //if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
@@ -39,6 +39,28 @@ public class Tour : Entity {
         AuthorId = authorId;
         KeyPoints = new List<KeyPoint>();
         Reviews = new List<TourReview>();
+        Length = length;
+        Transport = tourTransport;
+        Duration = duration;
+        PublishedTime = DateTime.UtcNow;
+        ArchivedTime = DateTime.MinValue; // ili null da bude
+
+    }
+    public Tour(string? name, string? description, TourLevel? level, string? tags, long authorId, List<KeyPoint> keyPoints, List<TourReview> reviews, double? length, TourTransport? tourTransport, double? duration) {
+        //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
+        //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
+        //if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
+        //if(level == null) throw new ArgumentNullException("Invalid level");
+        //if(long.IsNegative(authorId)) throw new ArgumentNullException("Invalid author id");
+        Name = name;
+        Description = description;
+        Tags = tags;
+        Level = level;
+        Status = TourStatus.Draft;
+        Price = new Money(0.0, Currency.Rsd);
+        AuthorId = authorId;
+        KeyPoints = keyPoints;
+        Reviews = reviews;
         Length = length;
         Transport = tourTransport;
         Duration = duration;
