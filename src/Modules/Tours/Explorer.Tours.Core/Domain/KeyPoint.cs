@@ -9,8 +9,9 @@ public class KeyPoint : Entity {
     public string? Description { get; init; }
     public byte[] Image { get; init; }
     public long TourId { get; init; }
+    public string? Secret { get; init; }
 
-    public KeyPoint(string name, string? description, double latitude, double longitude, byte[] image, long tourId) {
+    public KeyPoint(string name, string? description, double latitude, double longitude, byte[] image, long tourId, string secret=null) {
         if (string.IsNullOrWhiteSpace(name)) 
             throw new ArgumentException("Invalid Name.");
         Latitude = latitude;
@@ -19,9 +20,10 @@ public class KeyPoint : Entity {
         Description = description;
         Image = image;
         TourId = tourId;
+        Secret = secret;
     }
 
-    public KeyPoint(long id, string name, string? description, double latitude, double longitude, byte[] image, long tourId) {
+    public KeyPoint(long id, string name, string? description, double latitude, double longitude, byte[] image, long tourId, string secret=null) {
         Id = id;
         Latitude = latitude;
         Longitude = longitude;
@@ -29,6 +31,7 @@ public class KeyPoint : Entity {
         Description = description;
         Image = image;
         TourId = tourId;
+        Secret = secret;
     }
 
 }
