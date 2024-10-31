@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Explorer.Tours.API.Public.Tourist {
     public interface ITourExecutionService {
-        public Result<bool> StartTourExecution(long tourId, TourExecutionDto tourExecutionDto);
+        public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto);
+        public Result<KeyPointProgressDto> Progress(TourExecutionDto tourExecution);
     }
 }

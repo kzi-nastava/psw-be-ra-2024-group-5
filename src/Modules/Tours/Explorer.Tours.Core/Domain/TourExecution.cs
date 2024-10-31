@@ -16,53 +16,53 @@ namespace Explorer.Tours.Core.Domain {
         public TourExecutionStatus Status { get; private set; }
         public DateTime? SessionEnd { get; private set; } = null;
         public DateTime? LastActivity { get; private set; } = null;
-        public Tour Tour { get; init; }
+        public long TourId { get; init; }
 
         public ICollection<KeyPointProgress> KeyPointProgresses { get; set; } = new List<KeyPointProgress>();
 
         private TourExecution() { }
 
-        public TourExecution(long userId, Position lastUserPosition, Tour tour) {
+        public TourExecution(long userId, Position lastUserPosition, long tourId) {
             UserId = userId;
             LastUserPosition = lastUserPosition;
             Status = TourExecutionStatus.Active;
-            Tour = tour;
+            TourId = tourId;
         }
 
         private void Complete() {
             Status = TourExecutionStatus.Completed;
-            SessionEnd = DateTime.Now;
+            SessionEnd = DateTime.UtcNow;
         }
 
         public void Abandon() {
             Status = TourExecutionStatus.Abandoned;
-            SessionEnd = DateTime.Now;
+            SessionEnd = DateTime.UtcNow;
         }
 
-        public KeyPoint? Progress(Position newPosition) {
-            ChangePosition(newPosition);
+        public KeyPointProgress? Progress(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
+            LastActivity = DateTime.UtcNow;
 
-            foreach (var kp in KeyPointProgresses.Where(kp => kp.VisitTime == null)) {
-                if(GeoCalculator.IsClose(LastUserPosition, new Position(kp.KeyPoint.Latitude, kp.KeyPoint.Longitude), 15)){
-                    kp.ConfirmVisit();
+            return CheckKeyPointReached(newPosition, keyPoints);
+        }
 
-                    if(AreAllKeyPointsVisited())
+        private KeyPointProgress? CheckKeyPointReached(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
+            foreach (var keyPoint in GetNonCompleted(keyPoints)) {
+                if (GeoCalculator.IsClose(newPosition, new Position(keyPoint.Latitude, keyPoint.Longitude), 15)) {
+                    var newProgress = new KeyPointProgress(keyPoint);
+                    KeyPointProgresses.Add(newProgress);
+
+                    if(GetNonCompleted(keyPoints).Count() == 0)
                         Complete();
 
-                    return kp.KeyPoint;
+                    return newProgress;
                 }
             }
 
             return null;
         }
 
-        private void ChangePosition(Position newPosition) {
-            LastActivity = DateTime.Now;
-            LastUserPosition = newPosition;
-        }
-
-        private bool AreAllKeyPointsVisited() {
-            return !KeyPointProgresses.Any(kp => kp.VisitTime == null);
+        private IEnumerable<KeyPoint> GetNonCompleted(IEnumerable<KeyPoint> allKeyPoints) {
+            return allKeyPoints.Where(kp => !KeyPointProgresses.Any(kpp => kpp.KeyPoint.Id == kp.Id));
         }
     }
 }

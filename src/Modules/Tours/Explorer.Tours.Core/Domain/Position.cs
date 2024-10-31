@@ -15,9 +15,9 @@ namespace Explorer.Tours.Core.Domain {
         private Position() { }
 
         [JsonConstructor]
-        public Position(double lat, double lon) {
-            Latitude = lat;
-            Longitude = lon;
+        public Position(double latitude, double longitude) {
+            Latitude = latitude;
+            Longitude = longitude;
         }
 
         protected override IEnumerable<object> GetEqualityComponents() {

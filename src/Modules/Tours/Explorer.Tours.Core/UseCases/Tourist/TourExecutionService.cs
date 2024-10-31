@@ -15,30 +15,54 @@ using System.Threading.Tasks;
 namespace Explorer.Tours.Core.UseCases.Tourist {
     public class TourExecutionService : ITourExecutionService {
 
+        private readonly IMapper _mapper;
+
         private readonly ITourRepository _tourRepository;
         private readonly ITourExecutionRepository _tourExecutionRepository;
+        private readonly ICrudRepository<KeyPoint> _keyPointRepository;
 
-        public TourExecutionService(ITourRepository tourRepository, ITourExecutionRepository tourExecutionRepository) {
+        public TourExecutionService(ITourRepository tourRepository, ITourExecutionRepository tourExecutionRepository, ICrudRepository<KeyPoint> keyPointRepository, IMapper mapper) {
             _tourRepository = tourRepository;
             _tourExecutionRepository = tourExecutionRepository;
+            _keyPointRepository = keyPointRepository;   
+            _mapper = mapper;
         }
 
-        public Result<bool> StartTourExecution(long tourId, TourExecutionDto tourExecutionDto) {
+        public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto) {
             try {
-                var tour = _tourRepository.Get(tourId);
-
                 var tourExecution = new TourExecution(
                     tourExecutionDto.UserId,
                     new Position(tourExecutionDto.Latitude, tourExecutionDto.Longitude),
-                    tour);
+                    tourExecutionDto.TourId);
 
-                _tourExecutionRepository.Create(tourExecution);
+                var createdTourExecution = _tourExecutionRepository.Create(tourExecution);
+                tourExecutionDto.Id = createdTourExecution.Id;
+
+                return Result.Ok(tourExecutionDto);
             }
             catch (Exception e) {
-                return Result.Fail<bool>(e.Message);
-            }
+                return Result.Fail<TourExecutionDto>(e.Message);
+            }            
+        }
 
-            return Result.Ok(true);
+        public Result<KeyPointProgressDto> Progress(TourExecutionDto tourExecution) {
+            try {
+                var currentSession = _tourExecutionRepository.Get(tourExecution.Id);
+                var tour = _tourRepository.GetById((int) currentSession.TourId);
+
+                var completedKeyPoint = currentSession.Progress(new Position(tourExecution.Latitude, tourExecution.Longitude), 
+                    tour.KeyPoints);
+
+                _tourExecutionRepository.Update(currentSession);
+
+                return _mapper.Map<KeyPointProgressDto>(completedKeyPoint);
+            }
+            catch (KeyNotFoundException e) {
+                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+            catch (ArgumentNullException e) {
+                return Result.Fail(FailureCode.Internal).WithError(e.Message);
+            }
         }
     }
 }
