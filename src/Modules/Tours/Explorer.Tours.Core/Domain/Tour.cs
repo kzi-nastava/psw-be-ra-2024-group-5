@@ -20,32 +20,26 @@ public class Tour : Entity {
     public DateTime? ArchivedTime { get; private set; }
 
 
-
-
     public Tour() { }
 
-    public Tour(string? name, string? description,  TourLevel? level, string? tags, long authorId, double? length, TourTransport? tourTransport, double? duration) {
-        //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
-        //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
-        //if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
-        //if(level == null) throw new ArgumentNullException("Invalid level");
-        //if(long.IsNegative(authorId)) throw new ArgumentNullException("Invalid author id");
+    public Tour(long id, string? name, string? description, string? tags, TourLevel? level, TourStatus status, Money price, long authorId, List<KeyPoint>? keyPoints, List<TourReview>? reviews, double? length, TourTransport? transport, double? duration, DateTime? publishedTime, DateTime? archivedTime) {
+        Id = id;
         Name = name;
         Description = description;
         Tags = tags;
         Level = level;
-        Status = TourStatus.Draft;
-        Price = new Money(0.0, Currency.Rsd);
+        Status = status;
+        Price = price;
         AuthorId = authorId;
-        KeyPoints = new List<KeyPoint>();
-        Reviews = new List<TourReview>();
+        KeyPoints = keyPoints;
+        Reviews = reviews;
         Length = length;
-        Transport = tourTransport;
+        Transport = transport;
         Duration = duration;
-        PublishedTime = DateTime.UtcNow;
-        ArchivedTime = DateTime.MinValue; // ili null da bude
-
+        PublishedTime = publishedTime;
+        ArchivedTime = archivedTime;
     }
+
     public Tour(string? name, string? description, TourLevel? level, string? tags, long authorId, List<KeyPoint> keyPoints, List<TourReview> reviews, double? length, TourTransport? tourTransport, double? duration) {
         //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
         //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
