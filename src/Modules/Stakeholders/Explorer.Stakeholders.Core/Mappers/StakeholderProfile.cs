@@ -50,11 +50,11 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.Biography, opt => opt.Ignore())
             .ForMember(dest => dest.Motto, opt => opt.Ignore());
 
-        CreateMap<FollowerDto, Follower>()
+        CreateMap<FollowingDto, Following>()
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
 
-        CreateMap<Follower, FollowerDto>()
+        CreateMap<Following, FollowingDto>()
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
     }
