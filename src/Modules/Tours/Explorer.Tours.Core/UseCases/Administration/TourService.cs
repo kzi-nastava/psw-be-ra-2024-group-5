@@ -9,34 +9,49 @@ using FluentResults;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
-public class TourService : CrudService<TourDto, Tour>, ITourService 
+public class TourService : BaseService<TourDto, Tour>, ITourService 
 {
     private readonly ITourRepository _repository;
     private readonly IMapper equipmentMapper;
+    //private readonly IMapper _mapper;
 
-    public TourService(ITourRepository repository, IMapper mapper) : base(repository, mapper)
+    public TourService(ITourRepository repository, IMapper mapper) : base(mapper)
     {
         _repository = repository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
+        //_mapper = mapper;
     }
     public Result<TourDto> GetById(int id) {
-        return Get(id);
-    }
-    public Result<TourDto> CreateTour(TourDto tour) {
-        tour.Status = TourStatus.Draft;
-        tour.Price = 0.0;
-        return Create(tour);
-    }
-
-
-    public Result<PagedResult<TourDto>> GetByAuthorId(long id) {
-        var tours = GetPaged(0, 0);
-        if (tours.IsFailed)
-            return Result.Fail(tours.Errors);
-        var selectedTours = tours.Value.Results.Where(t => t.AuthorId == id).ToList<TourDto>();
-        var result = new PagedResult<TourDto>(selectedTours, selectedTours.Count);
-
+        var tour = _repository.GetById(id);
+        var result =  MapToDto(tour);
         return result;
+    }
+    public Result<List<TourDto>> GetByAuthorId(int id) {
+        var tours = _repository.GetByAuthorId(id);
+        return MapToDto(tours);
+    }
+    public Result<TourDto> Create(TourDto tourDto) {
+        //tour.Status = TourStatus.Draft;
+        //tour.Price = new Money(0.0, Currency.Rsd);
+        var tour = MapToDomain(tourDto);
+        var result = _repository.Create(tour);
+        return MapToDto(result);
+    }
+
+    public Result<TourDto> Update(TourDto tourDto) {
+        var tour = MapToDomain(tourDto);
+        var result = _repository.Update(tour);
+        return MapToDto(result);
+    }
+
+    public Result Delete(int id) {
+        try {
+            _repository.Delete(id);
+            return Result.Ok();
+        }
+        catch (KeyNotFoundException e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
     }
 
     public Result UpdateTourEquipment(long tourId, List<long> equipmentId)
