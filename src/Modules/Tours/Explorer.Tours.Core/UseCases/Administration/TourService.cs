@@ -70,7 +70,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService
         var Price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
 
         var keyPoints = new List<KeyPointDto>();
-        var reviews = new List<TourReviewDto>();
+        //var reviews = new List<TourReviewDto>();
 
         if (tour.KeyPoints != null) {
             foreach (var kp in tour.KeyPoints) {
@@ -80,16 +80,16 @@ public class TourService : BaseService<TourDto, Tour>, ITourService
             }
         }
 
-        if (tour.Reviews != null) {
-            foreach (var re in tour.Reviews) {
-                var img = Base64Converter.ConvertFromByteArray(re.Image);
-                var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId);
-                reviews.Add(r);
-            }
-        }
+        //if (tour.Reviews != null) {
+        //    foreach (var re in tour.Reviews) {
+        //        var img = Base64Converter.ConvertFromByteArray(re.Image);
+        //        var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId);
+        //        reviews.Add(r);
+        //    }
+        //}
 
 
-        var result = new TourDto(tour.Id, tour.Name, tour.Description, tour.Tags, tour.Level, tour.Status, Price, tour.AuthorId, keyPoints, reviews, tour.Length, tour.Transport, tour.Duration, tour.PublishedTime, tour.ArchivedTime);
+        var result = new TourDto(tour.Id, tour.Name, tour.Description, tour.Tags, tour.Level, tour.Status, Price, tour.AuthorId, keyPoints, tour.Length, tour.Transport, tour.Duration, tour.PublishedTime, tour.ArchivedTime);
 
         return result;
     }
@@ -98,7 +98,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService
         var Price = new Money(tDto.Price.Amount, tDto.Price.Currency);
 
         var keyPoints = new List<KeyPoint>();
-        var reviews = new List<TourReview>();
+        //var reviews = new List<TourReview>();
 
         if(tDto.KeyPoints != null) { 
         foreach (var kp in tDto.KeyPoints) {
@@ -107,21 +107,21 @@ public class TourService : BaseService<TourDto, Tour>, ITourService
                 keyPoints.Add(k);
             }
         }
-        if(tDto.Reviews != null) {
-            foreach (var re in tDto.Reviews) {
-                var img = Base64Converter.ConvertToByteArray(re.Image);
-                var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img);
-                reviews.Add(r);
-            }
-        }
+        //if(tDto.Reviews != null) {
+        //    foreach (var re in tDto.Reviews) {
+        //        var img = Base64Converter.ConvertToByteArray(re.Image);
+        //        var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img);
+        //        reviews.Add(r);
+        //    }
+        //}
         var result = new Tour();
 
         if (isUpdate) {
-            result = new Tour(tDto.Id, tDto.Name, tDto.Description, tDto.Tags, tDto.Level, tDto.Status, Price, tDto.AuthorId, keyPoints, reviews, tDto.Length, tDto.Transport, tDto.Duration, tDto.PublishedTime, tDto.ArchivedTime);
+            result = new Tour(tDto.Id, tDto.Name, tDto.Description, tDto.Tags, tDto.Level, tDto.Status, Price, tDto.AuthorId, keyPoints, tDto.Length, tDto.Transport, tDto.Duration, tDto.PublishedTime, tDto.ArchivedTime);
 
         }
         else {
-            result = new Tour(tDto.Name, tDto.Description, tDto.Level, tDto.Tags, tDto.AuthorId, keyPoints, reviews, tDto.Length, tDto.Transport, tDto.Duration);
+            result = new Tour(tDto.Name, tDto.Description, tDto.Level, tDto.Tags, tDto.AuthorId, keyPoints, tDto.Length, tDto.Transport, tDto.Duration);
         }
 
 

@@ -12,7 +12,7 @@ public class Tour : Entity {
     public Money Price { get; private set; }
     public long AuthorId { get; private set; }
     public List<KeyPoint>? KeyPoints { get; private set; }
-    public List<TourReview>? Reviews { get; private set; }
+    //public List<TourReview>? Reviews { get; private set; }
     public double? Length {  get; private set; }
     public TourTransport? Transport { get; private set; }
     public double? Duration { get; private set; }
@@ -22,7 +22,7 @@ public class Tour : Entity {
 
     public Tour() { }
 
-    public Tour(long id, string? name, string? description, string? tags, TourLevel? level, TourStatus status, Money price, long authorId, List<KeyPoint>? keyPoints, List<TourReview>? reviews, double? length, TourTransport? transport, double? duration, DateTime? publishedTime, DateTime? archivedTime) {
+    public Tour(long id, string? name, string? description, string? tags, TourLevel? level, TourStatus status, Money price, long authorId, List<KeyPoint>? keyPoints, /*List<TourReview>? reviews,*/ double? length, TourTransport? transport, double? duration, DateTime? publishedTime, DateTime? archivedTime) {
         Id = id;
         Name = name;
         Description = description;
@@ -32,7 +32,7 @@ public class Tour : Entity {
         Price = price;
         AuthorId = authorId;
         KeyPoints = keyPoints;
-        Reviews = reviews;
+        //Reviews = reviews;
         Length = length;
         Transport = transport;
         Duration = duration;
@@ -40,7 +40,7 @@ public class Tour : Entity {
         ArchivedTime = archivedTime;
     }
 
-    public Tour(string? name, string? description, TourLevel? level, string? tags, long authorId, List<KeyPoint> keyPoints, List<TourReview> reviews, double? length, TourTransport? tourTransport, double? duration) {
+    public Tour(string? name, string? description, TourLevel? level, string? tags, long authorId, List<KeyPoint> keyPoints, /*List<TourReview> reviews,*/ double? length, TourTransport? tourTransport, double? duration) {
         //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
         //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
         //if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
@@ -54,7 +54,7 @@ public class Tour : Entity {
         Price = new Money(0.0, Currency.Rsd);
         AuthorId = authorId;
         KeyPoints = keyPoints;
-        Reviews = reviews;
+        //Reviews = reviews;
         Length = length;
         Transport = tourTransport;
         Duration = duration;

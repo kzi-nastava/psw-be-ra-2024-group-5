@@ -27,9 +27,10 @@ public class TourCommandTests : BaseToursIntegrationTest {
     //        Description = "Deskripcija nove ture",
     //        Tags = "Tag prvi, tagDrugi, TagTreci",
     //        Level = TourLevel.Intermediate,
-    //        Status = TourStatus.Finished,
-    //        Price = 420.69,
-    //        AuthorId = -12
+    //        Status = TourStatus.Archived,
+    //        Price = new MoneyDto(420.69, Currency.Rsd),
+    //        AuthorId = -12,
+
     //    };
 
     //    // Act

@@ -44,16 +44,10 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
-        modelBuilder.Entity<Tour>()
-            .HasMany(t => t.KeyPoints)
-            .WithOne()
-            .HasForeignKey(kp => kp.TourId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Tour>()
-            .HasMany(t => t.Reviews)
+            .HasMany(sc => sc.KeyPoints)
             .WithOne()
-            .HasForeignKey(r => r.TourId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Tour>()
