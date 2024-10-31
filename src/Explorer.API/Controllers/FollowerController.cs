@@ -35,7 +35,7 @@ public class FollowerController: BaseApiController
 
     [HttpDelete("unfollow/{userId}/{followedUserId}")]
     [Authorize]
-    public ActionResult DeleteFollower(long userId, long followedUserId) 
+    public ActionResult RemoveFollower(long userId, long followedUserId) 
     {
         var currentUserId = GetCurrentUserId();
         if (userId != currentUserId)

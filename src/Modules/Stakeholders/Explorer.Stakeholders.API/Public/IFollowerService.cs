@@ -7,7 +7,7 @@ namespace Explorer.Stakeholders.API.Public;
 
 public interface IFollowerService
 {
-    Result AddFollower(long userId, long followedUserId);
-    Result RemoveFollower(long userId, long followedUserId);
+    Result<FollowerDto> AddFollower(long userId, long followedUserId);
+    Result<FollowerDto> RemoveFollower(long userId, long followedUserId);
     Result<PagedResult<UserProfileDto>> GetPagedFollowersByUserId(long userId, int page, int pageSize);
 }

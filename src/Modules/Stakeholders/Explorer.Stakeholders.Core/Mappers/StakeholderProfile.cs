@@ -49,5 +49,13 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.ProfilePictureUrl, opt => opt.Ignore())
             .ForMember(dest => dest.Biography, opt => opt.Ignore())
             .ForMember(dest => dest.Motto, opt => opt.Ignore());
+
+        CreateMap<FollowerDto, Follower>()
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
+
+        CreateMap<Follower, FollowerDto>()
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
     }
 }

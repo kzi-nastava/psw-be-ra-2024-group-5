@@ -25,7 +25,7 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
         _personRepository = personRepository;
         _mapper = mapper;
     }
-    public Result AddFollower(long userId, long followedUserId)
+    public Result<FollowerDto> AddFollower(long userId, long followedUserId)
     {
         var user = _userRepository.Get(userId);
         var followedUser = _userRepository.Get(followedUserId);
@@ -42,9 +42,9 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
 
         var follower = new Follower(userId, followedUserId);
         _followerRepository.Create(follower);
-        return Result.Ok();
+        return _mapper.Map<FollowerDto>((follower));
     }
-    public Result RemoveFollower(long userId, long followedUserId)
+    public Result<FollowerDto> RemoveFollower(long userId, long followedUserId)
     {
         var existingFollower = GetFollowerByUserAndFollowerId(userId, followedUserId);
 
@@ -54,7 +54,7 @@ public class FollowerService : BaseService<FollowerDto, Follower>, IFollowerServ
         }
 
         _followerRepository.Delete(existingFollower.Id);
-        return Result.Ok();
+        return _mapper.Map<FollowerDto>((existingFollower));
     }
 
     private Follower GetFollowerByUserAndFollowerId(long userId, long followedUserId)
