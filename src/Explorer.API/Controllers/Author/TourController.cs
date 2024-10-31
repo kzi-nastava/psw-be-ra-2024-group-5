@@ -16,7 +16,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpGet("author/{authorId:long}")]
-        public ActionResult<PagedResult<TourDto>> GetByAuthor(long authorId) {
+        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
             var result = _tourService.GetByAuthorId(authorId);
             return CreateResponse(result);
         }
@@ -29,13 +29,13 @@ namespace Explorer.API.Controllers.Author {
 
         [HttpPost]
         public ActionResult<TourDto> Create([FromBody] TourDto tour) {
-            var result = _tourService.CreateTour(tour);
+            var result = _tourService.Create(tour);
             return CreateResponse(result);
         }
 
-        [HttpPut("{id:int}")]
-        public ActionResult<TourDto> Update([FromBody] TourDto tour) {
-            var result = _tourService.Update(tour);
+        [HttpPut("{id:long}")]
+        public ActionResult<TourDto> Update([FromBody] TourDto tour, long id) {
+            var result = _tourService.Update(tour, id);
             return CreateResponse(result);
         }
 

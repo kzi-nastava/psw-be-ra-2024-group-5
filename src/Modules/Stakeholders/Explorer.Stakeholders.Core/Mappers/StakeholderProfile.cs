@@ -40,5 +40,22 @@ public class StakeholderProfile : Profile
             CreateMap<ClubDto, Club>().ReverseMap();
             CreateMap<ClubMembershipDto, ClubMembership>().ReverseMap();
             CreateMap<AppRatingDto, AppRating>().ReverseMap();
+
+        CreateMap<Person, UserProfileDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.Ignore())
+            .ForMember(dest => dest.Biography, opt => opt.Ignore())
+            .ForMember(dest => dest.Motto, opt => opt.Ignore());
+
+        CreateMap<FollowingDto, Following>()
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
+
+        CreateMap<Following, FollowingDto>()
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
     }
 }

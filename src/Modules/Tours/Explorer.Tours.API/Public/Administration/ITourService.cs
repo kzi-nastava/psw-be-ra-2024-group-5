@@ -7,10 +7,10 @@ using FluentResults;
 namespace Explorer.Tours.API.Public.Administration;
 
 public interface ITourService {
-    Result<PagedResult<TourDto>> GetByAuthorId(long id);
+    Result<List<TourDto>> GetByAuthorId(int id);
     Result<TourDto> GetById(int id);
-    Result<TourDto> CreateTour(TourDto tour);
-    Result<TourDto> Update(TourDto tour);
+    Result<TourDto> Create(TourDto tour);
+    Result<TourDto> Update(TourDto tour, long id);
     Result Delete(int Id);
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);

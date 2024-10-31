@@ -19,12 +19,11 @@ public class TourQueryTests : BaseToursIntegrationTest {
         var controller = CreateController(scope);
 
         // Act
-        var result = ((ObjectResult)controller.GetByAuthor(-12).Result)?.Value as PagedResult<TourDto>;
+        var result = ((ObjectResult)controller.GetByAuthor(-12).Result)?.Value as List<TourDto>;
 
         // Assert
         result.ShouldNotBeNull();
-        result.Results.Count.ShouldBe(2);
-        result.TotalCount.ShouldBe(2);
+        result.Count.ShouldBe(2);
     }
 
     private static TourController CreateController(IServiceScope scope) {

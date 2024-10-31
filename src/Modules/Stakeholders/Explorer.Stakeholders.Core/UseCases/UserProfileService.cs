@@ -116,6 +116,6 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
         person.setName(userProfileDto.Name);
         person.setSurname(userProfileDto.Surname);
-        _personRepository.Update(person); //ovdje pada test - exception key not found iako -11 id postoji
+        _personRepository.Update(person);  
     }
 }
