@@ -11,18 +11,21 @@ public class Tour : Entity {
     public TourStatus Status { get; private set; }
     public Money Price { get; private set; }
     public long AuthorId { get; private set; }
-    public List<KeyPoint>? KeyPoints { get; private set; }
-    //public List<TourReview>? Reviews { get; private set; }
+    public List<KeyPoint> KeyPoints { get; private set; }
+    public List<TourReview> Reviews { get; private set; }
     public double? Length {  get; private set; }
-    public TourTransport? Transport { get; private set; }
-    public double? Duration { get; private set; }
-    public DateTime? PublishedTime { get; private set; }
-    public DateTime? ArchivedTime { get; private set; }
+    public List<TransportDuration> TransportDurations { get; private set; }
+    public DateTime PublishedTime { get; private set; }
+    public DateTime ArchivedTime { get; private set; }
 
 
     public Tour() { }
 
-    public Tour(long id, string? name, string? description, string? tags, TourLevel? level, TourStatus status, Money price, long authorId, List<KeyPoint>? keyPoints, /*List<TourReview>? reviews,*/ double? length, TourTransport? transport, double? duration, DateTime? publishedTime, DateTime? archivedTime) {
+    //Constructor with all parametars
+    public Tour(long id, string? name, string? description, string? tags,
+        TourLevel? level, TourStatus status, Money price, long authorId,
+        List<KeyPoint> keyPoints, List<TourReview> reviews ,double? length,
+        List<TransportDuration> transportDurations, DateTime publishedTime, DateTime archivedTime) {
         Id = id;
         Name = name;
         Description = description;
@@ -32,20 +35,16 @@ public class Tour : Entity {
         Price = price;
         AuthorId = authorId;
         KeyPoints = keyPoints;
-        //Reviews = reviews;
+        Reviews = reviews;
         Length = length;
-        Transport = transport;
-        Duration = duration;
+        TransportDurations = transportDurations;
         PublishedTime = publishedTime;
         ArchivedTime = archivedTime;
     }
 
-    public Tour(string? name, string? description, TourLevel? level, string? tags, long authorId, List<KeyPoint> keyPoints, /*List<TourReview> reviews,*/ double? length, TourTransport? tourTransport, double? duration) {
-        //if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("Invalid name.");
-        //if(string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException("Invalid description.");
-        //if(string.IsNullOrWhiteSpace(tags)) throw new ArgumentNullException("Invalid tags.");
-        //if(level == null) throw new ArgumentNullException("Invalid level");
-        //if(long.IsNegative(authorId)) throw new ArgumentNullException("Invalid author id");
+    //Constructor for creation
+    public Tour(string? name, string? description, TourLevel? level, string? tags,
+        long authorId, List<KeyPoint> keyPoints ,double? length, List<TransportDuration> transportDurations) {
         Name = name;
         Description = description;
         Tags = tags;
@@ -54,11 +53,10 @@ public class Tour : Entity {
         Price = new Money(0.0, Currency.Rsd);
         AuthorId = authorId;
         KeyPoints = keyPoints;
-        //Reviews = reviews;
+        Reviews = new List<TourReview>();
         Length = length;
-        Transport = tourTransport;
-        Duration = duration;
-        PublishedTime = DateTime.UtcNow;
+        TransportDurations = transportDurations;
+        PublishedTime = DateTime.MinValue;
         ArchivedTime = DateTime.MinValue; // ili null da bude
 
     }

@@ -28,7 +28,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpPost]
-        public ActionResult<TourDto> Create([FromBody] TourDto tour) {
+        public ActionResult<TourDto> Create([FromBody] TourCreationDto tour) {
             var result = _tourService.Create(tour);
             return CreateResponse(result);
         }
