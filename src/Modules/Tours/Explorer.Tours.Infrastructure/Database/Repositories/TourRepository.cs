@@ -65,4 +65,19 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
 
         return new PagedResult<Equipment>(equipment, equipment.Count);
     }
+
+    public List<Tour> GetPublishedPaged(int page, int pageSize)
+    {
+        if (page < 1 || pageSize < 1)
+        {
+            return new List<Tour>();
+        }
+
+        return DbContext.Tours
+            .Where(t => t.Status == API.Enum.TourStatus.Published)
+            .Include(t => t.KeyPoints)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
 }

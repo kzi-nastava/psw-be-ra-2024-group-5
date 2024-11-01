@@ -19,7 +19,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public ShoppingCartCommandTests(ToursTestFactory factory) : base(factory) { }
 
         // Test takes tourists from explorer v1 not the test database
-        /*
+        
         [Fact]
         public void Creates()
         {
@@ -27,7 +27,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
-            long touristId = 1;
+            long touristId = -22;
 
             // Act
             var result = ((ObjectResult)controller.Create(touristId).Result)?.Value as ShoppingCartDto;
@@ -42,7 +42,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var storedEntity = dbContext.ShoppingCarts.FirstOrDefault(i => i.Id == result.Id);
             storedEntity.ShouldNotBeNull();
         }
-    */
+    
 
         [Fact]
         public void AddItem()
