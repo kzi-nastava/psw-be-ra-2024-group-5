@@ -88,6 +88,35 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         return new PagedResult<EquipmentDto>(dtos, dtos.Count);
     }
 
+    public Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize)
+    {
+        try
+        {
+            var tours = _repository.GetPublishedPaged(page, pageSize);
+
+            var resultDtos = new List<TourCardDto>();
+
+            foreach(var tour in tours)
+            {
+                var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
+                var kp = tour.KeyPoints[0];
+                if (kp == null)
+                    throw new Exception("Keypoints list is empty!");
+                var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+
+                resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
+                
+            }
+
+            return Result.Ok(resultDtos);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Failed to get paged tours " + ex.Message);
+        }
+    }
+
     private TourDto MapTourToDto(Tour tour) {
         var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
         var transportDurationDtos = new List<TransportDurationDto>();
@@ -131,7 +160,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
         foreach (var kp in tDto.KeyPoints ?? Enumerable.Empty<KeyPointDto>()) {
             var img = Base64Converter.ConvertToByteArray(kp.Image);
-            var k = new KeyPoint(kp.Name, kp.Description, kp.Latitude, kp.Longitude, img, kp.TourId);
+            var k = new KeyPoint(kp.Id ,kp.Name, kp.Description, kp.Latitude, kp.Longitude, img, kp.TourId);
             keyPoints.Add(k);
         }
 

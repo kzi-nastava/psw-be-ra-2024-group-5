@@ -30,6 +30,22 @@ namespace Explorer.Tours.Core.Domain
             Image = image;
         }
 
+        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, long tourId, long touristId, byte[]? image = null)
+        {
+            ValidateRating(rating);
+            ValidateComment(comment);
+            ValidateVisitDate(visitDate);
+
+            Id = id;
+            Rating = rating;
+            Comment = comment;
+            VisitDate = visitDate;
+            ReviewDate = reviewDate;
+            TourId = tourId;
+            TouristId = touristId;
+            Image = image;
+        }
+
         private void ValidateRating(int rating)
         {
             if (rating < 1 || rating > 5)

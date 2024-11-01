@@ -64,5 +64,4 @@ public class Tour : Entity {
         KeyPoints.Add(keyPoint);
         return KeyPoints;
     }
-    
 }
