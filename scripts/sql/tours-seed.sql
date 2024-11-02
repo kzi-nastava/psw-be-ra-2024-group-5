@@ -14,21 +14,21 @@ insert into tours."Tours"
 	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
 values
 	(1, 'Draft tura', 'Kul je ova tura', '#najbolje', 0, 0,
-	'{"Ammount":1000,"Currency":"Rsd"}', 2, 0, '[{"Duration": 10,"Transport":0}]', '0001-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":1000,"Currency":0}', 2, 0, '[{"Duration": 10,"Transport":0}]', '0001-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
 
 insert into tours."Tours"
 	("Id", "Name", "Description", "Tags", "Level", "Status",
 	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
 values
 	(2, 'Faks tura', 'Jej tura', '#bolja', 1, 1,
-	'{"Ammount":2500,"Currency":"Rsd"}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
 
 insert into tours."Tours"
 	("Id", "Name", "Description", "Tags", "Level", "Status",
 	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
 values
 	(3, 'Futoska tura', 'Jos jedna tura', '#zeleno', 1, 1,
-	'{"Ammount":2500,"Currency":"Rsd"}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
 
 insert into tours."KeyPoint"
 	("Id", "Latitude", "Longitude", "Name", "Description", "Image", "TourId")
