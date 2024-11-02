@@ -12,19 +12,16 @@ namespace Explorer.Tours.Core.Domain {
     public class TourExecution : Entity {
 
         public long UserId { get; init; }
-        public Position LastUserPosition { get; private set; }
         public TourExecutionStatus Status { get; private set; }
         public DateTime? SessionEnd { get; private set; } = null;
         public DateTime? LastActivity { get; private set; } = null;
         public long TourId { get; init; }
-
         public ICollection<KeyPointProgress> KeyPointProgresses { get; set; } = new List<KeyPointProgress>();
 
         private TourExecution() { }
 
-        public TourExecution(long userId, Position lastUserPosition, long tourId) {
+        public TourExecution(long userId, long tourId) {
             UserId = userId;
-            LastUserPosition = lastUserPosition;
             Status = TourExecutionStatus.Active;
             TourId = tourId;
         }

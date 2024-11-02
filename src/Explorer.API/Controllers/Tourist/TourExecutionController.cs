@@ -1,15 +1,16 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourExecution;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.UseCases.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Explorer.API.Controllers.Tourist {
+namespace Explorer.API.Controllers.Tourist
+{
 
     [Authorize(Policy = "touristPolicy")]
-    [Route("api/tours/executions")]
+    [Route("api/tour/execution")]
     public class TourExecutionController : BaseApiController {
         private readonly ITourExecutionService _tourExecutionService;
 
@@ -17,15 +18,21 @@ namespace Explorer.API.Controllers.Tourist {
             _tourExecutionService = tourExecutionService;
         }
 
-        [HttpPost]
-        public ActionResult<TourExecutionDto> Create([FromBody] TourExecutionDto tourExecution) {
-            var result = _tourExecutionService.StartTourExecution(tourExecution);
+        [HttpGet("{userId:long}")]
+        public ActionResult<TourExecutionDto> GetActive(long userId) {
+            var result = _tourExecutionService.GetActive(userId);
             return CreateResponse(result);
         }
 
-        [HttpPatch]
-        public ActionResult<KeyPointProgressDto> Progress([FromBody] TourExecutionDto tourExecution) {
-            var result = _tourExecutionService.Progress(tourExecution);
+        [HttpPost]
+        public ActionResult<TourExecutionDto> Start([FromBody] TourExecutionStartDto tourExecutionStartDto) {
+            var result = _tourExecutionService.Start(tourExecutionStartDto);
+            return CreateResponse(result);
+        }
+
+        [HttpPatch("{tourExecutionId:long}")]
+        public ActionResult<KeyPointProgressDto> Progress(long tourExecutionId, [FromBody] PositionDto postitionDto) {
+            var result = _tourExecutionService.Progress(tourExecutionId, postitionDto);
             return CreateResponse(result);
         }
     }

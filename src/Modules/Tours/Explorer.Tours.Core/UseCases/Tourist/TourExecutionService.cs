@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourExecution;
+using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.Domain;
@@ -12,7 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.Core.UseCases.Tourist {
+namespace Explorer.Tours.Core.UseCases.Tourist
+{
     public class TourExecutionService : ITourExecutionService {
 
         private readonly IMapper _mapper;
@@ -28,15 +30,27 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
             _mapper = mapper;
         }
 
-        public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto) {
+        public Result<TourExecutionDto> GetActive(long userId) {
+            try {
+                var activeTour = _tourExecutionRepository.GetActive(userId);
+
+                var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
+                return Result.Ok(tourExecutionDto);
+            }
+            catch (Exception e) {
+                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+        }
+
+        public Result<TourExecutionDto> Start(TourExecutionStartDto tourExecutionStart) {
             try {
                 var tourExecution = new TourExecution(
-                    tourExecutionDto.UserId,
-                    new Position(tourExecutionDto.Latitude, tourExecutionDto.Longitude),
-                    tourExecutionDto.TourId);
+                    tourExecutionStart.UserId,
+                    tourExecutionStart.TourId);
 
                 var createdTourExecution = _tourExecutionRepository.Create(tourExecution);
-                tourExecutionDto.Id = createdTourExecution.Id;
+
+                var tourExecutionDto = _mapper.Map<TourExecutionDto>(createdTourExecution);
 
                 return Result.Ok(tourExecutionDto);
             }
@@ -45,13 +59,19 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
             }            
         }
 
-        public Result<KeyPointProgressDto> Progress(TourExecutionDto tourExecution) {
+        public Result<KeyPointProgressDto> Progress(long tourExecutionId, PositionDto newPositionDto) {
             try {
-                var currentSession = _tourExecutionRepository.Get(tourExecution.Id);
+                var newPosition = new Position(newPositionDto.Latitude, newPositionDto.Longitude);
+
+                var currentSession = _tourExecutionRepository.Get(tourExecutionId);
+
+                if (currentSession.Status != TourExecutionStatus.Active) {
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Tour execution not found");
+                }
+
                 var tour = _tourRepository.GetById((int) currentSession.TourId);
 
-                var completedKeyPoint = currentSession.Progress(new Position(tourExecution.Latitude, tourExecution.Longitude), 
-                    tour.KeyPoints);
+                var completedKeyPoint = currentSession.Progress(newPosition, tour.KeyPoints);
 
                 _tourExecutionRepository.Update(currentSession);
 
