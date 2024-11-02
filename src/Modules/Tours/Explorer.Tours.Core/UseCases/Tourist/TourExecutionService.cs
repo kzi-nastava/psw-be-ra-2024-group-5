@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Dtos.TourExecution;
 using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Public.Administration;
@@ -14,7 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.Core.UseCases.Tourist {
+namespace Explorer.Tours.Core.UseCases.Tourist
+{
     public class TourExecutionService : ITourExecutionService {
 
         private readonly IMapper _mapper;
