@@ -6,7 +6,6 @@ namespace Explorer.Tours.Core.Domain
 {
     public class TourReview : Entity
     {
-
         public int Rating { get; private set; }
         public string Comment { get; private set; }
         public DateTime VisitDate { get; private set; }

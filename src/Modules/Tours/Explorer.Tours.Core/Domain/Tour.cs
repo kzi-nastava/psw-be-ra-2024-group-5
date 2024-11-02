@@ -18,7 +18,6 @@ public class Tour : Entity {
     public DateTime PublishedTime { get; private set; }
     public DateTime ArchivedTime { get; private set; }
 
-
     public Tour() { }
 
     //Constructor with all parametars
@@ -60,6 +59,7 @@ public class Tour : Entity {
         ArchivedTime = DateTime.MinValue; // ili null da bude
 
     }
+    
     public List<KeyPoint> AddKeyPoint(KeyPoint keyPoint) {
         KeyPoints.Add(keyPoint);
         return KeyPoints;
