@@ -26,7 +26,7 @@ namespace Explorer.API.Controllers.Tourist {
 
         [HttpPost]
         public ActionResult<TourExecutionDto> Start([FromBody] TourExecutionStartDto tourExecutionStartDto) {
-            var result = _tourExecutionService.StartTourExecution(tourExecutionStartDto);
+            var result = _tourExecutionService.Start(tourExecutionStartDto);
             return CreateResponse(result);
         }
 

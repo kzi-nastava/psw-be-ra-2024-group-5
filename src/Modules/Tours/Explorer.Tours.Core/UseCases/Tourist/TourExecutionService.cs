@@ -2,6 +2,7 @@
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Dtos.TourExecution;
+using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.Domain;
@@ -41,7 +42,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
             }
         }
 
-        public Result<TourExecutionDto> StartTourExecution(TourExecutionStartDto tourExecutionStart) {
+        public Result<TourExecutionDto> Start(TourExecutionStartDto tourExecutionStart) {
             try {
                 var tourExecution = new TourExecution(
                     tourExecutionStart.UserId,
@@ -63,6 +64,11 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
                 var newPosition = new Position(newPositionDto.Latitude, newPositionDto.Longitude);
 
                 var currentSession = _tourExecutionRepository.Get(tourExecutionId);
+
+                if (currentSession.Status != TourExecutionStatus.Active) {
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Tour execution not found");
+                }
+
                 var tour = _tourRepository.GetById((int) currentSession.TourId);
 
                 var completedKeyPoint = currentSession.Progress(newPosition, tour.KeyPoints);
