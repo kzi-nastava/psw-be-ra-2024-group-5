@@ -18,6 +18,12 @@ public class BlogPost : Entity
     public DateTime createdDate { get; private set; } 
     public BlogStatus status { get; private set; }
 
+    private readonly List<BlogComment> _comments = new List<BlogComment>();
+    public IReadOnlyCollection<BlogComment> comments => _comments.AsReadOnly();
+
+    private readonly List<BlogVote> _votes = new List<BlogVote>();
+    public IReadOnlyCollection<BlogVote> votes => _votes.AsReadOnly();
+
     public string RenderedDescription
     {
         get
