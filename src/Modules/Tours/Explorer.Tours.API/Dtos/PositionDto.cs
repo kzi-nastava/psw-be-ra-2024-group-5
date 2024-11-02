@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Explorer.Tours.API.Dtos {
-    public class TourExecutionDto {
-        
-        public long Id { get; set; }
-        public long UserId { get; set; }
-        public long TourId { get; set; }
+    public class PositionDto {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

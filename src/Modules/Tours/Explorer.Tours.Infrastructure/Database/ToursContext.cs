@@ -72,10 +72,6 @@ public class ToursContext : DbContext
             .HasKey(te => te.Id);
 
         modelBuilder.Entity<TourExecution>()
-            .Property(te => te.LastUserPosition)
-            .HasColumnType("jsonb");
-
-        modelBuilder.Entity<TourExecution>()
             .HasOne<Tour>()
             .WithMany()
             .HasForeignKey(te => te.TourId)

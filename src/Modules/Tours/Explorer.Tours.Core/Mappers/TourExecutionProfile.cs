@@ -12,6 +12,7 @@ namespace Explorer.Tours.Core.Mappers {
 
         public TourExecutionProfile() {
             CreateMap<KeyPointProgress, KeyPointProgressDto>();
+            CreateMap<TourExecution, TourExecutionDto>();
         }
     }
 }

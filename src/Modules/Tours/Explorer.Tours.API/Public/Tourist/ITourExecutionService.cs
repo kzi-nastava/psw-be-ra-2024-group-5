@@ -1,4 +1,5 @@
 ﻿using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourExecution;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Explorer.Tours.API.Public.Tourist {
     public interface ITourExecutionService {
-        public Result<TourExecutionDto> StartTourExecution(TourExecutionDto tourExecutionDto);
-        public Result<KeyPointProgressDto> Progress(TourExecutionDto tourExecution);
+        public Result<TourExecutionDto> StartTourExecution(TourExecutionStartDto tourExecutionStart);
+        public Result<KeyPointProgressDto> Progress(long tourExecutionId, PositionDto newPositionDto);
     }
 }

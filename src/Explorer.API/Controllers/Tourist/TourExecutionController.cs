@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourExecution;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Tourist;
 using Explorer.Tours.Core.UseCases.Administration;
@@ -18,14 +19,14 @@ namespace Explorer.API.Controllers.Tourist {
         }
 
         [HttpPost]
-        public ActionResult<TourExecutionDto> Create([FromBody] TourExecutionDto tourExecution) {
-            var result = _tourExecutionService.StartTourExecution(tourExecution);
+        public ActionResult<TourExecutionDto> Create([FromBody] TourExecutionStartDto tourExecutionStartDto) {
+            var result = _tourExecutionService.StartTourExecution(tourExecutionStartDto);
             return CreateResponse(result);
         }
 
-        [HttpPatch]
-        public ActionResult<KeyPointProgressDto> Progress([FromBody] TourExecutionDto tourExecution) {
-            var result = _tourExecutionService.Progress(tourExecution);
+        [HttpPatch("{tourExecutionId:long}")]
+        public ActionResult<KeyPointProgressDto> Progress(long tourExecutionId, [FromBody] PositionDto postitionDto) {
+            var result = _tourExecutionService.Progress(tourExecutionId, postitionDto);
             return CreateResponse(result);
         }
     }
