@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_PATH="scripts"
+ROOT_PATH="scripts/sql"
 
 DB_USER="postgres"
 DB_HOST="localhost"

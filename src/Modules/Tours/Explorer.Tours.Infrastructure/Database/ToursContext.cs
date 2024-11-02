@@ -146,22 +146,6 @@ public class ToursContext : DbContext
 
     private static void ConfigureTourReview(ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<User>()
-        //.ToTable("Users", "stakeholders")
-        //.Metadata.SetIsTableExcludedFromMigrations(true);
-
-        //modelBuilder.Entity<TourReview>()
-        //.HasOne<User>()
-        //.WithMany()
-        //.HasForeignKey(tr => tr.TouristId)
-        //.OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<TourReview>()
-        //    .HasOne<Tour>()
-        //    .WithMany()
-        //    .HasForeignKey(tr => tr.TourId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<TourReview>()
             .Property(tr => tr.Rating)
             .IsRequired();
