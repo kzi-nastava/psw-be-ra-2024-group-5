@@ -29,6 +29,18 @@ namespace Explorer.Tours.Core.UseCases.Tourist {
             _mapper = mapper;
         }
 
+        public Result<TourExecutionDto> GetActive(long userId) {
+            try {
+                var activeTour = _tourExecutionRepository.GetActive(userId);
+
+                var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
+                return Result.Ok(tourExecutionDto);
+            }
+            catch (Exception e) {
+                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+        }
+
         public Result<TourExecutionDto> StartTourExecution(TourExecutionStartDto tourExecutionStart) {
             try {
                 var tourExecution = new TourExecution(

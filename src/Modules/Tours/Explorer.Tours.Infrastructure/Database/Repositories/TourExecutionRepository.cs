@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Tours.API.Enum;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,17 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
                                                         .FirstOrDefault();
             if (tourExecution == null)
                 throw new KeyNotFoundException("Not found: " + id);
+
+            return tourExecution;
+        }
+
+        public TourExecution GetActive(long userId) {
+            var tourExecution = DbContext.TourExecutions.Where(te => te.UserId == userId && te.Status == TourExecutionStatus.Active)
+                                                        .Include(te => te.KeyPointProgresses)
+                                                        .FirstOrDefault();
+            if (tourExecution == null)
+                throw new KeyNotFoundException("Not found: " + userId);
+
             return tourExecution;
         }
     }
