@@ -8,9 +8,7 @@ namespace Explorer.Tours.API.Dtos.TourExecution
 {
     public class KeyPointProgressDto
     {
-        public long KeyPointId { get; set; }
         public KeyPointDto KeyPoint { get; set; }
         public DateTime? VisitTime { get; set; }
-
     }
 }

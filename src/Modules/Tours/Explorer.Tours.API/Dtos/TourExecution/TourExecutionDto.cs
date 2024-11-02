@@ -8,9 +8,8 @@ namespace Explorer.Tours.API.Dtos.TourExecution
 {
     public class TourExecutionDto
     {
-
         public long Id { get; set; }
-        public long UserId { get; set; }
         public long TourId { get; set; }
+        public ICollection<KeyPointProgressDto> KeyPointProgresses { get; set; } = new List<KeyPointProgressDto>();
     }
 }

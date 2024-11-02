@@ -33,6 +33,7 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
         public TourExecution GetActive(long userId) {
             var tourExecution = DbContext.TourExecutions.Where(te => te.UserId == userId && te.Status == TourExecutionStatus.Active)
                                                         .Include(te => te.KeyPointProgresses)
+                                                        .ThenInclude(kpp => kpp.KeyPoint)
                                                         .FirstOrDefault();
             if (tourExecution == null)
                 throw new KeyNotFoundException("Not found: " + userId);
