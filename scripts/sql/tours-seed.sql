@@ -1,0 +1,34 @@
+DELETE FROM tours."TouristEquipment";
+DELETE FROM tours."TourEquipment";
+DELETE FROM tours."Equipment";
+DELETE FROM tours."KeyPoint";
+DELETE FROM tours."Facilities";
+DELETE FROM tours."TourReviews";
+DELETE FROM tours."Preferences";
+DELETE FROM tours."OrderItems";
+DELETE FROM tours."ShoppingCarts";
+DELETE FROM tours."Tours";
+
+insert into tours."Tours"
+	("Id", "Name", "Description", "Tags", "Level", "Status",
+	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+values
+	(1, 'Draft tura', 'Kul je ova tura', '#najbolje', 1, 1,
+	'{"Ammount":1000,"Currency":"Rsd"}', 2, 0, '[{"Duration": 10,"Transport":0}]', '0001-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+
+insert into tours."Tours"
+	("Id", "Name", "Description", "Tags", "Level", "Status",
+	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+values
+	(2, 'Published tura', 'Jej tura', '#bolja', 1, 2,
+	'{"Ammount":2500,"Currency":"Rsd"}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+
+insert into tours."KeyPoint"
+	("Id", "Latitude", "Longitude", "Name", "Description", "Image", "TourId")
+values
+	(1, 45.24611507027287, 19.851664521045805, 'FTN', 'Ne idite na ovaj faks', '', 2);
+
+insert into tours."KeyPoint"
+	("Id", "Latitude", "Longitude", "Name", "Description", "Image", "TourId")
+values
+	(2, 45.2455529844001, 19.842937968777537, 'Promenada', 'Kul soping', '', 2);
