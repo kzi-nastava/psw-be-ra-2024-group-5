@@ -15,4 +15,6 @@ public interface ITourService {
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
+
+    Result<TourTouristDto> GetForTouristById(long id, long touristId);
 }
