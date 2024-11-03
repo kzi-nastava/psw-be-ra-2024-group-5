@@ -23,6 +23,9 @@ public class StakeholdersContext : DbContext
 
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
+        modelBuilder.Entity<Message>().ToTable("Messages", "stakeholders")
+            .Property(m => m.Attachment).HasColumnType("jsonb");
+
         ConfigureStakeholder(modelBuilder);
     }
 

@@ -12,10 +12,10 @@ namespace Explorer.Stakeholders.Core.UseCases;
 public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUserProfileService
 {
     private readonly IMapper _mapper;
-    private readonly ICrudRepository<UserProfile> _userProfileRepository;
+    private readonly IUserProfileRepository _userProfileRepository;
     private readonly ICrudRepository<User> _userRepository;
     private readonly ICrudRepository<Person> _personRepository;
-    public UserProfileService(ICrudRepository<UserProfile> userProfileRepository, ICrudRepository<User> userRepository, ICrudRepository<Person> personRepository, IMapper mapper) : base(mapper)
+    public UserProfileService(IUserProfileRepository userProfileRepository, ICrudRepository<User> userRepository, ICrudRepository<Person> personRepository, IMapper mapper) : base(mapper)
     {
         _mapper = mapper;
         _userProfileRepository = userProfileRepository;
