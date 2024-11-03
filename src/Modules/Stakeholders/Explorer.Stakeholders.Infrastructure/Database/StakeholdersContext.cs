@@ -23,9 +23,6 @@ public class StakeholdersContext : DbContext
 
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
-        modelBuilder.Entity<Message>().ToTable("Messages", "stakeholders")
-            .Property(m => m.Attachment).HasColumnType("jsonb");
-
         ConfigureStakeholder(modelBuilder);
     }
 
@@ -40,6 +37,14 @@ public class StakeholdersContext : DbContext
             .HasOne<User>()
             .WithOne()
             .HasForeignKey<UserProfile>(s => s.UserId);
+
+        modelBuilder.Entity<Message>().ToTable("Messages", "stakeholders")
+            .Property(m => m.Attachment).HasColumnType("jsonb");
+
+        modelBuilder.Entity<Message>()
+            .HasOne<UserProfile>()
+            .WithMany()
+            .HasForeignKey(m => m.SenderId);
 
         modelBuilder.Entity<ClubMembership>()
         .ToTable("Memberships", "stakeholders")
