@@ -11,16 +11,19 @@ public class TourDto {
     public TourStatus Status { get; set; }
     public MoneyDto Price { get; set; }
     public long AuthorId { get; set; }
-    public List<KeyPointDto>? KeyPoints { get; set; }
-    //public List<TourReviewDto>? Reviews { get; set; }
+    public List<KeyPointDto> KeyPoints { get; set; }
+    public List<TourReviewDto> Reviews { get; set; }
     public double? Length { get; set; }
-    public TourTransport? Transport { get; set; }
-    public double? Duration { get; set; }
-    public DateTime? PublishedTime { get; set; }
-    public DateTime? ArchivedTime { get; set; }
+    public List<TransportDurationDto> TransportDurationDtos { get; set; }
+    public DateTime PublishedTime { get; set; }
+    public DateTime ArchivedTime { get; set; }
 
     public TourDto() { }
-    public TourDto(long id, string? name, string? description, string? tags, TourLevel? level, TourStatus status, MoneyDto price, long authorId, List<KeyPointDto>? keyPoints, /*List<TourReviewDto>? reviews,*/ double? length, TourTransport? transport, double? duration, DateTime? publishedTime, DateTime? archivedTime) {
+    public TourDto(long id, string? name, string? description,
+        string? tags, TourLevel? level, TourStatus status, MoneyDto price,
+        long authorId, List<KeyPointDto> keyPoints, List<TourReviewDto> reviews,
+        double? length, List<TransportDurationDto> transportDurationDtos,
+        DateTime publishedTime, DateTime archivedTime) {
         Id = id;
         Name = name;
         Description = description;
@@ -30,10 +33,9 @@ public class TourDto {
         Price = price;
         AuthorId = authorId;
         KeyPoints = keyPoints;
-        //Reviews = reviews;
+        Reviews = reviews;
         Length = length;
-        Transport = transport;
-        Duration = duration;
+        TransportDurationDtos = transportDurationDtos; 
         PublishedTime = publishedTime;
         ArchivedTime = archivedTime;
     }

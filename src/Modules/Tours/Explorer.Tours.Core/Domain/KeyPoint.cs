@@ -20,4 +20,15 @@ public class KeyPoint : Entity {
         Image = image;
         TourId = tourId;
     }
+
+    public KeyPoint(long id, string name, string? description, double latitude, double longitude, byte[] image, long tourId) {
+        Id = id;
+        Latitude = latitude;
+        Longitude = longitude;
+        Name = name;
+        Description = description;
+        Image = image;
+        TourId = tourId;
+    }
+
 }
