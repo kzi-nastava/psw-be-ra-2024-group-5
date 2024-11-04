@@ -30,7 +30,7 @@ namespace Explorer.API.Controllers.Tourist
 
         [Authorize(Policy = "touristPolicy")]
         [HttpPost("addItem/{touristId:long}")]
-        public ActionResult<FacilityDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)
+        public ActionResult<ShoppingCartDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)
         {
             var result = this._shoppingCartService.AddToCart(orderItemDto ,touristId);
             if (!result.IsSuccess)
@@ -42,8 +42,8 @@ namespace Explorer.API.Controllers.Tourist
         }
 
 		[Authorize(Policy = "touristPolicy")]
-		[HttpDelete("addItem/{touristId:long}")]
-        public ActionResult<FacilityDto> RemoveItemToCart(OrderItemDto orderItemDto, long touristId)
+		[HttpDelete("removeItem/{touristId:long}")]
+        public ActionResult<ShoppingCartDto> RemoveItemToCart(OrderItemDto orderItemDto, long touristId)
         {
 			var result = this._shoppingCartService.RemoveFromCart(orderItemDto, touristId);
 			if (!result.IsSuccess)
@@ -56,7 +56,7 @@ namespace Explorer.API.Controllers.Tourist
 
 		[Authorize(Policy = "touristPolicy")]
         [HttpGet("tourist/{touristId:long}")]
-        public ActionResult<FacilityDto> GetByTouristId(long touristId)
+        public ActionResult<ShoppingCartDto> GetByTouristId(long touristId)
         {
             var result = this._shoppingCartService.GetByUserId(touristId);
             if (!result.IsSuccess)
