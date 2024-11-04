@@ -8,7 +8,7 @@ public class UserProfile : Entity
     public string? ProfilePictureUrl { get; private set; } 
     public string? Biography { get; private set; } 
     public string? Motto { get; private set; } 
-    public List<Message> Messages { get; private set; } = new List<Message>();
+    public List<Message> Messages { get; init; }
 
     public UserProfile(long userId, string? profilePictureUrl, string? biography, string? motto)
     {
