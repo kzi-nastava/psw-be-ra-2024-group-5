@@ -21,7 +21,7 @@ public class ToursProfile : Profile
             .ForCtorParam("latitude", opt => opt.MapFrom(src => src.Latitude))
             .ForCtorParam("longitude", opt => opt.MapFrom(src => src.Longitude))
             .ForCtorParam("image", opt => opt.MapFrom(src => Base64Converter.ConvertToByteArray(src.Image)))
-            .ForCtorParam("tourId", opt => opt.MapFrom(src => src.TourId))
+            //.ForCtorParam("tourId", opt => opt.MapFrom(src => src.TourId))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
 

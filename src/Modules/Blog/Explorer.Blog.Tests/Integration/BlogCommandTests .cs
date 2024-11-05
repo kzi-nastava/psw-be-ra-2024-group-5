@@ -1,3 +1,4 @@
+
 ﻿//using Explorer.API.Controllers.Author;
 //using Explorer.Blog.API.Dtos;
 //using Explorer.Blog.API.Public;
@@ -48,6 +49,7 @@
 //            storedEntity.ShouldNotBeNull();
 //            storedEntity.Id.ShouldBe(result.Id);
 //        }
+
 
 //        [Fact]
 //        public void CreatesBlogWithOneImage()
@@ -116,6 +118,8 @@
 //                }
 //            };
 
+        
+
 //            // Act
 //            var result = ((ObjectResult)controller.CreateBlog(newEntity).Result)?.Value as BlogDTO;
 
@@ -149,6 +153,7 @@
 //            result.ShouldNotBeNull();
 //            result.StatusCode.ShouldBe(400);
 //        }
+
 
 //        [Fact]
 //        public void UpdatesBlogStatus()

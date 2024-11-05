@@ -16,7 +16,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpGet("author/{authorId:long}")]
-        public ActionResult<PagedResult<TourDto>> GetByAuthor(long authorId) {
+        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
             var result = _tourService.GetByAuthorId(authorId);
             return CreateResponse(result);
         }
@@ -27,15 +27,32 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [HttpPost]
-        public ActionResult<TourDto> Create([FromBody] TourDto tour) {
-            var result = _tourService.CreateTour(tour);
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{id:long}/{touristId:long}")]
+        public ActionResult<TourTouristDto> GetForTouristById(long id, long touristId)
+        {
+            var result = _tourService.GetForTouristById(id, touristId);
             return CreateResponse(result);
         }
 
-        [HttpPut("{id:int}")]
-        public ActionResult<TourDto> Update([FromBody] TourDto tour) {
-            var result = _tourService.Update(tour);
+        [AllowAnonymous]
+        [HttpGet("published/{page:int}/{pageSize:int}")]
+        public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
+        {
+            var result = _tourService.GetPublishedPagedTours(page,pageSize);
+            return CreateResponse(result);
+        }
+
+        [HttpPost]
+        public ActionResult<TourDto> Create([FromBody] TourCreationDto tour) {
+            var result = _tourService.Create(tour);
+            return CreateResponse(result);
+        }
+
+        [HttpPut("{id:long}")]
+        public ActionResult<TourDto> Update([FromBody] TourDto tour, long id) {
+            var result = _tourService.Update(tour, id);
             return CreateResponse(result);
         }
 

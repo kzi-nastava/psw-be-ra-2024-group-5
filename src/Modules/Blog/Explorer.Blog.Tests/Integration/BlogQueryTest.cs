@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿//using Explorer.API.Controllers.Author;
 //using Explorer.Blog.API.Dtos;
 //using Explorer.Blog.API.Public;
@@ -27,6 +28,7 @@
 //        var existingBlog = dbContext.blogs.FirstOrDefault(b => b.Id == -1);
 //        existingBlog.ShouldNotBeNull(); 
 
+
 //        // Act
 //        var actionResult = controller.Preview((int)existingBlog.Id);
 
@@ -54,6 +56,7 @@
 //        result.Results.Count.ShouldBe(3);
 //        result.TotalCount.ShouldBe(3);
 //    }
+
 
 //    private static BlogController CreateController(IServiceScope scope)
 //    {

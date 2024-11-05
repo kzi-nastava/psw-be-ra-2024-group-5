@@ -1,28 +1,27 @@
 ﻿using Explorer.API.Controllers.Tourist;
-using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class MembershipQueryTests : BaseStakeholdersIntegrationTest
+    [Collection("Stakeholders")]
+    public class MembershipQueryTests : IClassFixture<StakeholdersFixture>
     {
-        public MembershipQueryTests(StakeholdersTestFactory factory) : base(factory) { }
+        private StakeholdersFixture fixture;
+
+        public MembershipQueryTests(StakeholdersFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Retrieves_all()
         {
             // Arrange  
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -37,7 +36,7 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
         {
             return new ClubMembershipController(scope.ServiceProvider.GetRequiredService<IClubService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = StakeholdersFixture.BuildContext("-1")
             };
         }
     }

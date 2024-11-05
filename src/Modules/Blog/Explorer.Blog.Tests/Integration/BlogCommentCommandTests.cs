@@ -8,21 +8,26 @@ using Shouldly;
 
 namespace Explorer.Blog.Tests.Integration
 {
-    [Collection("Sequential")]
-    public class BlogCommentCommandTests : BaseBlogIntegrationTest
+    [Collection("Blogs")]
+    public class BlogCommentCommandTests : IClassFixture<BlogFixture>
     {
-        public BlogCommentCommandTests(BlogTestFactory factory) : base(factory) { }
+        private BlogFixture fixture;
+
+        public BlogCommentCommandTests(BlogFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void CreatesComment()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
             var newComment = new BlogCommentDto
             {
-                userId = 1,
+                userId = -21,
                 commentText = "Ovo je novi testni komentar",
             };
 
@@ -44,7 +49,7 @@ namespace Explorer.Blog.Tests.Integration
         public void Create_fails_invalid_data()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var invalidComment = new BlogCommentDto
             {
@@ -66,14 +71,14 @@ namespace Explorer.Blog.Tests.Integration
         public void UpdatesComment()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
             // Kreiraj novi komentar koji ćeš kasnije ažurirati
             var newComment = new BlogCommentDto
             {
-                userId = 1,
+                userId = -23,
                 commentText = "Originalni komentar"
             };
             var createdResult = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDto;
@@ -108,7 +113,7 @@ namespace Explorer.Blog.Tests.Integration
         public void DeletesComment()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
@@ -130,7 +135,7 @@ namespace Explorer.Blog.Tests.Integration
         {
             return new BlogCommentController(scope.ServiceProvider.GetRequiredService<IBlogCommentService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = BlogFixture.BuildContext("-1")
             };
         }
     }

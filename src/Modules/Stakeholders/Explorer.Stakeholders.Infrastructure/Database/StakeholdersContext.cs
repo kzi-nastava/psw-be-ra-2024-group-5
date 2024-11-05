@@ -13,6 +13,7 @@ public class StakeholdersContext : DbContext
     public DbSet<AppRating> AppRating { get; set; }
 
     public DbSet<ClubMembership> Memberships { get; set; }
+    public DbSet<Following> Followers { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
@@ -50,5 +51,17 @@ public class StakeholdersContext : DbContext
             .HasOne<User>()
             .WithMany()
             .HasForeignKey(cm => cm.UserId);
+
+        modelBuilder.Entity<Following>()
+        .HasOne<User>()
+        .WithMany()   
+        .HasForeignKey(f => f.UserId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Following>()
+            .HasOne<User>()
+            .WithMany()   
+            .HasForeignKey(f => f.FollowedUserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

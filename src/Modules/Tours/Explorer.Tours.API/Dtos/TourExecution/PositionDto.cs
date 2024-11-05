@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.API.Dtos {
-    public class TourExecutionDto {
-        
-        public long Id { get; set; }
-        public long UserId { get; set; }
+namespace Explorer.Tours.API.Dtos.TourExecution
+{
+    public class PositionDto
+    {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
     }

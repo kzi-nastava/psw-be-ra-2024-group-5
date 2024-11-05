@@ -23,6 +23,10 @@ public class KeyPointService : BaseService<KeyPointDto, KeyPoint>, IKeyPointServ
             _tourRepository.Get(tourId);
 
             foreach (var keyPointDto in keyPointDtos) {
+
+                if (string.IsNullOrEmpty(keyPointDto.Name))
+                    throw new ArgumentException("Invalid Name.");
+
                 keyPointDto.TourId = tourId;
                 var savedKeyPoint = _keyPointRepository.Create(MapToDomain(keyPointDto));
                 retVal.Add(MapToDto(savedKeyPoint));

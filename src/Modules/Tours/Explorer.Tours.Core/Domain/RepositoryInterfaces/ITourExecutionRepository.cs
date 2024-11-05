@@ -8,5 +8,7 @@ using System.Threading.Tasks;
 namespace Explorer.Tours.Core.Domain.RepositoryInterfaces {
     public interface ITourExecutionRepository : ICrudRepository<TourExecution> {
         public new TourExecution Update(TourExecution entity);
+        public new TourExecution Get(long id);
+        public TourExecution GetActive(long userId);
     }
 }

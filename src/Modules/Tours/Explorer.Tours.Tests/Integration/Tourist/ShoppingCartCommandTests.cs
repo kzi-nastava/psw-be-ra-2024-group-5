@@ -5,29 +5,29 @@ using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class ShoppingCartCommandTests: BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class ShoppingCartCommandTests : IClassFixture<ToursFixture>
     {
-        public ShoppingCartCommandTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public ShoppingCartCommandTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         // Test takes tourists from explorer v1 not the test database
-        /*
+
         [Fact]
         public void Creates()
         {
             // Arrange 
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
-            long touristId = 1;
+            long touristId = -22;
 
             // Act
             var result = ((ObjectResult)controller.Create(touristId).Result)?.Value as ShoppingCartDto;
@@ -42,19 +42,19 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var storedEntity = dbContext.ShoppingCarts.FirstOrDefault(i => i.Id == result.Id);
             storedEntity.ShouldNotBeNull();
         }
-    */
+
 
         [Fact]
         public void AddItem()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var orderItem = new OrderItemDto(-22, -2, "Tura2", new MoneyDto(20.0, 0));
 
             // Act
-            var result = ((ObjectResult)controller.AddItemToCart(orderItem,-21).Result)?.Value as ShoppingCartDto;
+            var result = ((ObjectResult)controller.AddItemToCart(orderItem, -21).Result)?.Value as ShoppingCartDto;
 
             // Assert - Response
             result.ShouldNotBeNull();
@@ -72,7 +72,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new ShoppingCartController(scope.ServiceProvider.GetRequiredService<IShoppingCartService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
     }
