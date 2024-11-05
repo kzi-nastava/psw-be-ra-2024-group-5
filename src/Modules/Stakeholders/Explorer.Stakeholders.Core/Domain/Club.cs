@@ -15,6 +15,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public string Description { get; private set; }
         public string ImageDirectory {  get; private set; }
         public long OwnerId { get; private set; }
+        public List<ClubMessage> ClubMessages { get; private set; }
         public Club(string name, string description, string imageDirectory,long ownerId) 
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Invalid Name.");
@@ -22,6 +23,49 @@ namespace Explorer.Stakeholders.Core.Domain
             Description = description; 
             ImageDirectory = imageDirectory;
             OwnerId = ownerId;
+            Validate();
+        }
+
+        public void AddMessage(ClubMessage message)
+        {
+            ClubMessages.Add(message);
+            Validate();
+        }
+     
+        public void RemoveMessage(long messageId)
+        {
+            var message = ClubMessages.FirstOrDefault(m => m.Id == messageId);
+            if (message != null)
+            {
+                ClubMessages.Remove(message);
+                Validate();
+            }
+        }
+
+        public void UpdateMessage(long messageId, string newContent)
+        {
+            var message = ClubMessages.FirstOrDefault(m => m.Id == messageId);
+            if(message != null)
+            {
+                message.SetContent(newContent);
+                Validate();
+            }
+        }
+
+        public List<ClubMessage> GetClubMessages()
+        {
+            return ClubMessages;
+        }
+
+        private void Validate()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+                throw new ArgumentException("Club name cannot be empty.");
+
+            if (OwnerId == 0)
+                throw new ArgumentException("Invalid OwnerId.");
+
+            ClubMessages.ForEach(m => m.Validate());
         }
     }
 }
