@@ -1,24 +1,29 @@
-﻿using Explorer.Stakeholders.API.Dtos;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Explorer.API.Controllers.Tourist;
+using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
-using Shouldly;
 using Explorer.Stakeholders.Infrastructure.Database;
 using Explorer.Stakeholders.Tests;
-using Explorer.API.Controllers.Tourist;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration
 {
-    [Collection("Sequential")]
-    public class AppRatingCommandTests : BaseStakeholdersIntegrationTest
+    [Collection("Stakeholders")]
+    public class AppRatingCommandTests : IClassFixture<StakeholdersFixture>
     {
-        public AppRatingCommandTests(StakeholdersTestFactory factory) : base(factory) { }
+        private StakeholdersFixture fixture;
+
+        public AppRatingCommandTests(StakeholdersFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Creates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             var newEntity = new AppRatingDto
@@ -48,7 +53,7 @@ namespace Explorer.Tours.Tests.Integration
         public void Create_fails_invalid_data()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var updatedEntity = new AppRatingDto
             {
@@ -65,10 +70,10 @@ namespace Explorer.Tours.Tests.Integration
         }
 
         [Fact]
-        public void Deletes()   
+        public void Deletes()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
 
@@ -88,7 +93,7 @@ namespace Explorer.Tours.Tests.Integration
         public void Delete_fails_invalid_id()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -104,7 +109,7 @@ namespace Explorer.Tours.Tests.Integration
         public void Updates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             var updatedEntity = new AppRatingDto
@@ -140,7 +145,7 @@ namespace Explorer.Tours.Tests.Integration
         public void Update_fails_invalid_id()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var updatedEntity = new AppRatingDto
             {
@@ -162,9 +167,8 @@ namespace Explorer.Tours.Tests.Integration
         {
             return new AppRatingController(scope.ServiceProvider.GetRequiredService<IAppRatingService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = StakeholdersFixture.BuildContext("-1")
             };
         }
-
     }
 }

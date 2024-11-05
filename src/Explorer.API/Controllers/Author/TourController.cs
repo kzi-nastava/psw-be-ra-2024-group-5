@@ -28,6 +28,15 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{id:long}/{touristId:long}")]
+        public ActionResult<TourTouristDto> GetForTouristById(long id, long touristId)
+        {
+            var result = _tourService.GetForTouristById(id, touristId);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
         [HttpGet("published/{page:int}/{pageSize:int}")]
         public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
         {

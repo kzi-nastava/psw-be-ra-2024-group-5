@@ -13,5 +13,6 @@ namespace Explorer.Tours.API.Public.Tourist
         public Result<TourExecutionDto> GetActive(long userId);
         public Result<TourExecutionDto> Start(TourExecutionStartDto tourExecutionStart);
         public Result<KeyPointProgressDto> Progress(long tourExecutionId, PositionDto newPositionDto);
+        public Result<bool> Abandon(long tourExecutionId);
     }
 }

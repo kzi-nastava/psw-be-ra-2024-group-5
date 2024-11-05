@@ -1,22 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
 using System.Security.Claims;
-using Explorer.API;
-using Xunit;
 
 namespace Explorer.BuildingBlocks.Tests;
 
-public class BaseWebIntegrationTest<TTestFactory> : IClassFixture<TTestFactory> where TTestFactory : WebApplicationFactory<Program>
+public class BaseWebIntegrationTest<TTestFactory>
 {
-    protected TTestFactory Factory { get; }
+    public TTestFactory Factory { get; }
 
     public BaseWebIntegrationTest(TTestFactory factory)
     {
         Factory = factory;
     }
 
-    protected static ControllerContext BuildContext(string id)
+    public static ControllerContext BuildContext(string id)
     {
         return new ControllerContext()
         {

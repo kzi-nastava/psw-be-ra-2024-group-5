@@ -5,20 +5,24 @@ using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class TourReviewCommandTests : BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class TourReviewCommandTests : IClassFixture<ToursFixture>
     {
-        public TourReviewCommandTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public TourReviewCommandTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Creates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new TourReviewDto
@@ -59,7 +63,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Updates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var updatedEntity = new TourReviewDto
@@ -101,7 +105,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Deletes()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
@@ -121,7 +125,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new TourReviewController(scope.ServiceProvider.GetRequiredService<ITourReviewService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
     }
