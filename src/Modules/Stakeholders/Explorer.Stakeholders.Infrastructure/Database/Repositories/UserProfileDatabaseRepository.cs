@@ -13,7 +13,7 @@ public class UserProfileDatabaseRepository
     public new UserProfile? Get(long profileId)
     {
         return DbContext.Profiles.Where(p => p.Id == profileId)
-            .Include(p => p.Messages).FirstOrDefault();
+            .Include(p => p.ProfileMessages).FirstOrDefault();
     }
 
     public new UserProfile Update(UserProfile userProfile)
