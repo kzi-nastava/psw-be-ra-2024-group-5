@@ -20,14 +20,14 @@ namespace Explorer.Blog.Tests.Integration
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-            var newComment = new BlogCommentDTO
+            var newComment = new BlogCommentDto
             {
                 userId = 1,
                 commentText = "Ovo je novi testni komentar",
             };
 
             // Act
-            var result = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
+            var result = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDto;
 
             // Assert - Response
             result.ShouldNotBeNull();
@@ -37,7 +37,7 @@ namespace Explorer.Blog.Tests.Integration
             // Assert - Database
             var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.commentText == newComment.commentText);
             storedComment.ShouldNotBeNull();
-            storedComment.Id.ShouldBe(result.id);
+            storedComment.blogId.ShouldBe(result.id);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Explorer.Blog.Tests.Integration
             // Arrange
             using var scope = Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var invalidComment = new BlogCommentDTO
+            var invalidComment = new BlogCommentDto
             {
 
             };
@@ -71,17 +71,17 @@ namespace Explorer.Blog.Tests.Integration
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
             // Kreiraj novi komentar koji ćeš kasnije ažurirati
-            var newComment = new BlogCommentDTO
+            var newComment = new BlogCommentDto
             {
                 userId = 1,
                 commentText = "Originalni komentar"
             };
-            var createdResult = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
+            var createdResult = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDto;
             createdResult.ShouldNotBeNull();
             createdResult.id.ShouldNotBe(0);
 
             // azurirani kom
-            var updatedComment = new BlogCommentDTO
+            var updatedComment = new BlogCommentDto
             {
                 id = createdResult.id, // Koristi ID iz kreiranog komentara
                 userId = createdResult.userId,
@@ -89,7 +89,7 @@ namespace Explorer.Blog.Tests.Integration
             };
 
             // Act
-            var result = ((ObjectResult)controller.Update(updatedComment.id, updatedComment).Result)?.Value as BlogCommentDTO;
+            var result = ((ObjectResult)controller.Update(updatedComment.id, updatedComment).Result)?.Value as BlogCommentDto;
 
             // Assert - Response
             result.ShouldNotBeNull();
@@ -97,7 +97,7 @@ namespace Explorer.Blog.Tests.Integration
             result.commentText.ShouldBe(updatedComment.commentText);
 
             // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == updatedComment.id);
+            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.blogId == updatedComment.id);
             storedComment.ShouldNotBeNull();
             storedComment.commentText.ShouldBe(updatedComment.commentText);
         }
@@ -119,7 +119,7 @@ namespace Explorer.Blog.Tests.Integration
             result.StatusCode.ShouldBe(200);
 
             // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == -3);
+            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.blogId == -3);
             storedComment.ShouldBeNull();
         }
 

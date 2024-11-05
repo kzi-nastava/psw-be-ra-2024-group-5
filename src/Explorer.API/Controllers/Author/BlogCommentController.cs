@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Explorer.API.Controllers.Author
 {
-    // [Authorize(Policy = "userPolicy")]
+    //[Authorize(Policy = "userPolicy")]
     [Route("api/blog/comments")]
     public class BlogCommentController : BaseApiController
     {
@@ -16,7 +16,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPost]
-        public ActionResult<BlogCommentDTO> Create([FromBody] BlogCommentDTO commentDto)
+        public ActionResult<BlogCommentDto> Create([FromBody] BlogCommentDto commentDto)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Explorer.API.Controllers.Author
 
 
         [HttpPut("{id:int}")]
-        public ActionResult<BlogCommentDTO> Update(long id, [FromBody] BlogCommentDTO commentDto)
+        public ActionResult<BlogCommentDto> Update(long id, [FromBody] BlogCommentDto commentDto)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpGet("user/{userId}")]
-        public ActionResult<List<BlogCommentDTO>> GetCommentsByUser(long userId)
+        public ActionResult<List<BlogCommentDto>> GetCommentsByUser(long userId)
         {
             var result = _blogCommentService.GetAllCommentsByUser(userId);
 

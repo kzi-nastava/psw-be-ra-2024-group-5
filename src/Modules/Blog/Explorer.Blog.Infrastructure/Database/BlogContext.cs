@@ -9,13 +9,12 @@ public class BlogContext : DbContext
     public BlogContext(DbContextOptions<BlogContext> options) : base(options) {}
 
     public DbSet<BlogDomain> blogs { get; set; }
-    public DbSet<BlogImage> blogImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("blog");
         modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.votes).HasColumnType("jsonb");
-
+        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.images).HasColumnType("jsonb");
     }
 
     public DbSet<BlogComment> BlogComments { get; set; }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Explorer.Blog.API.Dtos
 {
-    public class BlogImageDTO
+    public class BlogImageDto
     {
-        public int Id { get; set; }
         public int blogId { get; set; }
         public string base64Data { get; set; }
         public string contentType { get; set; }
