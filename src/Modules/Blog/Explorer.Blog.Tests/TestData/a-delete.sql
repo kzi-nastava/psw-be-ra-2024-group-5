@@ -1,2 +1,0 @@
-TRUNCATE TABLE blog.blogs RESTART IDENTITY;
-DELETE FROM blog."BlogComments";

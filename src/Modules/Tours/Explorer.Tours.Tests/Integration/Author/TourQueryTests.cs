@@ -1,5 +1,4 @@
 ﻿using Explorer.API.Controllers.Author;
-using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +7,21 @@ using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration.Author;
 
-[Collection("Sequential")]
-public class TourQueryTests : BaseToursIntegrationTest {
-    public TourQueryTests(ToursTestFactory factory) : base(factory) { }
+[Collection("Tours")]
+public class TourQueryTests : IClassFixture<ToursFixture>
+{
+    private ToursFixture fixture;
+
+    public TourQueryTests(ToursFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
-    public void Retrieves_all() {
+    public void Retrieves_all()
+    {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
@@ -26,9 +32,11 @@ public class TourQueryTests : BaseToursIntegrationTest {
         result.Count.ShouldBe(2);
     }
 
-    private static TourController CreateController(IServiceScope scope) {
-        return new TourController(scope.ServiceProvider.GetRequiredService<ITourService>()) {
-            ControllerContext = BuildContext("-1")
+    private static TourController CreateController(IServiceScope scope)
+    {
+        return new TourController(scope.ServiceProvider.GetRequiredService<ITourService>())
+        {
+            ControllerContext = ToursFixture.BuildContext("-1")
         };
     }
 }

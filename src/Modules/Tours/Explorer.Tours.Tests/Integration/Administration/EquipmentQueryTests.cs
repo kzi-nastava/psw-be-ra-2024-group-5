@@ -8,16 +8,21 @@ using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration.Administration;
 
-[Collection("Sequential")]
-public class EquipmentQueryTests : BaseToursIntegrationTest
+[Collection("Tours")]
+public class EquipmentQueryTests : IClassFixture<ToursFixture>
 {
-    public EquipmentQueryTests(ToursTestFactory factory) : base(factory) { }
+    private ToursFixture fixture;
+
+    public EquipmentQueryTests(ToursFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void Retrieves_all()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
@@ -33,7 +38,7 @@ public class EquipmentQueryTests : BaseToursIntegrationTest
     {
         return new EquipmentController(scope.ServiceProvider.GetRequiredService<IEquipmentService>())
         {
-            ControllerContext = BuildContext("-1")
+            ControllerContext = ToursFixture.BuildContext("-1")
         };
     }
 }
