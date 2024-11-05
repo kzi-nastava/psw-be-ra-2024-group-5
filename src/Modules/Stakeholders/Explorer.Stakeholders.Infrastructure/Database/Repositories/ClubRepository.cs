@@ -1,4 +1,5 @@
-﻿using Explorer.BuildingBlocks.Infrastructure.Database;
+﻿using Explorer.BuildingBlocks.Core.Domain;
+using Explorer.BuildingBlocks.Infrastructure.Database;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +10,28 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
     {
         public ClubRepository(StakeholdersContext dbContext) : base(dbContext) { }
 
-        public new Club? Get(long clubId)
+        public new Club Get(long clubId)
         {
-            return DbContext.Clubs.Where(c => c.Id == clubId)
+            var result = DbContext.Clubs.Where(c => c.Id == clubId)
                 .Include(c => c.ClubMessages).FirstOrDefault();
+
+            if (result == null)
+                throw new KeyNotFoundException("Club not found: " + clubId);
+            else return result;
         }
 
         public new Club Update(Club club)
         {
-            DbContext.Entry(club).State = EntityState.Modified;
-            DbContext.SaveChanges();
-            return club;
+            try
+            {
+                DbContext.Entry(club).State = EntityState.Modified;
+                DbContext.SaveChanges();
+                return club;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new KeyNotFoundException(e.Message);
+            }
         }
 
         public List<ClubMembership> GetAllMemberships()
