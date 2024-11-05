@@ -56,5 +56,67 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (result) return Result.Ok();
             return Result.Fail("An error occurred while attempting to delete the membership.");
         }
+
+        public Result AddMessageToClub(long clubId, ClubMessage message, long userId)
+        {
+            var club = _clubRepository.Get(clubId);
+            if (club == null)
+                return Result.Fail("Club not found");
+
+            var memberships = _clubRepository.GetAllMemberships();
+            var membership = memberships.FirstOrDefault(m => m.UserId == userId && m.ClubId == clubId);
+
+            if(membership != null || club.OwnerId == userId)
+            {
+                club.AddMessage(message);
+                _clubRepository.Update(club);
+                return Result.Ok();
+            } else
+            {
+                return Result.Fail("User does not have permission to add messages to this club");
+            }
+        }
+
+        public Result RemoveMessageFromClub(long clubId, long messageId, long userId) 
+        {
+            var club = _clubRepository.Get(clubId);
+            if (club == null)
+                return Result.Fail("Club not found");
+
+            var message = club.GetClubMessages().FirstOrDefault(m => m.Id == messageId);
+            if (message == null)
+                return Result.Fail("Message not found");
+
+            if (club.OwnerId == userId)
+            {
+                club.RemoveMessage(messageId);
+                _clubRepository.Update(club);
+                return Result.Ok();
+            } else
+            {
+                return Result.Fail("User does not have permission to remove messages from this club");
+            }
+        }
+
+        public Result UpdateMessageInClub(long clubId, long messageId, long userId, string newContent)
+        {
+            var club = _clubRepository.Get(clubId);
+            if (club == null)
+                return Result.Fail("Club not found");
+
+            var message = club.GetClubMessages().FirstOrDefault(m => m.Id == messageId);
+            if (message == null)
+                return Result.Fail("Message not found");
+
+            if(message.SenderId == userId)
+            {
+                club.UpdateMessage(messageId, newContent);
+                _clubRepository.Update(club);
+                return Result.Ok();
+            } else
+            {
+                return Result.Fail("User does not have permission to update this message");
+            }
+        }
     }
 }
