@@ -8,11 +8,10 @@ public class StakeholdersContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Person> People { get; set; }
     public DbSet<UserProfile> Profiles { get; set; }
-    public DbSet<Message> Messages { get; set; }
+    public DbSet<ProfileMessage> ProfileMessages { get; set; }
     public DbSet<Club> Clubs { get; set; }
-
+    public DbSet<ClubMessage> ClubMessages { get; set; }
     public DbSet<AppRating> AppRating { get; set; }
-
     public DbSet<ClubMembership> Memberships { get; set; }
     public DbSet<Following> Followers { get; set; }
 
@@ -24,7 +23,8 @@ public class StakeholdersContext : DbContext
 
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         modelBuilder.Entity<UserProfile>().HasKey(u => u.Id);
-        modelBuilder.Entity<Message>().HasKey(m => m.Id);
+        modelBuilder.Entity<ProfileMessage>().HasKey(pm => pm.Id);
+        modelBuilder.Entity<ClubMessage>().HasKey(cm => cm.Id);
 
         ConfigureStakeholder(modelBuilder);
     }
@@ -75,13 +75,22 @@ public class StakeholdersContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<UserProfile>()
-            .HasMany(p => p.Messages)
+            .HasMany(p => p.ProfileMessages)
             .WithOne()
             .HasForeignKey(m => m.RecipientId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Message>()
-            .ToTable("Messages", "stakeholders")
+        modelBuilder.Entity<ClubMessage>()
+            .HasOne<Club>()  
+            .WithMany(c => c.ClubMessages)  
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ProfileMessage>()
+            .ToTable("ProfileMessages", "stakeholders")
+            .Property(m => m.Attachment).HasColumnType("jsonb");
+
+        modelBuilder.Entity<ClubMessage>()
+            .ToTable("ClubMessages", "stakeholders")
             .Property(m => m.Attachment).HasColumnType("jsonb");
     }
 }

@@ -8,7 +8,7 @@ public class UserProfile : Entity
     public string? ProfilePictureUrl { get; private set; } 
     public string? Biography { get; private set; } 
     public string? Motto { get; private set; } 
-    public List<Message> Messages { get; init; }
+    public List<ProfileMessage> ProfileMessages { get; init; }
 
     public UserProfile(long userId, string? profilePictureUrl, string? biography, string? motto)
     {
@@ -23,18 +23,18 @@ public class UserProfile : Entity
     private void Validate()
     {
         if (UserId == 0) throw new ArgumentException("Invalid UserId");
-        Messages.ForEach(m => m.Validate());
+        ProfileMessages.ForEach(m => m.Validate());
     }
 
-    public void AddMessage(Message message)
+    public void AddMessage(ProfileMessage message)
     {
-        Messages.Add(message);
+        ProfileMessages.Add(message);
         Validate();
     }
 
     public void MarkAllMessagesAsRead()
     {
-        Messages.ForEach(m => m.MarkAsRead());
+        ProfileMessages.ForEach(m => m.MarkAsRead());
         Validate();
     }
 
