@@ -20,7 +20,7 @@ public class UserProfile : Entity
     }
     public UserProfile() { }
 
-    private void Validate()
+    public void Validate()
     {
         if (UserId == 0) throw new ArgumentException("Invalid UserId");
         ProfileMessages.ForEach(m => m.Validate());
