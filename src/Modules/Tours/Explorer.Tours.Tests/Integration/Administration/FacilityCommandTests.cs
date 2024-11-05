@@ -1,30 +1,28 @@
-﻿using Explorer.API.Controllers.Administrator.Administration;
-using Explorer.API.Controllers.Author;
+﻿using Explorer.API.Controllers.Author;
 using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Author;
 using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Tours.Tests.Integration.Administration
 {
-    [Collection("Sequential")]
-    public class FacilityCommandTests: BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class FacilityCommandTests : IClassFixture<ToursFixture>
     {
-        public FacilityCommandTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public FacilityCommandTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Creates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new FacilityDto
@@ -56,7 +54,7 @@ namespace Explorer.Tours.Tests.Integration.Administration
         public void Creates_fails_name_null()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new FacilityDto
@@ -80,7 +78,7 @@ namespace Explorer.Tours.Tests.Integration.Administration
         public void Updates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new FacilityDto
@@ -114,7 +112,7 @@ namespace Explorer.Tours.Tests.Integration.Administration
         public void Updates_not_found()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new FacilityDto
@@ -140,7 +138,7 @@ namespace Explorer.Tours.Tests.Integration.Administration
         {
             return new FacilityController(scope.ServiceProvider.GetRequiredService<IFacilityService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
 

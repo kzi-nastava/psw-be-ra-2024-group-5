@@ -3,29 +3,32 @@ using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.Blog.Infrastructure.Database;
 using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Tours.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System.Linq;
 
 namespace Explorer.Blog.Tests.Integration;
 
-[Collection("Sequential")]
-public class BlogQueryTest : BaseBlogIntegrationTest
+[Collection("Blogs")]
+public class BlogQueryTest : IClassFixture<BlogFixture>
 {
-    public BlogQueryTest(BlogTestFactory factory) : base(factory) { }
+    private BlogFixture fixture;
+
+    public BlogQueryTest(BlogFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void ConvertsMarkdownToHTML()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
         var existingBlog = dbContext.blogs.FirstOrDefault(b => b.Id == -1);
-        existingBlog.ShouldNotBeNull(); 
+        existingBlog.ShouldNotBeNull();
 
         // Act
         var actionResult = controller.Preview((int)existingBlog.Id);
@@ -43,7 +46,7 @@ public class BlogQueryTest : BaseBlogIntegrationTest
     public void RetrievesAll()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
@@ -59,7 +62,7 @@ public class BlogQueryTest : BaseBlogIntegrationTest
     {
         return new BlogController(scope.ServiceProvider.GetRequiredService<IBlogService>())
         {
-            ControllerContext = BuildContext("-1")
+            ControllerContext = BlogFixture.BuildContext("-1")
         };
     }
 }
