@@ -57,5 +57,19 @@ public class StakeholderProfile : Profile
         CreateMap<Following, FollowingDto>()
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
+
+        CreateMap<ClubMessage, ClubMessageDto>()
+            .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
+            .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => src.SentAt))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
+            .ForMember(dest => dest.Attachment, opt => opt.MapFrom(src => src.Attachment));
+
+        CreateMap<ClubMessageDto, ClubMessage>()
+            .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
+            .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => src.SentAt))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
+            .ForMember(dest => dest.Attachment, opt => opt.MapFrom(src => src.Attachment));
     }
 }

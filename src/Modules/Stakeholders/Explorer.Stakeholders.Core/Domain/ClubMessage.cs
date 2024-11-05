@@ -8,7 +8,11 @@ namespace Explorer.Stakeholders.Core.Domain
 {
     public class ClubMessage : Message
     {
-        public ClubMessage(long senderId, string content, Attachment? attachment = null)
-            : base(senderId, content, attachment){}
+        public long ClubId { get; private set; }
+        public ClubMessage(long senderId, long clubId, string content, Attachment? attachment = null)
+            : base(senderId, content, attachment)
+        {
+            ClubId = clubId;
+        }
     }
 }

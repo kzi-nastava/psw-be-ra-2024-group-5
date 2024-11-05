@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Explorer.Stakeholders.API.Dtos;
 
 namespace Explorer.Stakeholders.Core.Domain
 {
@@ -15,7 +16,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public string Description { get; private set; }
         public string ImageDirectory {  get; private set; }
         public long OwnerId { get; private set; }
-        public List<ClubMessage> ClubMessages { get; private set; }
+        public List<ClubMessage>? ClubMessages { get; private set; }
         public Club(string name, string description, string imageDirectory,long ownerId) 
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Invalid Name.");
@@ -23,6 +24,7 @@ namespace Explorer.Stakeholders.Core.Domain
             Description = description; 
             ImageDirectory = imageDirectory;
             OwnerId = ownerId;
+            ClubMessages = new List<ClubMessage>();
             Validate();
         }
 
