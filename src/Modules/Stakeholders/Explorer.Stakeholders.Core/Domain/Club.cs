@@ -1,5 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
-using Explorer.Stakeholders.Core.Domain;
+using Explorer.Stakeholders.Core.Domain.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;

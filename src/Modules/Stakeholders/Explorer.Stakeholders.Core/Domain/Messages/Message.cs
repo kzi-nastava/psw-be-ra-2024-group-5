@@ -1,6 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
 
-namespace Explorer.Stakeholders.Core.Domain;
+namespace Explorer.Stakeholders.Core.Domain.Messages;
 
 public abstract class Message : Entity
 {
