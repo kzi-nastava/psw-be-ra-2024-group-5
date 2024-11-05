@@ -147,6 +147,36 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
+
+    public Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat)
+    {
+        try
+        {
+            var tours = _tourRepository.GetPublishedPagedFiltered(page, pageSize, startLong, endLong, startLat, endLat);
+
+            var resultDtos = new List<TourCardDto>();
+
+            foreach (var tour in tours)
+            {
+                var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
+                var kp = tour.KeyPoints[0];
+                if (kp == null)
+                    throw new Exception("Keypoints list is empty!");
+                var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+
+                resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
+
+            }
+
+            return Result.Ok(resultDtos);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Failed to get paged tours " + ex.Message);
+        }
+    }
+
     private TourDto MapTourToDto(Tour tour) {
         var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
         var transportDurationDtos = new List<TransportDurationDto>();

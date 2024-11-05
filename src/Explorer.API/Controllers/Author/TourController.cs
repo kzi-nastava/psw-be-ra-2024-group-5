@@ -43,6 +43,14 @@ namespace Explorer.API.Controllers.Author {
             var result = _tourService.GetPublishedPagedTours(page,pageSize);
             return CreateResponse(result);
         }
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("published/{page:int}/{pageSize:int}/{startLong:double}/{startLat:double}/{endLat:double}/{endLong:double}")]
+        public ActionResult<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat)
+        {
+            var result = _tourService.GetPublishedPagedToursFiltered(page, pageSize, startLong, endLong, startLat, endLat);
+            return CreateResponse(result);
+        }
 
         [HttpPost]
         public ActionResult<TourDto> Create([FromBody] TourCreationDto tour) {
