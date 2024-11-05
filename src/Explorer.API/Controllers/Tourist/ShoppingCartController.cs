@@ -66,5 +66,18 @@ namespace Explorer.API.Controllers.Tourist
 
             return Ok(result.Value);
         }
-    }
+
+		[Authorize(Policy = "touristPolicy")]
+		[HttpPost("checkout/{touristId:long}")]
+		public ActionResult Checkout(long touristId)
+		{
+			var result = _shoppingCartService.Checkout(touristId);
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result.Errors.FirstOrDefault()?.Message);
+			}
+
+			return Ok("Purchase completed successfully. Tokens created for each item.");
+		}
+	}
 }

@@ -37,5 +37,9 @@ namespace Explorer.Tours.Core.Domain.ShoppingCarts
 			TotalPrice = TotalPrice.Subtract(orderItem.Price);
 			Items.Remove(orderItem);
 		}
+		public void ResetTotalPrice()
+		{
+			TotalPrice = new Money(0, TotalPrice.Currency); 
+		}
 	}
 }

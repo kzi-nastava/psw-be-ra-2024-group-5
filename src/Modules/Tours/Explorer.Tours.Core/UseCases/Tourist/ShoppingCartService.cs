@@ -135,5 +135,34 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
             return result;
         }
-    }
+
+		public Result Checkout(long touristId)
+		{
+			var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
+			if (shoppingCart == null || !shoppingCart.Items.Any())
+			{
+				return Result.Fail("Shopping cart is empty.");
+			}
+
+			var tokens = new List<TourPurchaseToken>();
+
+			foreach (var item in shoppingCart.Items)
+			{
+				var token = new TourPurchaseToken
+				{
+					TourId = item.TourId,
+					UserId = touristId,
+					PurchaseDate = DateTime.UtcNow
+				};
+				tokens.Add(token);
+				_shoppingCartRepository.SaveToken(token);
+			}
+
+			shoppingCart.Items.Clear();
+			shoppingCart.ResetTotalPrice(); 
+			_shoppingCartRepository.Update(shoppingCart);
+
+			return Result.Ok();
+		}
+	}
 }
