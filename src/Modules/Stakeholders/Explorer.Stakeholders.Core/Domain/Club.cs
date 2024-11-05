@@ -1,5 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
-using Explorer.Stakeholders.Core.Domain;
+using Explorer.Stakeholders.Core.Domain.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public string Description { get; private set; }
         public string ImageDirectory {  get; private set; }
         public long OwnerId { get; private set; }
-        public List<ClubMessage>? ClubMessages { get; private set; }
+        public List<ClubMessage> ClubMessages { get; private set; } = new List<ClubMessage>();
         public Club(string name, string description, string imageDirectory,long ownerId) 
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Invalid Name.");
@@ -63,9 +63,6 @@ namespace Explorer.Stakeholders.Core.Domain
         {
             if (string.IsNullOrWhiteSpace(Name))
                 throw new ArgumentException("Club name cannot be empty.");
-
-            if (OwnerId == 0)
-                throw new ArgumentException("Invalid OwnerId.");
 
             ClubMessages.ForEach(m => m.Validate());
         }

@@ -1,30 +1,32 @@
-﻿using System.Security.Claims;
-using Explorer.API.Controllers;
-using Explorer.API.Controllers.Administrator.Administration;
+﻿using Explorer.API.Controllers;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
-using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Infrastructure.Database;
-using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using System.Security.Claims;
 
 namespace Explorer.Stakeholders.Tests.Integration;
 
-[Collection("Sequential")]
-public class FollowingTests: BaseStakeholdersIntegrationTest
+[Collection("Stakeholders")]
+public class FollowingTests : IClassFixture<StakeholdersFixture>
 {
-    public FollowingTests(StakeholdersTestFactory factory): base(factory) { }
+    private StakeholdersFixture fixture;
+
+    public FollowingTests(StakeholdersFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void successfully_adds_follower()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        //using var scope = fixture.Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
         var controller = CreateController(scope);
         var userId = -23;
@@ -32,7 +34,7 @@ public class FollowingTests: BaseStakeholdersIntegrationTest
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
 {
-            new Claim("id", userId.ToString())  
+            new Claim("id", userId.ToString())
         }, "mock"));
 
         controller.ControllerContext = new ControllerContext
@@ -51,8 +53,8 @@ public class FollowingTests: BaseStakeholdersIntegrationTest
         dbContext.ChangeTracker.Clear();
         var storedFollower = dbContext.Followers.
                                         FirstOrDefault(f => f.UserId == userId && f.FollowedUserId == followedUserId);
-        storedFollower.ShouldNotBeNull();  
-        storedFollower.UserId.ShouldBe(userId);  
+        storedFollower.ShouldNotBeNull();
+        storedFollower.UserId.ShouldBe(userId);
         storedFollower.FollowedUserId.ShouldBe(followedUserId);
     }
 
@@ -60,7 +62,7 @@ public class FollowingTests: BaseStakeholdersIntegrationTest
     public void successfully_removes_follower()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
         var controller = CreateController(scope);
         var userId = -11;
@@ -94,7 +96,7 @@ public class FollowingTests: BaseStakeholdersIntegrationTest
     public void Successfully_gets_all_followers()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var userId = -11;
 

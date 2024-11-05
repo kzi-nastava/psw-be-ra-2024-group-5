@@ -9,16 +9,21 @@ using Shouldly;
 
 namespace Explorer.Stakeholders.Tests.Integration
 {
-    [Collection("Sequential")]
-    public class AppRatingQueryTests : BaseStakeholdersIntegrationTest
+    [Collection("Stakeholders")]
+    public class AppRatingQueryTests : IClassFixture<StakeholdersFixture>
     {
-        public AppRatingQueryTests(StakeholdersTestFactory factory) : base(factory) { }
+        private StakeholdersFixture fixture;
+
+        public AppRatingQueryTests(StakeholdersFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Retrieves_all()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -34,7 +39,7 @@ namespace Explorer.Stakeholders.Tests.Integration
         {
             return new AppRatingController(scope.ServiceProvider.GetRequiredService<IAppRatingService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = StakeholdersFixture.BuildContext("-1")
             };
         }
     }

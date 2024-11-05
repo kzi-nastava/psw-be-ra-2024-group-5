@@ -84,5 +84,17 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 return Result.Fail(FailureCode.Internal).WithError(e.Message);
             }
         }
+
+        public Result<bool> Abandon(long tourExecutionId) {
+            var tourExecution = _tourExecutionRepository.Get(tourExecutionId);
+
+            if (tourExecution == null) {
+                return Result.Fail(FailureCode.NotFound).WithError("Tour execution not found");
+            }
+
+            tourExecution.Abandon();
+            _tourExecutionRepository.Update(tourExecution);
+            return Result.Ok(true);
+        }
     }
 }

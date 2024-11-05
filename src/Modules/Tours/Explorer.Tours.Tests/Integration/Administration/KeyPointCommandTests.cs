@@ -1,6 +1,4 @@
-﻿using Explorer.API.Controllers.Administrator.Administration;
-using Explorer.API.Controllers.Author;
-using Explorer.Tours.API.Dtos;
+﻿using Explorer.API.Controllers.Author;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -9,14 +7,21 @@ using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration.Administration;
 
-[Collection("Sequential")]
-public class KeyPointCommandTests : BaseToursIntegrationTest {
-    public KeyPointCommandTests(ToursTestFactory factory) : base(factory) { }
+[Collection("Tours")]
+public class KeyPointCommandTests : IClassFixture<ToursFixture>
+{
+    private ToursFixture fixture;
+
+    public KeyPointCommandTests(ToursFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
-    public void Creates() {
+    public void Creates()
+    {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var newEntity = new List<KeyPointDto> {
@@ -34,7 +39,8 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
 
         // Assert - Response
         result.ShouldNotBeNull();
-        foreach (var newKeyPoint in newEntity) {
+        foreach (var newKeyPoint in newEntity)
+        {
             var resultKeyPoint = result.FirstOrDefault(r => r.Name == newKeyPoint.Name);
             resultKeyPoint.ShouldNotBeNull();
             resultKeyPoint.Id.ShouldNotBe(0);
@@ -42,17 +48,19 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         }
 
         // Assert - Database
-        foreach (var newKeyPoint in newEntity) {
+        foreach (var newKeyPoint in newEntity)
+        {
             var storedEntity = dbContext.KeyPoint.FirstOrDefault(i => i.Name == newKeyPoint.Name);
             storedEntity.ShouldNotBeNull();
             storedEntity.Id.ShouldBe(result.FirstOrDefault(r => r.Name == newKeyPoint.Name).Id);
         }
-    } 
+    }
 
     [Fact]
-    public void Create_fails_name_empty() {
+    public void Create_fails_name_empty()
+    {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var newEntity = new List<KeyPointDto> {
             new KeyPointDto {
@@ -74,9 +82,10 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
     }
 
     [Fact]
-    public void Create_fails_name_null() {
+    public void Create_fails_name_null()
+    {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var newEntity = new List<KeyPointDto> {
             new KeyPointDto {
@@ -97,9 +106,10 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
     }
 
     [Fact]
-    public void Create_fails_tour_non_existant() {
+    public void Create_fails_tour_non_existant()
+    {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var newEntity = new List<KeyPointDto> {
             new KeyPointDto {
@@ -119,9 +129,11 @@ public class KeyPointCommandTests : BaseToursIntegrationTest {
         result.StatusCode.ShouldBe(404);
     }
 
-    private static KeyPointController CreateController(IServiceScope scope) {
-        return new KeyPointController(scope.ServiceProvider.GetRequiredService<IKeyPointService>()) {
-            ControllerContext = BuildContext("-1")
+    private static KeyPointController CreateController(IServiceScope scope)
+    {
+        return new KeyPointController(scope.ServiceProvider.GetRequiredService<IKeyPointService>())
+        {
+            ControllerContext = ToursFixture.BuildContext("-1")
         };
-    } 
+    }
 }

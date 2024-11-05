@@ -1,19 +1,19 @@
-﻿using Explorer.API.Controllers.Administrator.Administration;
-using Explorer.API.Controllers.Author;
-using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Enum;
+﻿using Explorer.API.Controllers.Author;
 using Explorer.Tours.API.Public.Administration;
-using Explorer.Tours.Infrastructure.Database;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
 
 
 namespace Explorer.Tours.Tests.Integration.Author;
 
-[Collection("Sequential")]
-public class TourCommandTests : BaseToursIntegrationTest {
-    public TourCommandTests(ToursTestFactory factory) : base(factory) { }
+[Collection("Tours")]
+public class TourCommandTests : IClassFixture<ToursFixture>
+{
+    private ToursFixture fixture;
+
+    public TourCommandTests(ToursFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     //[Fact]
     //public void Creates() {
@@ -183,9 +183,11 @@ public class TourCommandTests : BaseToursIntegrationTest {
     //    result.StatusCode.ShouldBe(404);
     //}
 
-    private static TourController CreateController(IServiceScope scope) {
-        return new TourController(scope.ServiceProvider.GetRequiredService<ITourService>()) {
-            ControllerContext = BuildContext("-1")
+    private static TourController CreateController(IServiceScope scope)
+    {
+        return new TourController(scope.ServiceProvider.GetRequiredService<ITourService>())
+        {
+            ControllerContext = ToursFixture.BuildContext("-1")
         };
     }
 }

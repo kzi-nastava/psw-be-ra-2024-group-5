@@ -35,5 +35,11 @@ namespace Explorer.API.Controllers.Tourist
             var result = _tourExecutionService.Progress(tourExecutionId, postitionDto);
             return CreateResponse(result);
         }
+
+        [HttpPatch("abandon/{tourExecutionId:long}")]
+        public ActionResult<bool> Abandon(long tourExecutionId) {
+            var result = _tourExecutionService.Abandon(tourExecutionId);
+            return CreateResponse(result);
+        }
     }
 }

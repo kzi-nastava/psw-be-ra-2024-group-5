@@ -1,4 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
+using Explorer.Stakeholders.Core.Domain.Messages;
 
 namespace Explorer.Stakeholders.Core.Domain;
 
@@ -20,7 +21,7 @@ public class UserProfile : Entity
     }
     public UserProfile() { }
 
-    private void Validate()
+    public void Validate()
     {
         if (UserId == 0) throw new ArgumentException("Invalid UserId");
         ProfileMessages.ForEach(m => m.Validate());

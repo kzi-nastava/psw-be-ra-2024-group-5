@@ -1,49 +1,46 @@
-﻿using Explorer.API.Controllers.Author;
-using Explorer.API.Controllers.Tourist;
-using Explorer.Tours.API.Public.Administration;
+﻿using Explorer.API.Controllers.Tourist;
 using Explorer.Tours.API.Public.Tourist;
-using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Infrastructure.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-	[Collection("Sequential")]
-	public class TouristEquipmentCommandTest : BaseToursIntegrationTest
-	{
-		public TouristEquipmentCommandTest(ToursTestFactory factory) : base(factory) { }
+    [Collection("Tours")]
+    public class TouristEquipmentCommandTest : IClassFixture<ToursFixture>
+    {
+        private ToursFixture fixture;
 
-		[Fact] 
-		public void Update_equipment_to_tourist()
-		{
-			// Arrange
-			using var scope = Factory.Services.CreateScope();
-			var controller = CreateController(scope);
-			var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
+        public TouristEquipmentCommandTest(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
-			List<int> equipmentIds = new List<int> { -1, -2, -3 };
-			int touristId = -21;
+        [Fact]
+        public void Update_equipment_to_tourist()
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+            var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
-			// Act
-			var result = controller.UpdateTouristEquipment(touristId, equipmentIds);
+            List<int> equipmentIds = new List<int> { -1, -2, -3 };
+            int touristId = -21;
 
-			// Assert
-			dbContext.TouristEquipment.Count().ShouldBe(4);
-		}
+            // Act
+            var result = controller.UpdateTouristEquipment(touristId, equipmentIds);
 
-		private static TouristController CreateController(IServiceScope scope)
-		{
-			return new TouristController(scope.ServiceProvider.GetRequiredService<ITouristService>())
-			{
-				ControllerContext = BuildContext("-1")
-			};
-		}
+            // Assert
+            dbContext.TouristEquipment.Count().ShouldBe(4);
+        }
 
-	}
+        private static TouristController CreateController(IServiceScope scope)
+        {
+            return new TouristController(scope.ServiceProvider.GetRequiredService<ITouristService>())
+            {
+                ControllerContext = ToursFixture.BuildContext("-1")
+            };
+        }
+
+    }
 }

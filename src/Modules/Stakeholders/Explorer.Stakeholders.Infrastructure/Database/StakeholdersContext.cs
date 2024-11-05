@@ -1,4 +1,5 @@
 ﻿using Explorer.Stakeholders.Core.Domain;
+using Explorer.Stakeholders.Core.Domain.Messages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Explorer.Stakeholders.Infrastructure.Database;
@@ -23,8 +24,14 @@ public class StakeholdersContext : DbContext
 
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         modelBuilder.Entity<UserProfile>().HasKey(u => u.Id);
-        modelBuilder.Entity<ProfileMessage>().HasKey(pm => pm.Id);
-        modelBuilder.Entity<ClubMessage>().HasKey(cm => cm.Id);
+
+        modelBuilder.Entity<ProfileMessage>()
+            .ToTable("ProfileMessages", "stakeholders")
+            .Property(m => m.Attachment).HasColumnType("jsonb");
+
+        modelBuilder.Entity<ClubMessage>()
+            .ToTable("ClubMessages", "stakeholders")
+            .Property(m => m.Attachment).HasColumnType("jsonb");
 
         ConfigureStakeholder(modelBuilder);
     }
@@ -35,12 +42,6 @@ public class StakeholdersContext : DbContext
             .HasOne<User>()
             .WithOne()
             .HasForeignKey<Person>(s => s.UserId);
-
-        //modelBuilder.Entity<Message>()
-        //    .HasOne<UserProfile>()
-        //    .WithMany()
-        //    .HasForeignKey(m => m.SenderId);
-
 
         modelBuilder.Entity<ClubMembership>()
             .ToTable("Memberships", "stakeholders")
@@ -86,17 +87,13 @@ public class StakeholdersContext : DbContext
             .HasForeignKey(cm => cm.ClubId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ClubMessage>()
-            .HasOne<Club>()  
-            .WithMany(c => c.ClubMessages)  
-            .OnDelete(DeleteBehavior.Cascade);
+        //modelBuilder.Entity<ProfileMessage>()
+        //    .ToTable("ProfileMessages", "stakeholders")
+        //    .Property(m => m.Attachment).HasColumnType("jsonb");
 
-        modelBuilder.Entity<ProfileMessage>()
-            .ToTable("ProfileMessages", "stakeholders")
-            .Property(m => m.Attachment).HasColumnType("jsonb");
+        //modelBuilder.Entity<ClubMessage>()
+        //    .ToTable("ClubMessages", "stakeholders")
+        //    .Property(m => m.Attachment).HasColumnType("jsonb");
 
-        modelBuilder.Entity<ClubMessage>()
-            .ToTable("ClubMessages", "stakeholders")
-            .Property(m => m.Attachment).HasColumnType("jsonb");
     }
 }

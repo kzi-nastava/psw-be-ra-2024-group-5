@@ -1,5 +1,6 @@
 using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
@@ -12,17 +13,18 @@ using System.Linq;
 namespace Explorer.Tours.Core.UseCases.Administration;
 
 public class TourService : BaseService<TourDto, Tour>, ITourService {
-    private readonly ITourRepository _repository;
+    private readonly ITourRepository _tourRepository;
     private readonly IMapper equipmentMapper;
-
-    public TourService(ITourRepository repository, IMapper mapper) : base(mapper) {
-        _repository = repository;
+    private readonly IUserRepository _userRepository;
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper) : base(mapper) {
+        _tourRepository = repository;
+        _userRepository = userRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
     }
 
     public Result<TourDto> GetById(int id) {
         try {
-            var tour = _repository.GetById(id);
+            var tour = _tourRepository.GetById(id);
             var tourDto = MapTourToDto(tour);
             return Result.Ok(tourDto);
         }
@@ -31,9 +33,37 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
+    public Result<TourTouristDto> GetForTouristById(long id, long touristId)
+    {
+        try
+        {
+            var user = this._userRepository.Get(touristId);
+
+            if (user == null || user.Role != Stakeholders.Core.Domain.UserRole.Tourist)
+            {
+                return Result.Fail(FailureCode.Forbidden);
+            }
+
+            var tour = _tourRepository.GetById((int)id);
+            var tourDto = MapTourToDto(tour);
+
+            /*
+             Ovde treba napraviti logiku, da li moze komentarisati, dal je kupio
+            Koliko keypointova..
+             */
+            var tourTouristDto = new TourTouristDto(tourDto);
+
+            return Result.Ok(tourTouristDto);
+        }
+        catch (Exception e)
+        {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
+    }
+
     public Result<List<TourDto>> GetByAuthorId(int id) {
         try {
-            var tours = _repository.GetByAuthorId(id);
+            var tours = _tourRepository.GetByAuthorId(id);
             var tourDtos = MapToursToDtos(tours);
             return Result.Ok(tourDtos);
         }
@@ -45,7 +75,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     public Result<TourDto> Create(TourCreationDto tourDto) {
         try {
             var tour = MapTourCreationDtoToEntity(tourDto);
-            var returnedTour = _repository.Create(tour);
+            var returnedTour = _tourRepository.Create(tour);
             var result = MapTourToDto(returnedTour);
             return Result.Ok(result);
         }
@@ -58,7 +88,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         try {
             tourDto.Id = id;
             var tour = MapTourUpdateDtoToEntity(tourDto);
-            var returnedTour = _repository.Update(tour);
+            var returnedTour = _tourRepository.Update(tour);
             var result = MapTourToDto(returnedTour);
             return Result.Ok(result);
         }
@@ -69,7 +99,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
     public Result Delete(int id) {
         try {
-            _repository.Delete(id);
+            _tourRepository.Delete(id);
             return Result.Ok();
         }
         catch (KeyNotFoundException e) {
@@ -78,12 +108,12 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     }
 
     public Result UpdateTourEquipment(long tourId, List<long> equipmentId) {
-        var result = _repository.UpdateTourEquipment(tourId, equipmentId);
+        var result = _tourRepository.UpdateTourEquipment(tourId, equipmentId);
         return result;
     }
 
     public Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId) {
-        var result = _repository.GetTourEquipment(tourId);
+        var result = _tourRepository.GetTourEquipment(tourId);
         var dtos = equipmentMapper.Map<List<EquipmentDto>>(result.Value.Results);
         return new PagedResult<EquipmentDto>(dtos, dtos.Count);
     }
@@ -92,7 +122,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     {
         try
         {
-            var tours = _repository.GetPublishedPaged(page, pageSize);
+            var tours = _tourRepository.GetPublishedPaged(page, pageSize);
 
             var resultDtos = new List<TourCardDto>();
 
