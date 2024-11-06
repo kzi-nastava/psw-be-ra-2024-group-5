@@ -1,4 +1,6 @@
-﻿namespace Explorer.Stakeholders.API.Dtos;
+﻿using Explorer.Stakeholders.API.Dtos.Messages;
+
+namespace Explorer.Stakeholders.API.Dtos;
 
 public class UserProfileDto
 {
@@ -9,4 +11,20 @@ public class UserProfileDto
     public string? ProfilePictureUrl { get; set; }
     public string? Biography { get; set; }
     public string? Motto { get; set; }
+    public List<MessageDto> Messages { get; set; }
+
+    public UserProfileDto() { }
+
+    public UserProfileDto(long id, long userId, string name, string surname,
+        string? profilePictureUrl, string? biography, string? motto, List<MessageDto> messages)
+    {
+        Id = id;
+        UserId = userId;
+        Name = name;
+        Surname = surname;
+        ProfilePictureUrl = profilePictureUrl;
+        Biography = biography;
+        Motto = motto;
+        Messages = messages;
+    }
 }
