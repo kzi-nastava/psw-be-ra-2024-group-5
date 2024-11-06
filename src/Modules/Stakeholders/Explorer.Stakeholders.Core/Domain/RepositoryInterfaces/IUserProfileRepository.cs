@@ -9,4 +9,5 @@ public interface IUserProfileRepository
     UserProfile Create(UserProfile userProfile);
     UserProfile Update(UserProfile userProfile);
     void Delete(long profileId);
+    bool Exists(long profileId);
 }
