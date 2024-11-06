@@ -2,28 +2,27 @@
 using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.Blog.Infrastructure.Database;
-using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Blog.Tests.Integration
 {
-    [Collection("Sequential")]
-    public class BlogCommandTests : BaseBlogIntegrationTest
+    [Collection("Blogs")]
+    public class BlogCommandTests : IClassFixture<BlogFixture>
     {
-        public BlogCommandTests(BlogTestFactory factory) : base(factory) { }
+        private BlogFixture fixture;
+
+        public BlogCommandTests(BlogFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void CreatesBlogWithoutImages()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
             var newEntity = new BlogDTO
@@ -53,7 +52,7 @@ namespace Explorer.Blog.Tests.Integration
         public void CreatesBlogWithOneImage()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
             var newEntity = new BlogDTO
@@ -91,7 +90,7 @@ namespace Explorer.Blog.Tests.Integration
         public void CreatesBlogWithImages()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
             var newEntity = new BlogDTO
@@ -135,7 +134,7 @@ namespace Explorer.Blog.Tests.Integration
         public void CreateBlogFailsInvalidData()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var newEntity = new BlogDTO
             {
@@ -154,12 +153,12 @@ namespace Explorer.Blog.Tests.Integration
         public void UpdatesBlogStatus()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-            var blogId = -3;  
-            var newStatus = BlogStatusDto.Published; 
-            var userId = 123;
+            var blogId = -3;
+            var newStatus = BlogStatusDto.Published;
+            var userId = -11;
 
             // Act
             var result = ((ObjectResult)controller.UpdateStatus(blogId, newStatus, userId).Result)?.Value as BlogDTO;
@@ -180,7 +179,7 @@ namespace Explorer.Blog.Tests.Integration
         {
             return new BlogController(scope.ServiceProvider.GetRequiredService<IBlogService>())
             {
-                ControllerContext = BuildContext("1")
+                ControllerContext = BlogFixture.BuildContext("1")
             };
         }
     }

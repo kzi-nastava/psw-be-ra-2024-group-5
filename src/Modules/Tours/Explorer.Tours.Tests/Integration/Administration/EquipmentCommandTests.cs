@@ -8,16 +8,21 @@ using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration.Administration;
 
-[Collection("Sequential")]
-public class EquipmentCommandTests : BaseToursIntegrationTest
+[Collection("Tours")]
+public class EquipmentCommandTests : IClassFixture<ToursFixture>
 {
-    public EquipmentCommandTests(ToursTestFactory factory) : base(factory) { }
+    private ToursFixture fixture;
+
+    public EquipmentCommandTests(ToursFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void Creates()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var newEntity = new EquipmentDto
@@ -44,7 +49,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     public void Create_fails_invalid_data()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var updatedEntity = new EquipmentDto
         {
@@ -63,7 +68,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     public void Updates()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
         var updatedEntity = new EquipmentDto
@@ -94,7 +99,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     public void Update_fails_invalid_id()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var updatedEntity = new EquipmentDto
         {
@@ -114,7 +119,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     public void Deletes()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
         var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
@@ -134,7 +139,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     public void Delete_fails_invalid_id()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
@@ -149,7 +154,7 @@ public class EquipmentCommandTests : BaseToursIntegrationTest
     {
         return new EquipmentController(scope.ServiceProvider.GetRequiredService<IEquipmentService>())
         {
-            ControllerContext = BuildContext("-1")
+            ControllerContext = ToursFixture.BuildContext("-1")
         };
     }
 }

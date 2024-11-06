@@ -64,4 +64,23 @@ public class Tour : Entity {
         KeyPoints.Add(keyPoint);
         return KeyPoints;
     }
+
+    public bool Publish()
+    {
+        if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description)
+            || KeyPoints == null || KeyPoints.Count < 2
+            || TransportDurations == null || !TransportDurations.Any()
+            || Status == TourStatus.Published || Status == TourStatus.Archived
+            || string.IsNullOrWhiteSpace(Tags) || Level == null)
+        {
+            return false;
+        }
+
+        Status = TourStatus.Published;
+        PublishedTime = DateTime.UtcNow;
+        return true;
+    }
+
+
+
 }

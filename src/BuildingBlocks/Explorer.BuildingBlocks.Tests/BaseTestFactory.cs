@@ -9,35 +9,12 @@ using Explorer.API;
 
 namespace Explorer.BuildingBlocks.Tests;
 
-public abstract class BaseTestFactory<TDbContext> : WebApplicationFactory<Program> where TDbContext : DbContext
+public abstract class BaseTestFactory : WebApplicationFactory<Program>
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    protected abstract override void ConfigureWebHost(IWebHostBuilder builder);
+
+    protected static void RunSetupScripts(DbContext context, string scriptFolder, ILogger logger)
     {
-        builder.ConfigureServices(services =>
-        {
-            using var scope = BuildServiceProvider(services).CreateScope();
-            var scopedServices = scope.ServiceProvider;  
-            var db = scopedServices.GetRequiredService<TDbContext>();
-            var logger = scopedServices.GetRequiredService<ILogger<BaseTestFactory<TDbContext>>>();
-
-            var path = Path.Combine(".", "..", "..", "..", "TestData");
-            InitializeDatabase(db, path, logger);
-        });
-    }
-
-    private static void InitializeDatabase(DbContext context, string scriptFolder, ILogger logger)
-    {
-        try
-        {
-            context.Database.EnsureCreated();
-            var databaseCreator = context.Database.GetService<IRelationalDatabaseCreator>();
-            databaseCreator.CreateTables();
-        }
-        catch (Exception)
-        {
-            // CreateTables throws an exception if the schema already exists. This is a workaround for multiple dbcontexts.
-        }
-
         try
         {
             var scriptFiles = Directory.GetFiles(scriptFolder);
@@ -51,7 +28,42 @@ public abstract class BaseTestFactory<TDbContext> : WebApplicationFactory<Progra
         }
     }
 
-    private ServiceProvider BuildServiceProvider(IServiceCollection services)
+    protected static void InitializeDatabases(ICollection<DbContext> contexts, string scriptsFolder, ILogger logger)
+    {
+        try
+        {
+            foreach (var context in contexts)
+                context.Database.EnsureDeleted();
+
+            foreach (var context in contexts)
+            {
+                context.Database.EnsureCreated();
+                var databaseCreator = context.Database.GetService<IRelationalDatabaseCreator>();
+
+                try { databaseCreator.CreateTables(); }
+                catch (InvalidOperationException ex) when (ex.Message.Contains("already exists"))
+                {
+                    logger.LogWarning("Tables already exist in database: {DatabaseName}. Skipping table creation.",
+                        context.Database.GetDbConnection().Database);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred creating the tables in database: {DatabaseName}. Error: {Message}",
+                        context.Database.GetDbConnection().Database, ex.Message);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred initializing the databases. Error: {Message}", ex.Message);
+        }
+        finally
+        {
+            RunSetupScripts(contexts.First(), scriptsFolder, logger);
+        }
+    }
+
+    protected ServiceProvider BuildServiceProvider(IServiceCollection services)
     {
         return ReplaceNeededDbContexts(services).BuildServiceProvider();
     }

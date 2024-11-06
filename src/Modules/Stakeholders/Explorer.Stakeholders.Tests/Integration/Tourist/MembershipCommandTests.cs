@@ -1,28 +1,25 @@
-﻿using Explorer.API.Controllers.Administrator.Administration;
-using Explorer.API.Controllers.Tourist;
-using Explorer.Stakeholders.API.Dtos;
+﻿using Explorer.API.Controllers.Tourist;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Infrastructure.Database;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Stakeholders.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class MembershipCommandTests : BaseStakeholdersIntegrationTest
+    [Collection("Stakeholders")]
+    public class MembershipCommandTests : IClassFixture<StakeholdersFixture>
     {
-        public MembershipCommandTests(StakeholdersTestFactory factory) : base(factory) { }
+        private StakeholdersFixture fixture;
+
+        public MembershipCommandTests(StakeholdersFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Add_user_to_club_success()
         {
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             int userId = -11;
@@ -40,7 +37,7 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
         public void Remove_user_from_club_success()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
             int userId = -1;
@@ -57,7 +54,7 @@ namespace Explorer.Stakeholders.Tests.Integration.Tourist
         {
             return new ClubMembershipController(scope.ServiceProvider.GetRequiredService<IClubService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = StakeholdersFixture.BuildContext("-1")
             };
         }
 

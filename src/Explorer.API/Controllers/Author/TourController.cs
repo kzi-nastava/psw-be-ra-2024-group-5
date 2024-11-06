@@ -69,5 +69,12 @@ namespace Explorer.API.Controllers.Author {
             var result = _tourService.Delete(id);
             return CreateResponse(result);
         }
+
+        [HttpPost("publish/{tourId:long}")]
+        public ActionResult PublishTour(int tourId)
+        {
+            var result = _tourService.PublishTour(tourId);
+            return CreateResponse(result);
+        }
     }
 }
