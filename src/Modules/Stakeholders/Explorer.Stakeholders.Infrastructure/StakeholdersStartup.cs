@@ -11,6 +11,7 @@ using Explorer.Stakeholders.Infrastructure.Database;
 using Explorer.Stakeholders.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Explorer.Stakeholders.Core.Domain.Messages;
 
 namespace Explorer.Stakeholders.Infrastructure;
 
