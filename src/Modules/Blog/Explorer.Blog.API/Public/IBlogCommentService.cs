@@ -11,5 +11,6 @@ namespace Explorer.Blog.API.Public
         Result<bool> DeleteComment(long id);
         public Result<List<BlogCommentDTO>> GetAllCommentsByUser(long userId);
 
+        public Result<List<BlogCommentDTO>> GetAllCommentsByBlogId(long blogId);
     }
 }

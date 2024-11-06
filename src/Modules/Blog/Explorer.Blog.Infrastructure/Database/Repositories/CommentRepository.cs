@@ -20,5 +20,16 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
                            .ToList();
         }
 
+        public List<BlogComment> GetAllByBlogId(long blogPostId)
+        {
+            Console.WriteLine($"Fetching comments for BlogPostId: {blogPostId}");
+            var comments = _context.BlogComments
+                                   .Where(comment => comment.BlogPostId == blogPostId)
+                                   .OrderByDescending(comment => comment.creationTime)
+                                   .ToList();
+            Console.WriteLine($"Found {comments.Count} comments");
+            return comments;
+        }
+
     }
 }

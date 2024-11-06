@@ -1,5 +1,6 @@
 ﻿using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
+using Explorer.Blog.Core.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Explorer.API.Controllers.Author
@@ -93,5 +94,24 @@ namespace Explorer.API.Controllers.Author
 
             return Ok(result.Value);
         }
+
+        [HttpGet("blog/{blogId}")]
+        public IActionResult GetCommentsForBlog(long blogId)
+        {
+            var result = _blogCommentService.GetAllCommentsByBlogId(blogId);
+
+            if (result.IsFailed)
+            {
+                // Check if the error is specifically about not finding comments
+                if (result.Errors.Any(e => e.Message == "No comments found for this blog."))
+                {
+                    return Ok(new List<BlogComment>()); // Return an empty list instead of 404
+                }
+                return NotFound(new { Message = result.Errors.First().Message });
+            }
+
+            return Ok(result.Value);
+        }
+
     }
 }

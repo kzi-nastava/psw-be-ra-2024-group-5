@@ -32,7 +32,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(new FluentResults.Error($"User with ID {commentDto.userId} does not exist."));
             }
 
-            var blogComment = new BlogComment(commentDto.userId, commentDto.commentText);
+            var blogComment = new BlogComment(commentDto.blogPostId, commentDto.userId, commentDto.commentText);
 
             Result<BlogComment> result = CrudRepository.Create(blogComment);
 
@@ -130,6 +130,27 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(new FluentResults.Error($"Error fetching comments for user {userId}: {ex.Message}"));
             }
         }
+
+        public Result<List<BlogCommentDTO>> GetAllCommentsByBlogId(long blogId)
+        {
+            try
+            {
+                var comments = _commentRepository.GetAllByBlogId(blogId);
+
+                if (comments == null || comments.Count == 0)
+                {
+                    return Result.Fail(new FluentResults.Error("No comments found for this blog."));
+                }
+
+                var commentDtos = _mapper.Map<List<BlogCommentDTO>>(comments);
+                return Result.Ok(commentDtos);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(new FluentResults.Error($"Error fetching comments for blog {blogId}: {ex.Message}"));
+            }
+        }
+
 
     }
 }
