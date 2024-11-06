@@ -10,6 +10,11 @@ public class UserProfileDatabaseRepository
 {
     public UserProfileDatabaseRepository(StakeholdersContext dbContext) : base(dbContext) { }
 
+    public bool Exists(long profileId)
+    {
+        return Get(profileId) != null;
+    }
+
     public new UserProfile? Get(long profileId)
     {
         return DbContext.Profiles.Where(p => p.Id == profileId)
