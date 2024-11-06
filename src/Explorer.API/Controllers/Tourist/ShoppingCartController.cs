@@ -74,10 +74,9 @@ namespace Explorer.API.Controllers.Tourist
 			var result = _shoppingCartService.Checkout(touristId);
 			if (!result.IsSuccess)
 			{
-				return BadRequest(result.Errors.FirstOrDefault()?.Message);
+				return BadRequest(new { error = result.Errors.FirstOrDefault()?.Message });
 			}
-
-			return Ok("Purchase completed successfully. Tokens created for each item.");
+			return Ok(new { message = "Purchase completed successfully. Tokens created for each item." });
 		}
 	}
 }
