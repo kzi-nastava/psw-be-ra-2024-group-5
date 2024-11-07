@@ -15,6 +15,7 @@ public class ToursContext : DbContext
     public DbSet<KeyPoint> KeyPoint { get; set; }
     public DbSet<Facility> Facilities { get; set; }
     public DbSet<Preference> Preferences { get; set; }
+    public DbSet<TourExecution> TourExecutions { get; set; }
 	public DbSet<TouristEquipment> TouristEquipment { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
@@ -37,6 +38,7 @@ public class ToursContext : DbContext
         modelBuilder.Entity<TourReview>().HasKey(t => t.Id);
 
         ConfigureTour(modelBuilder);
+        ConfigureTourExecution(modelBuilder);
         ConfigurePreference(modelBuilder);
         ConfigureTourEquipment(modelBuilder);
         ConfigureTouristEquipment(modelBuilder);
@@ -46,20 +48,46 @@ public class ToursContext : DbContext
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
-        modelBuilder.Entity<User>()
-            .ToTable("Users", "stakeholders")
-            .Metadata.SetIsTableExcludedFromMigrations(true);
 
         modelBuilder.Entity<Tour>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(t => t.AuthorId)
+            .HasMany(sc => sc.KeyPoints)
+            .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<KeyPoint>()
+        modelBuilder.Entity<Tour>()
+            .HasMany(sc => sc.Reviews)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Tour>()
+            .Property(t => t.Price)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<Tour>()
+            .Property(t => t.TransportDurations)
+            .HasColumnType("jsonb");
+    }
+
+    private static void ConfigureTourExecution(ModelBuilder modelBuilder) {
+
+        modelBuilder.Entity<TourExecution>()
+            .HasKey(te => te.Id);
+
+        modelBuilder.Entity<TourExecution>()
             .HasOne<Tour>()
-            .WithMany() 
-            .HasForeignKey(k => k.TourId)
+            .WithMany()
+            .HasForeignKey(te => te.TourId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TourExecution>()
+            .HasMany(te => te.KeyPointProgresses)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<KeyPointProgress>()
+            .HasOne(kp => kp.KeyPoint)
+            .WithOne()
+            .HasForeignKey<KeyPointProgress>(kp => kp.KeyPointId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 
@@ -94,6 +122,7 @@ public class ToursContext : DbContext
             .WithMany()
             .HasForeignKey(te => te.EquipmentId);
     }
+    
     private static void ConfigureTouristEquipment(ModelBuilder modelBuilder)
     {
 		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
@@ -115,22 +144,6 @@ public class ToursContext : DbContext
 
     private static void ConfigureTourReview(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-        .ToTable("Users", "stakeholders")
-        .Metadata.SetIsTableExcludedFromMigrations(true);
-
-        modelBuilder.Entity<TourReview>()
-        .HasOne<User>()
-        .WithMany()
-        .HasForeignKey(tr => tr.TouristId)
-        .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TourReview>()
-            .HasOne<Tour>()
-            .WithMany()
-            .HasForeignKey(tr => tr.TourId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<TourReview>()
             .Property(tr => tr.Rating)
             .IsRequired();

@@ -6,7 +6,6 @@ namespace Explorer.Tours.Core.Domain
 {
     public class TourReview : Entity
     {
-
         public int Rating { get; private set; }
         public string Comment { get; private set; }
         public DateTime VisitDate { get; private set; }
@@ -21,6 +20,22 @@ namespace Explorer.Tours.Core.Domain
             ValidateComment(comment);
             ValidateVisitDate(visitDate);
 
+            Rating = rating;
+            Comment = comment;
+            VisitDate = visitDate;
+            ReviewDate = reviewDate;
+            TourId = tourId;
+            TouristId = touristId;
+            Image = image;
+        }
+
+        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, long tourId, long touristId, byte[]? image = null)
+        {
+            ValidateRating(rating);
+            ValidateComment(comment);
+            ValidateVisitDate(visitDate);
+
+            Id = id;
             Rating = rating;
             Comment = comment;
             VisitDate = visitDate;

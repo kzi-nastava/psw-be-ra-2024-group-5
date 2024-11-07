@@ -8,16 +8,21 @@ using Shouldly;
 
 namespace Explorer.Stakeholders.Tests.Integration.Administration;
 
-[Collection("Sequential")]
-public class AccountTests : BaseStakeholdersIntegrationTest
+[Collection("Stakeholders")]
+public class AccountTests : IClassFixture<StakeholdersFixture>
 {
-    public AccountTests(StakeholdersTestFactory factory) : base(factory) { }
+    private StakeholdersFixture fixture;
+
+    public AccountTests(StakeholdersFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void Successfully_gets_all_accounts()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
@@ -25,14 +30,14 @@ public class AccountTests : BaseStakeholdersIntegrationTest
 
         // Assert
         response.Results.ShouldNotBeEmpty();
-        response.Results.Count.ShouldBe(6);
+        response.Results.Count.ShouldBe(7);
     }
 
     [Fact]
     public void Successfully_blocks_account()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var controller = CreateController(scope);
 
         // Act
