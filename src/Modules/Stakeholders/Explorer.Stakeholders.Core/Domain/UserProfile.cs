@@ -9,7 +9,7 @@ public class UserProfile : Entity
     public string? ProfilePictureUrl { get; private set; } 
     public string? Biography { get; private set; } 
     public string? Motto { get; private set; } 
-    public List<ProfileMessage> ProfileMessages { get; init; }
+    public List<ProfileMessage> ProfileMessages { get; init; } = new List<ProfileMessage>();
 
     public UserProfile(long userId, string? profilePictureUrl, string? biography, string? motto)
     {
@@ -19,6 +19,13 @@ public class UserProfile : Entity
         Motto = motto;
         Validate();
     }
+
+    public UserProfile(long userId)
+    {
+        UserId = userId;
+        ProfilePictureUrl = Biography = Motto = string.Empty;
+    }
+
     public UserProfile() { }
 
     public void Validate()
@@ -31,6 +38,17 @@ public class UserProfile : Entity
     {
         ProfileMessages.Add(message);
         Validate();
+    }
+
+    public bool ViewMessage(long messageId)
+    {
+        var message = ProfileMessages.FirstOrDefault(m => m.Id == messageId);
+        if (message != null)
+        {
+            message.MarkAsRead();
+            return true;
+        }
+        return false;
     }
 
     public void MarkAllMessagesAsRead()

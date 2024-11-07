@@ -36,5 +36,11 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
 
             return shoppingCart;
         }
-    }
+
+        public void SaveToken(TourPurchaseToken token)
+        {
+            DbContext.TourPurchaseTokens.Add(token);
+			DbContext.SaveChanges();
+		}
+	}
 }

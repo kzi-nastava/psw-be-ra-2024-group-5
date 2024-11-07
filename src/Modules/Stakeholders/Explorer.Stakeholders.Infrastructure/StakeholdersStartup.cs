@@ -6,6 +6,7 @@ using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Stakeholders.Core.Mappers;
 using Explorer.Stakeholders.Core.UseCases;
+using Explorer.Stakeholders.Core.UseCases.Identity;
 using Explorer.Stakeholders.Infrastructure.Authentication;
 using Explorer.Stakeholders.Infrastructure.Database;
 using Explorer.Stakeholders.Infrastructure.Database.Repositories;
@@ -35,6 +36,7 @@ public static class StakeholdersStartup
         services.AddScoped<IClubService, ClubService>();
         services.AddScoped<IUserService, InternalUserService>();
         services.AddScoped<IFollowingService, FollowingService>();
+        services.AddScoped<IProfileMessagesService, ProfileMessagesService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)

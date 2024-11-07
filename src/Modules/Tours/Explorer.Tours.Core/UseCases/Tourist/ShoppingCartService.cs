@@ -76,8 +76,35 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 return Result.Fail(ex.Message);
             }
         }
+		public Result<ShoppingCartDto> RemoveFromCart(OrderItemDto orderItemDto, long touristId)
+        {
+			try
+			{
+				var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
 
-        public Result<ShoppingCartDto> GetByUserId(long touristId)
+				if (shoppingCart == null)
+					return Result.Fail("Shopping cart doesnt exist!");
+
+				var orderItem = shoppingCart.Items.FirstOrDefault(item =>
+			        item.TourId == orderItemDto.TourId &&
+			        item.Price.Amount == orderItemDto.Price.Amount &&
+			        item.Price.Currency == orderItemDto.Price.Currency);
+
+				if (orderItem == null)
+					return Result.Fail("Item does not exist in the shopping cart!");
+
+				shoppingCart.RemoveItemFromCart(orderItem);
+				shoppingCart = _shoppingCartRepository.Update(shoppingCart);
+
+				return MapShoppingCartToDto(shoppingCart);
+			}
+			catch (Exception ex)
+			{
+				return Result.Fail(ex.Message);
+			}
+		}
+
+		public Result<ShoppingCartDto> GetByUserId(long touristId)
         {
             try
             {
@@ -108,5 +135,34 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
             return result;
         }
-    }
+
+		public Result Checkout(long touristId)
+		{
+			var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
+			if (shoppingCart == null || !shoppingCart.Items.Any())
+			{
+				return Result.Fail("Shopping cart is empty.");
+			}
+
+			var tokens = new List<TourPurchaseToken>();
+
+			foreach (var item in shoppingCart.Items)
+			{
+				var token = new TourPurchaseToken
+				{
+					TourId = item.TourId,
+					UserId = touristId,
+					PurchaseDate = DateTime.UtcNow
+				};
+				tokens.Add(token);
+				_shoppingCartRepository.SaveToken(token);
+			}
+
+			shoppingCart.Items.Clear();
+			shoppingCart.ResetTotalPrice(); 
+			_shoppingCartRepository.Update(shoppingCart);
+
+			return Result.Ok();
+		}
+	}
 }

@@ -19,6 +19,7 @@ public class ToursContext : DbContext
 	public DbSet<TouristEquipment> TouristEquipment { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<TourPurchaseToken> TourPurchaseTokens { get; set; }
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
@@ -43,6 +44,7 @@ public class ToursContext : DbContext
         ConfigureTouristEquipment(modelBuilder);
         ConfigureTourReview(modelBuilder);
         ConfigureShoppingCarts(modelBuilder);
+        ConfigureTourPurchaseToken(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -169,10 +171,11 @@ public class ToursContext : DbContext
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
+        /*
         modelBuilder.Entity<OrderItem>()
             .HasOne<Tour>()
             .WithMany()
-            .HasForeignKey(oi => oi.TourId);
+            .HasForeignKey(oi => oi.TourId);*/
 
         modelBuilder.Entity<OrderItem>()
             .Property(oi => oi.Price)
@@ -182,4 +185,22 @@ public class ToursContext : DbContext
             .Property(sc => sc.TotalPrice)
             .HasColumnType("jsonb");
     }
+
+	private static void ConfigureTourPurchaseToken(ModelBuilder modelBuilder)
+    {
+		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
+
+		modelBuilder.Entity<TourPurchaseToken>().HasKey(te => te.Id);
+
+		modelBuilder.Entity<TourPurchaseToken>()
+		   .HasOne<User>()
+		   .WithMany()
+		   .HasForeignKey(te => te.UserId);
+
+
+		modelBuilder.Entity<TourPurchaseToken>()
+			.HasOne<Tour>()
+			.WithMany()
+			.HasForeignKey(te => te.TourId);
+	}
 }
