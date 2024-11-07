@@ -42,5 +42,29 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories
             DbContext.TourPurchaseTokens.Add(token);
 			DbContext.SaveChanges();
 		}
-	}
+
+        public TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId)
+        {
+            return DbContext.TourPurchaseTokens.Where(tpt => tpt.TourId == tourId && tpt.UserId == touristId).FirstOrDefault();
+        }
+
+        public bool IsTourBought(long touristId, long tourId)
+        {
+            var purchaseToken = this.GetPurchaseTokenByTourAndTouristId(touristId, tourId);
+
+            if (purchaseToken == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool IsTourInCart(long touristId, long tourId)
+        {
+            var shoppingCart = this.GetByUserId(touristId);
+
+            return shoppingCart.ContainsTour(tourId);
+        }
+    }
 }

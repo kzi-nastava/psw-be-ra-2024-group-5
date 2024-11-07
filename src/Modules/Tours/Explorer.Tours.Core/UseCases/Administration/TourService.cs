@@ -16,10 +16,16 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     private readonly ITourRepository _tourRepository;
     private readonly IMapper equipmentMapper;
     private readonly IUserRepository _userRepository;
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper) : base(mapper) {
+    private readonly IShoppingCartRepository _shoppingCartRepository;
+    private readonly ITourExecutionRepository _tourExecutionRepository;
+
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository) : base(mapper)
+    {
         _tourRepository = repository;
         _userRepository = userRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
+        _shoppingCartRepository = shoppingCartRepository;
+        _tourExecutionRepository = tourExecutionRepository;
     }
 
     public Result<TourDto> GetById(int id) {
@@ -45,15 +51,54 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             }
 
             var tour = _tourRepository.GetById((int)id);
-            var tourDto = MapTourToDto(tour);
 
-            /*
-             Ovde treba napraviti logiku, da li moze komentarisati, dal je kupio
-            Koliko keypointova..
-             */
+            if (tour == null || tour.Status != API.Enum.TourStatus.Published)
+            {
+                return Result.Fail(FailureCode.InvalidArgument);
+            }
+
+            var tourDto = MapTourToDto(tour);
             var tourTouristDto = new TourTouristDto(tourDto);
 
-            return Result.Ok(tourTouristDto);
+            var activeTour = _tourExecutionRepository.GetActive(touristId);
+            bool isTourInCart = _shoppingCartRepository.IsTourInCart(touristId, id);
+            bool isTourBought = _shoppingCartRepository.IsTourBought(touristId, id);
+
+            //dok ne kupi ne moze da vidi sve keypointove
+            if (!isTourBought)
+            {
+                tourTouristDto.Tour.KeyPoints = new List<KeyPointDto>
+                {
+                    tourTouristDto.Tour.KeyPoints[0]
+                };
+            }
+
+            //moze da kupi
+            if (!isTourInCart && !isTourBought)
+            {
+                tourTouristDto.CanBeBought = true;
+                return Result.Ok(tourTouristDto);
+            }
+
+            //moze da aktivira
+            if (activeTour == null && isTourBought)
+            {
+                tourTouristDto.CanBeActivated = true;
+                return Result.Ok(tourTouristDto);
+            }
+
+            /*
+             Ovde treba postaviti uslov da je prosao 35% ture i da ne moze vise puta da reviewuje
+             */
+            //tura je kupljena i aktivirana dodati uslove za review
+            if (activeTour != null && isTourBought)
+            {
+                tourTouristDto.CanBeReviewed = true;
+                return Result.Ok(tourTouristDto);
+            }
+            
+            //inace ne moze nista da uradi sa njom
+            return Result.Ok(tourTouristDto); 
         }
         catch (Exception e)
         {
