@@ -20,9 +20,43 @@ namespace Explorer.API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<UserProfileDto> GetProfile(long id)
         {
-            var result = _userProfileService.Get(id);
-            return CreateResponse(result);
+            try
+            {
+                var result = _userProfileService.Get(id);
+
+                if (result.IsSuccess)
+                {
+                    var userProfileDto = result.Value;
+
+                    if (string.IsNullOrEmpty(userProfileDto.Biography) && string.IsNullOrEmpty(userProfileDto.Motto))
+                    {
+                        userProfileDto.Biography = string.Empty;
+                        userProfileDto.Motto = string.Empty;
+                    }
+
+                    return CreateResponse(result);
+                }
+
+                return NotFound($"Profile with id: {id} not found.");
+            }
+            catch (Exception e)
+            {
+                if (e is NullReferenceException || e is InvalidOperationException) 
+                {
+                    
+                    var userProfileDto = new UserProfileDto
+                    {
+                        Biography = string.Empty,
+                        Motto = string.Empty
+                    };
+
+                    return Ok(userProfileDto); 
+                }
+
+                return StatusCode(500, $"Internal server error: {e.Message}");
+            }
         }
+
 
         [HttpPut("{id:int}")]
         [Authorize]
