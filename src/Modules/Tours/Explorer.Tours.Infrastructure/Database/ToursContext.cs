@@ -171,10 +171,11 @@ public class ToursContext : DbContext
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
+        /*
         modelBuilder.Entity<OrderItem>()
             .HasOne<Tour>()
             .WithMany()
-            .HasForeignKey(oi => oi.TourId);
+            .HasForeignKey(oi => oi.TourId);*/
 
         modelBuilder.Entity<OrderItem>()
             .Property(oi => oi.Price)
