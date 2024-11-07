@@ -31,15 +31,13 @@ namespace Explorer.Tours.Core.UseCases.Tourist
         }
 
         public Result<TourExecutionDto> GetActive(long userId) {
-            try {
-                var activeTour = _tourExecutionRepository.GetActive(userId);
 
-                var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
-                return Result.Ok(tourExecutionDto);
-            }
-            catch (Exception e) {
-                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
-            }
+            var activeTour = _tourExecutionRepository.GetActive(userId);
+            if (activeTour == null)
+                return Result.Fail(FailureCode.NotFound).WithError("Active tour not found");
+
+            var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
+            return Result.Ok(tourExecutionDto);
         }
 
         public Result<TourExecutionDto> Start(TourExecutionStartDto tourExecutionStart) {
