@@ -18,5 +18,6 @@ public interface ITourService {
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
 
     Result<TourTouristDto> GetForTouristById(long id, long touristId);
+    Result ArchiveTour(int tourId);
 
 }

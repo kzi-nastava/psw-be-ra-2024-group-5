@@ -253,5 +253,21 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         _tourRepository.Update(tour);
         return Result.Ok();
     }
+
+    public Result ArchiveTour(int tourId)
+    {
+        var tour = _tourRepository.GetById(tourId);
+        if (tour == null)
+        {
+            return Result.Fail(FailureCode.NotFound).WithError("Tour not found.");
+        }
+        if (!tour.Archive())
+        {
+            return Result.Fail("Tour cannot be archived. Ensure all requirements are met.");
+        }
+
+        _tourRepository.Update(tour);
+        return Result.Ok();
+    }
 }
 

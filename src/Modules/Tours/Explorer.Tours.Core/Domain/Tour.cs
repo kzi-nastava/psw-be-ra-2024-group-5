@@ -70,7 +70,7 @@ public class Tour : Entity {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description)
             || KeyPoints == null || KeyPoints.Count < 2
             || TransportDurations == null || !TransportDurations.Any()
-            || Status == TourStatus.Published || Status == TourStatus.Archived
+            || Status == TourStatus.Published 
             || string.IsNullOrWhiteSpace(Tags) || Level == null)
         {
             return false;
@@ -78,6 +78,18 @@ public class Tour : Entity {
 
         Status = TourStatus.Published;
         PublishedTime = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool Archive()
+    {
+        if(Status == TourStatus.Draft || Status == TourStatus.Archived)
+        {
+            return false;
+        }
+
+        Status = TourStatus.Archived;
+        ArchivedTime = DateTime.UtcNow;
         return true;
     }
 
