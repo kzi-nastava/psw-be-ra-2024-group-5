@@ -24,7 +24,8 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Item2.Surname))
             .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.Item1.ProfilePictureUrl))
             .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.Item1.Biography))
-            .ForMember(dest => dest.Motto, opt => opt.MapFrom(src => src.Item1.Motto));
+            .ForMember(dest => dest.Motto, opt => opt.MapFrom(src => src.Item1.Motto))
+            .ForMember(dest => dest.Messages, opt => opt.Ignore());
 
         CreateMap<UserProfileDto, UserProfile>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

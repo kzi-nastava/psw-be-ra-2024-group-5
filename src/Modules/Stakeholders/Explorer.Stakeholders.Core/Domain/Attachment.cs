@@ -5,11 +5,11 @@ namespace Explorer.Stakeholders.Core.Domain;
 
 public class Attachment : ValueObject
 {
-    public int ResourceId { get; private set; }
+    public long ResourceId { get; private set; }
     public ResourceType ResourceType { get; private set; }
 
     [JsonConstructor]
-    public Attachment(int resourceId, ResourceType resourceType)
+    public Attachment(long resourceId, ResourceType resourceType)
     {
         ResourceId = resourceId;
         ResourceType = resourceType;
