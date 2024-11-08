@@ -6,6 +6,7 @@ using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Stakeholders.Core.Mappers;
 using Explorer.Stakeholders.Core.UseCases;
+using Explorer.Stakeholders.Core.UseCases.Identity;
 using Explorer.Stakeholders.Infrastructure.Authentication;
 using Explorer.Stakeholders.Infrastructure.Database;
 using Explorer.Stakeholders.Infrastructure.Database.Repositories;
@@ -34,6 +35,7 @@ public static class StakeholdersStartup
         services.AddScoped<IClubService, ClubService>();
         services.AddScoped<IUserService, InternalUserService>();
         services.AddScoped<IFollowingService, FollowingService>();
+        services.AddScoped<IProfileMessagesService, ProfileMessagesService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
@@ -43,7 +45,7 @@ public static class StakeholdersStartup
         services.AddScoped<IUserRepository, UserDatabaseRepository>();
         services.AddScoped(typeof(ICrudRepository<AppRating>), typeof(CrudDatabaseRepository<AppRating, StakeholdersContext>));
         services.AddScoped<IAppRatingRepository, AppRatingDatabaseRepository>();
-        services.AddScoped(typeof(ICrudRepository<UserProfile>), typeof(CrudDatabaseRepository<UserProfile, StakeholdersContext>));
+        services.AddScoped<IUserProfileRepository, UserProfileDatabaseRepository>();
         services.AddScoped(typeof(ICrudRepository<Club>), typeof(CrudDatabaseRepository<Club, StakeholdersContext>));
         services.AddScoped(typeof(ICrudRepository<Following>), typeof(CrudDatabaseRepository<Following, StakeholdersContext>));
         services.AddScoped<IClubRepository, ClubRepository>();

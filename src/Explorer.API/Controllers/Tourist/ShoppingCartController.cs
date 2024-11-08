@@ -30,7 +30,7 @@ namespace Explorer.API.Controllers.Tourist
 
         [Authorize(Policy = "touristPolicy")]
         [HttpPost("addItem/{touristId:long}")]
-        public ActionResult<FacilityDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)
+        public ActionResult<ShoppingCartDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)
         {
             var result = this._shoppingCartService.AddToCart(orderItemDto ,touristId);
             if (!result.IsSuccess)
@@ -41,9 +41,22 @@ namespace Explorer.API.Controllers.Tourist
             return Ok(result.Value);
         }
 
-        [Authorize(Policy = "touristPolicy")]
+		[Authorize(Policy = "touristPolicy")]
+		[HttpDelete("removeItem/{touristId:long}")]
+        public ActionResult<ShoppingCartDto> RemoveItemToCart(OrderItemDto orderItemDto, long touristId)
+        {
+			var result = this._shoppingCartService.RemoveFromCart(orderItemDto, touristId);
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result.Errors.FirstOrDefault()?.Message);
+			}
+
+			return Ok(result.Value);
+		}
+
+		[Authorize(Policy = "touristPolicy")]
         [HttpGet("tourist/{touristId:long}")]
-        public ActionResult<FacilityDto> GetByTouristId(long touristId)
+        public ActionResult<ShoppingCartDto> GetByTouristId(long touristId)
         {
             var result = this._shoppingCartService.GetByUserId(touristId);
             if (!result.IsSuccess)
@@ -53,5 +66,17 @@ namespace Explorer.API.Controllers.Tourist
 
             return Ok(result.Value);
         }
-    }
+
+		[Authorize(Policy = "touristPolicy")]
+		[HttpPost("checkout/{touristId:long}")]
+		public ActionResult Checkout(long touristId)
+		{
+			var result = _shoppingCartService.Checkout(touristId);
+			if (!result.IsSuccess)
+			{
+				return BadRequest(new { error = result.Errors.FirstOrDefault()?.Message });
+			}
+			return Ok(new { message = "Purchase completed successfully. Tokens created for each item." });
+		}
+	}
 }

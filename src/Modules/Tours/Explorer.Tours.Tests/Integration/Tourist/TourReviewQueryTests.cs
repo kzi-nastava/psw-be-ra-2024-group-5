@@ -4,20 +4,24 @@ using Explorer.Tours.API.Public;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System.Collections.Generic;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class TourReviewQueryTests : BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class TourReviewQueryTests : IClassFixture<ToursFixture>
     {
-        public TourReviewQueryTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public TourReviewQueryTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Retrieves_by_id()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -32,7 +36,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Retrieves_by_tour_id()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -48,7 +52,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Retrieves_by_tourist_id()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
 
             // Act
@@ -64,7 +68,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new TourReviewController(scope.ServiceProvider.GetRequiredService<ITourReviewService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
     }

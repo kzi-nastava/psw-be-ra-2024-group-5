@@ -11,5 +11,9 @@ namespace Explorer.Tours.Core.Domain.RepositoryInterfaces
     public interface IShoppingCartRepository : ICrudRepository<ShoppingCart>
     {
         ShoppingCart GetByUserId(long touristId);
+        void SaveToken(TourPurchaseToken token);
+        TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId);
+        bool IsTourBought(long touristId, long tourId);
+        bool IsTourInCart(long touristId, long tourId);
     }
 }

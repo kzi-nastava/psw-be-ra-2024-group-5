@@ -1,24 +1,29 @@
-﻿using Explorer.Tours.API.Dtos;
-using Explorer.Tours.Infrastructure.Database;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc;
-using Shouldly;
-using Explorer.API.Controllers.Tourist;
+﻿using Explorer.API.Controllers.Tourist;
+using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public;
 using Explorer.Tours.Core.Domain;
+using Explorer.Tours.Infrastructure.Database;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class PreferenceCommandTests : BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class PreferenceCommandTests : IClassFixture<ToursFixture>
     {
-        public PreferenceCommandTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public PreferenceCommandTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Creates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newPreference = new PreferenceDto
@@ -55,7 +60,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Create_fails_invalid_data()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var updatedPreference = new PreferenceDto
             {
@@ -73,7 +78,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
 
             // Assert
             result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(200); 
+            result.StatusCode.ShouldBe(200);
         }
 
 
@@ -81,11 +86,11 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Deletes()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
-           
+
             var preferenceDto = new PreferenceDto
             {
                 Id = 735331,
@@ -98,7 +103,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
                 InterestTags = new List<string> { "Nature", "Adventure" }
             };
 
-          
+
             controller.Create(preferenceDto);
 
             // Act
@@ -118,7 +123,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new PreferenceController(scope.ServiceProvider.GetRequiredService<IPreferenceService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
     }
