@@ -40,7 +40,7 @@ namespace Explorer.API.Controllers.Author {
         [HttpGet("published/{page:int}/{pageSize:int}")]
         public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
         {
-            var result = _tourService.GetPublishedPagedTours(page,pageSize);
+            var result = _tourService.GetPublishedPagedTours(page, pageSize);
             return CreateResponse(result);
         }
 
@@ -59,6 +59,21 @@ namespace Explorer.API.Controllers.Author {
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id) {
             var result = _tourService.Delete(id);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("publish/{tourId:long}")]
+        public ActionResult PublishTour(int tourId)
+        {
+            var result = _tourService.PublishTour(tourId);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("archive/{tourId:long}")]
+
+        public ActionResult ArchiveTour(int tourId)
+        {
+            var result = _tourService.ArchiveTour(tourId);
             return CreateResponse(result);
         }
     }

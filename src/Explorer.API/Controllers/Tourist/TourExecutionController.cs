@@ -24,6 +24,12 @@ namespace Explorer.API.Controllers.Tourist
             return CreateResponse(result);
         }
 
+        [HttpGet("completion/{tourExecutionId:long}")]
+        public ActionResult<bool> IsTourCompleted(long tourExecutionId) {
+            var result = _tourExecutionService.IsTourCompleted(tourExecutionId);
+            return CreateResponse(result);
+        }
+
         [HttpPost]
         public ActionResult<TourExecutionDto> Start([FromBody] TourExecutionStartDto tourExecutionStartDto) {
             var result = _tourExecutionService.Start(tourExecutionStartDto);

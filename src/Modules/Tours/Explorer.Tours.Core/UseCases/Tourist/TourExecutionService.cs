@@ -31,15 +31,13 @@ namespace Explorer.Tours.Core.UseCases.Tourist
         }
 
         public Result<TourExecutionDto> GetActive(long userId) {
-            try {
-                var activeTour = _tourExecutionRepository.GetActive(userId);
 
-                var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
-                return Result.Ok(tourExecutionDto);
-            }
-            catch (Exception e) {
-                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
-            }
+            var activeTour = _tourExecutionRepository.GetActive(userId);
+            if (activeTour == null)
+                return Result.Fail(FailureCode.NotFound).WithError("Active tour not found");
+
+            var tourExecutionDto = _mapper.Map<TourExecutionDto>(activeTour);
+            return Result.Ok(tourExecutionDto);
         }
 
         public Result<TourExecutionDto> Start(TourExecutionStartDto tourExecutionStart) {
@@ -95,6 +93,17 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             tourExecution.Abandon();
             _tourExecutionRepository.Update(tourExecution);
             return Result.Ok(true);
+        }
+
+        public Result<bool> IsTourCompleted(long tourExecutionId) {
+            try {
+                var tourExecution = _tourExecutionRepository.Get(tourExecutionId);
+
+                return Result.Ok(tourExecution.IsCompleted());
+            }
+            catch (KeyNotFoundException e) {
+                return Result.Fail(FailureCode.NotFound).WithError("You haven't started the tour!, " + e.Message);
+            }
         }
     }
 }
