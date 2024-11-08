@@ -59,7 +59,25 @@ public class Tour : Entity {
         ArchivedTime = DateTime.MinValue; // ili null da bude
 
     }
-    
+    public void AddReview(TourReview review)
+    {
+        ValidateReviewAddition(review);
+        Reviews.Add(review);
+    }
+
+    private void ValidateReviewAddition(TourReview review)
+    {
+        if (review == null) throw new ArgumentNullException(nameof(review));
+        if (Status != TourStatus.Published)
+            throw new InvalidOperationException("Cannot review an unpublished tour");
+        if (Reviews.Any(r => r.TouristId == review.TouristId))
+            throw new InvalidOperationException("Tourist has already reviewed this tour");
+    }
+
+    public List<TourReview> GetReviews()
+    {
+        return Reviews.ToList();
+    }
     public List<KeyPoint> AddKeyPoint(KeyPoint keyPoint) {
         KeyPoints.Add(keyPoint);
         return KeyPoints;

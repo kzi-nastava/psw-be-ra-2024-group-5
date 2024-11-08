@@ -40,5 +40,10 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
 
             return tourExecution;
         }
+
+        public TourExecution GetByTourAndUser(long tourId, long userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

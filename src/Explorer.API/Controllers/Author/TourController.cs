@@ -27,12 +27,19 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [AllowAnonymous]
+        [HttpGet("{id}/tourist/{touristId}")]
         [Authorize(Policy = "touristPolicy")]
-        [HttpGet("tourist/{id:long}/{touristId:long}")]
-        public ActionResult<TourTouristDto> GetForTouristById(long id, long touristId)
+        public ActionResult<TourTouristDto> GetForTourist(int id, int touristId)
         {
             var result = _tourService.GetForTouristById(id, touristId);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("review")]
+        [Authorize(Policy = "touristPolicy")]
+        public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
+        {
+            var result = _tourService.AddReview(review);
             return CreateResponse(result);
         }
 
