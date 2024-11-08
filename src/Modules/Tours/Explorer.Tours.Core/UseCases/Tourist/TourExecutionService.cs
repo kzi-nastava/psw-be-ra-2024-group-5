@@ -94,5 +94,16 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             _tourExecutionRepository.Update(tourExecution);
             return Result.Ok(true);
         }
+
+        public Result<bool> IsTourCompleted(long tourExecutionId) {
+            try {
+                var tourExecution = _tourExecutionRepository.Get(tourExecutionId);
+
+                return Result.Ok(tourExecution.IsCompleted());
+            }
+            catch (KeyNotFoundException e) {
+                return Result.Fail(FailureCode.NotFound).WithError("You haven't started the tour!, " + e.Message);
+            }
+        }
     }
 }
