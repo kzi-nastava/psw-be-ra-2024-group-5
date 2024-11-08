@@ -84,8 +84,8 @@ public class StakeholderProfile : Profile
                     (ResourceType)src.Attachment.ResourceType)));
 
         CreateMap<Attachment, AttachmentDto>()
-            .ForMember(dest => dest.ResourceId, opt => opt.MapFrom(src => src.GetResourceId()))
-            .ForMember(dest => dest.ResourceType, opt => opt.MapFrom(src => (int)src.GetResourceType()));
+            .ForMember(dest => dest.ResourceId, opt => opt.MapFrom(src => src.ResourceId))
+            .ForMember(dest => dest.ResourceType, opt => opt.MapFrom(src => (int)src.ResourceType));
 
         CreateMap<AttachmentDto, Attachment>()
             .ForMember(dest => dest.ResourceId, opt => opt.MapFrom(src => src.ResourceId))

@@ -20,9 +20,6 @@ public class Attachment : ValueObject
         yield return ResourceId;
         yield return ResourceType;
     }
-
-    public long GetResourceId() => ResourceId;
-    public ResourceType GetResourceType() => ResourceType;
 }
 
 public enum ResourceType
