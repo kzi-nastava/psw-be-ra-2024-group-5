@@ -65,7 +65,7 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
         try
         {
             var userProfile = _userProfileRepository.Get(id);
-            var person = GetPersonByUserId(userProfile!.UserId);
+            var person = GetPersonByUserId(id);
 
             if (userProfile != null && person != null)
             {
