@@ -19,12 +19,18 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     protected readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     private readonly ITourExecutionRepository _tourExecutionRepository;
-    public TourService(ITourRepository repository, ITourExecutionRepository tourExecutionRepository, IUserRepository userRepository , IMapper mapper) : base(mapper) {
+    private readonly IShoppingCartRepository _shoppingCartRepository;
+    private readonly ITourExecutionRepository _tourExecutionRepository;
+
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository) : base(mapper)
+    {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
         _userRepository = userRepository;
         _mapper = mapper;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
+        _shoppingCartRepository = shoppingCartRepository;
+        _tourExecutionRepository = tourExecutionRepository;
     }
 
     public Result<TourDto> GetById(int id) {
@@ -330,9 +336,20 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         return Result.Ok();
     }
 
-    public Result<TourTouristDto> GetForTouristById(long id, long touristId)
+    public Result ArchiveTour(int tourId)
     {
-        throw new NotImplementedException();
+        var tour = _tourRepository.GetById(tourId);
+        if (tour == null)
+        {
+            return Result.Fail(FailureCode.NotFound).WithError("Tour not found.");
+        }
+        if (!tour.Archive())
+        {
+            return Result.Fail("Tour cannot be archived. Ensure all requirements are met.");
+        }
+
+        _tourRepository.Update(tour);
+        return Result.Ok();
     }
 }
 

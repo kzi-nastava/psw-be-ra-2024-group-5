@@ -35,9 +35,6 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
                                                         .Include(te => te.KeyPointProgresses)
                                                         .ThenInclude(kpp => kpp.KeyPoint)
                                                         .FirstOrDefault();
-            if (tourExecution == null)
-                throw new KeyNotFoundException("Not found: " + userId);
-
             return tourExecution;
         }
 
