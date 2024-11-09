@@ -7,7 +7,7 @@ public class Notification: Entity
 {
     public long UserId { get; private set; }
     public string Content { get; private set; }
-    public bool IsRead { get; private set; }
+    public bool IsRead { get; set; }
     public DateTime CreatedAt { get; private set; }
     public NotificationType Type { get; private set; }
     public long? SenderId { get; private set; } // if the notification is a message from sb

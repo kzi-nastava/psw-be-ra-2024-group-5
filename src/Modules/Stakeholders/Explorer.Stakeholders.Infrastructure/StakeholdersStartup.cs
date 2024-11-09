@@ -36,6 +36,7 @@ public static class StakeholdersStartup
         services.AddScoped<IUserService, InternalUserService>();
         services.AddScoped<IFollowingService, FollowingService>();
         services.AddScoped<IProfileMessagesService, ProfileMessagesService>();
+        services.AddScoped<INotificationService, NotificationService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
@@ -49,6 +50,7 @@ public static class StakeholdersStartup
         services.AddScoped(typeof(ICrudRepository<Club>), typeof(CrudDatabaseRepository<Club, StakeholdersContext>));
         services.AddScoped(typeof(ICrudRepository<Following>), typeof(CrudDatabaseRepository<Following, StakeholdersContext>));
         services.AddScoped<IClubRepository, ClubRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         services.AddDbContext<StakeholdersContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("stakeholders"),

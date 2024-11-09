@@ -15,6 +15,7 @@ public class StakeholdersContext : DbContext
     public DbSet<AppRating> AppRating { get; set; }
     public DbSet<ClubMembership> Memberships { get; set; }
     public DbSet<Following> Followers { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
