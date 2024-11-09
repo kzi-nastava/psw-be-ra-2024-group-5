@@ -17,9 +17,14 @@ namespace Explorer.Stakeholders.Core.UseCases
     public class ClubService : CrudService<ClubDto, Club>, IClubService
     {
         private readonly IClubRepository _clubRepository;
-        public ClubService(IClubRepository clubRepository, IMapper mapper) : base(clubRepository, mapper)
+        private readonly ICrudRepository<ClubMessage> _clubMessageRepository;
+        private readonly IMapper _mapper;
+        public ClubService(IClubRepository clubRepository, IMapper mapper, 
+            ICrudRepository<ClubMessage> clubMessageRepository) : base(clubRepository, mapper)
         {
             _clubRepository = clubRepository;
+            _clubMessageRepository = clubMessageRepository;
+            _mapper = mapper;
         }
         //extremely unefficient,can't do MapToDto since BaseService only uses Club 
         public Result<List<ClubMembershipDto>> GetAllMemberships() 
@@ -58,7 +63,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Fail("An error occurred while attempting to delete the membership.");
         }
 
-        public Result AddMessageToClub(long clubId, ClubMessage message, long userId)
+        public Result AddMessageToClub(long clubId, ClubMessageDto messageDto, long userId)
         {
             var club = _clubRepository.Get(clubId);
             if (club == null)
@@ -69,7 +74,7 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             if(membership != null || club.OwnerId == userId)
             {
-                club.AddMessage(message);
+                club.AddMessage(_mapper.Map<ClubMessage>(messageDto));
                 _clubRepository.Update(club);
                 return Result.Ok();
             } else
@@ -84,7 +89,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (club == null)
                 return Result.Fail("Club not found");
 
-            var message = club.GetClubMessages().FirstOrDefault(m => m.Id == messageId);
+            var message = _clubMessageRepository.Get(messageId);
             if (message == null)
                 return Result.Fail("Message not found");
 
@@ -105,7 +110,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (club == null)
                 return Result.Fail("Club not found");
 
-            var message = club.GetClubMessages().FirstOrDefault(m => m.Id == messageId);
+            var message = _clubMessageRepository.Get(messageId);
             if (message == null)
                 return Result.Fail("Message not found");
 
@@ -119,5 +124,30 @@ namespace Explorer.Stakeholders.Core.UseCases
                 return Result.Fail("User does not have permission to update this message");
             }
         }
+
+        public Result<PagedResult<ClubMessageDto>> GetPagedMessagesByClubId(long clubId, int page, int pageSize)
+        {
+            var club = _clubRepository.Get(clubId);
+            if (club == null)
+            {
+                return Result.Fail("Club not found");
+            }
+
+            var pagedMessages = _clubMessageRepository.GetPaged(page, pageSize);
+
+            var filteredMessages = pagedMessages.Results
+                .Where(m => m.ClubId == clubId)
+                .ToList();
+
+            var totalMessages = filteredMessages.Count;
+
+            var pagedResultDto = new PagedResult<ClubMessageDto>(
+                filteredMessages.Select(m => _mapper.Map<ClubMessageDto>(m)).ToList(),
+                totalMessages
+            );
+
+            return Result.Ok(pagedResultDto);
+        }
+
     }
 }
