@@ -58,5 +58,7 @@ public class StakeholderProfile : Profile
         CreateMap<Following, FollowingDto>()
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
+
+        CreateMap<NotificationDto, Notification>().ReverseMap();
     }
 }
