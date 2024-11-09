@@ -18,7 +18,6 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     private readonly IMapper equipmentMapper;
     protected readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
-    private readonly ITourExecutionRepository _tourExecutionRepository;
     private readonly IShoppingCartRepository _shoppingCartRepository;
     private readonly ITourExecutionRepository _tourExecutionRepository;
 
@@ -28,9 +27,9 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         _tourExecutionRepository = tourExecutionRepository;
         _userRepository = userRepository;
         _mapper = mapper;
-        equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
         _shoppingCartRepository = shoppingCartRepository;
         _tourExecutionRepository = tourExecutionRepository;
+        equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
     }
 
     public Result<TourDto> GetById(int id) {
@@ -246,7 +245,12 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
     private void SetTouristPermissions(TourTouristDto tourTouristDto, TourExecution tourExecution, Tour tour)
     {
-        // ... postojeæe provere za CanBeBought i CanBeActivated ...
+
+        tourTouristDto.CanBeBought = tour.Status == TourStatus.Published &&
+                                     tourExecution == null;
+
+        tourTouristDto.CanBeActivated = tourExecution != null &&
+                                        tourExecution.Status == TourExecutionStatus.Active;
 
         if (tourExecution != null)
         {
@@ -285,17 +289,14 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             var tourExecution = _tourExecutionRepository.GetByTourAndUser((long)reviewDto.TourId, (long)reviewDto.TouristId);
             if (tourExecution == null) return Result.Fail("No tour execution found");
 
-            // Get tourist permissions
             var tourTouristResult = GetForTouristById((int)reviewDto.TourId, (int)reviewDto.TouristId);
             if (tourTouristResult.IsFailed) return Result.Fail(tourTouristResult.Errors);
 
             if (!tourTouristResult.Value.CanBeReviewed)
                 return Result.Fail("Tourist cannot review this tour");
 
-            // Calculate completion percentage
             var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
 
-            // Create and add review
             var reviewDate = DateTime.UtcNow;
             var review = new TourReview(
                 reviewDto.Rating,
