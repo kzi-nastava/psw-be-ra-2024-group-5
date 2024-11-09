@@ -40,7 +40,13 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
 
         public TourExecution GetByTourAndUser(long tourId, long userId)
         {
-            throw new NotImplementedException();
+            var tourExecution = DbContext.TourExecutions
+                .Where(te => te.TourId == tourId && te.UserId == userId)
+                .Include(te => te.KeyPointProgresses)
+                .ThenInclude(kpp => kpp.KeyPoint)
+                .FirstOrDefault();
+
+            return tourExecution;
         }
     }
 }

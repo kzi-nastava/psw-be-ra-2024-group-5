@@ -2,7 +2,7 @@ using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Enum;
+
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
@@ -10,6 +10,7 @@ using Explorer.Tours.Core.Utilities;
 using FluentResults;
 using System.Collections.Generic;
 using System.Linq;
+using Explorer.Tours.API.Enum;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
@@ -221,7 +222,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
     }
 
-    public Result<TourTouristDto> GetForTouristById(int tourId, int touristId)
+    public Result<TourTouristDto> GetForTouristById(long tourId, long touristId)
     {
         try
         {
@@ -286,7 +287,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             var tour = _tourRepository.GetById((int)reviewDto.TourId);
             if (tour == null) return Result.Fail("Tour not found");
 
-            var tourExecution = _tourExecutionRepository.GetByTourAndUser((long)reviewDto.TourId, (long)reviewDto.TouristId);
+            var tourExecution = _tourExecutionRepository.GetByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
             if (tourExecution == null) return Result.Fail("No tour execution found");
 
             var tourTouristResult = GetForTouristById((int)reviewDto.TourId, (int)reviewDto.TouristId);

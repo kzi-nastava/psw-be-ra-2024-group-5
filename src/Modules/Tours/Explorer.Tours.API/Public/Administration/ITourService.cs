@@ -17,7 +17,7 @@ public interface ITourService {
     Result PublishTour(int tourId);
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
     Result<TourReviewDto> AddReview(TourReviewDto reviewDto);
-    Result<TourTouristDto> GetForTouristById(int id, int touristId);
+    Result<TourTouristDto> GetForTouristById(long id, long touristId);
     Result ArchiveTour(int tourId);
 
 }

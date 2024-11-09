@@ -27,8 +27,9 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [HttpGet("{id}/tourist/{touristId}")]
+        [AllowAnonymous]
         [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{id:long}/{touristId:long}")]
         public ActionResult<TourTouristDto> GetForTourist(int id, int touristId)
         {
             var result = _tourService.GetForTouristById(id, touristId);
