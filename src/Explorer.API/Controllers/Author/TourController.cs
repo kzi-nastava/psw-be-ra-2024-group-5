@@ -30,7 +30,7 @@ namespace Explorer.API.Controllers.Author {
         [AllowAnonymous]
         [Authorize(Policy = "touristPolicy")]
         [HttpGet("tourist/{id:long}/{touristId:long}")]
-        public ActionResult<TourTouristDto> GetForTourist(int id, int touristId)
+        public ActionResult<TourTouristDto> GetForTouristById(long id, long touristId)
         {
             var result = _tourService.GetForTouristById(id, touristId);
             return CreateResponse(result);
