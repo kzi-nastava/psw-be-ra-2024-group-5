@@ -19,9 +19,10 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("create")]
         public ActionResult<CreateBlogPostDto> CreateBlog([FromBody] CreateBlogPostDto dto)
         {
-            var result = _blogPostService.CreateBlogPost(dto.title, dto.description, dto.userId, dto.images);
-            return CreateResponse(result);
+                var result = _blogPostService.CreateBlogPost(dto.title, dto.description, dto.userId, dto.images);
+                return CreateResponse(result);
         }
+
 
         [HttpGet("all")]
         public async Task<ActionResult<PagedResult<BlogPostDto>>> GetAllBlogPosts(int page, int pageSize)
@@ -42,22 +43,26 @@ namespace Explorer.API.Controllers.Author
         public ActionResult UpdateBlogPost(long id, [FromBody]  CreateBlogPostDto dto)
         {
             var result = _blogPostService.UpdateBlogPost(id, dto.title, dto.description, dto.userId);
+            var resp = CreateResponse(result);
             return CreateResponse(result);
+
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteBlogPost(long id, [FromQuery] int userId)
         {
-            var result = _blogPostService.DeleteBlogPost(id, userId);
-            return CreateResponse(result);
+                var result = _blogPostService.DeleteBlogPost(id, userId);
+                return CreateResponse(result);
         }
 
-        [HttpPut("{blogId}/status")]
+       [HttpPut("{blogId}/status")]
         public ActionResult UpdateStatus(long blogId, [FromBody] BlogStatusDto newStatus, [FromQuery] int userId)
         {
-            var result = _blogPostService.UpdateStatus(blogId, newStatus, userId);
-            return CreateResponse(result);
+   
+                var result = _blogPostService.UpdateStatus(blogId, newStatus, userId);
+                return CreateResponse(result);
         }
+
 
         [HttpPost("{blogId}/comments")]
         public ActionResult AddComment(long blogId, [FromBody] BlogCommentDto dto)

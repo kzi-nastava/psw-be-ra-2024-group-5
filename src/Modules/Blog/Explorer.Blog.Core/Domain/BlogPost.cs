@@ -35,10 +35,6 @@ public class BlogPost : Entity
         this.userId = userId;
         this.status = BlogStatus.Draft;
         this.createdDate = DateTime.UtcNow;
-
-        _comments = new List<BlogComment>();
-        _votes = new List<BlogVote>();
-        _images = new List<BlogImage>();
     }
 
     public void UpdateBlog(string title, string description, int userId)
@@ -61,6 +57,11 @@ public class BlogPost : Entity
         {
             throw new UnauthorizedAccessException("Only the blog creator can change the status.");
         }
+        if (!Enum.IsDefined(typeof(BlogStatus), newStatus))
+        {
+            throw new ArgumentException("Invalid status value.", nameof(newStatus));
+        }
+
         status = newStatus;
     }
 

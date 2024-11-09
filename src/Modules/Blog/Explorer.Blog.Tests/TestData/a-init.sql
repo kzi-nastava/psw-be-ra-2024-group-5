@@ -29,3 +29,10 @@ VALUES
     (-21, -21, '', 'First Tourist Biography', 'Travel far, learn more'),
     (-22, -22, '', 'Second Tourist Biography', 'Adventure awaits'),
     (-23, -23, '', 'Third Tourist Biography', 'Journey of a lifetime');
+
+INSERT INTO blog."blogs" ("Id", "userId", title, description, "createdDate", status, votes, images)
+VALUES 
+    (-1, -11, 'Exploring the Art of Writing', 'A deep dive into the nuances of creative writing.', '2024-11-07', 1, '[]', '[]'),
+    (-2, -12, 'The Wonders of Language', 'Discovering how language shapes our world.', '2024-11-07', 1, '[]', '[]'),
+    (-3, -13, 'Inspiration in Daily Life', 'Finding motivation and beauty in everyday moments.', '2024-11-07', 1, '[]', '[]'),
+    (-4, -11, 'A Journey through Europe', 'Experiencing culture, history, and adventure across Europe.', '2024-11-07', 1, '[]', '[]');

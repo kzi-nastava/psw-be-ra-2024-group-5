@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿//using Explorer.API.Controllers.Author;
 //using Explorer.Blog.API.Dtos;
 //using Explorer.Blog.API.Public;
