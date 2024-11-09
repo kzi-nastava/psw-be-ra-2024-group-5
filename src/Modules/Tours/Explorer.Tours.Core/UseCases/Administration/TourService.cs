@@ -226,7 +226,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     {
         try
         {
-            var tour = _tourRepository.GetById(tourId);
+            var tour = _tourRepository.GetById((int)tourId);
             if (tour == null) return Result.Fail("Tour not found");
 
             var tourDto = _mapper.Map<TourDto>(tour);
