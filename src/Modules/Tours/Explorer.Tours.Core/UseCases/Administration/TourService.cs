@@ -145,7 +145,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
         foreach (var re in tour.Reviews ?? Enumerable.Empty<TourReview>()) {
             var img = Base64Converter.ConvertFromByteArray(re.Image);
-            var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId);
+            var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId, re.CompletionPercentage);
             reviews.Add(r);
         }
 
@@ -290,8 +290,16 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
 
             // Create and add review
-            var review = _mapper.Map<TourReview>(reviewDto);
-            review.CreatedAt = DateTime.UtcNow;
+            var reviewDate = DateTime.UtcNow;
+            var review = new TourReview(
+                reviewDto.Rating,
+                reviewDto.Comment,
+                reviewDto.VisitDate,
+                reviewDate,
+                reviewDto.TourId,
+                reviewDto.TouristId,
+                Base64Converter.ConvertToByteArray(reviewDto.Image)
+            );
             review.CompletionPercentage = completionPercentage;
 
             tour.AddReview(review);

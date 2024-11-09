@@ -11,10 +11,21 @@ public class ToursProfile : Profile
     public ToursProfile()
     {
         CreateMap<TourDto, Tour>().ReverseMap();
-        CreateMap<TourReview, TourReviewDto>().ReverseMap(); ;
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
         CreateMap<PreferenceDto, Preference>().ReverseMap();
-        
+
+        CreateMap<TourReviewDto, TourReview>()
+            .ForCtorParam("rating", opt => opt.MapFrom(src => src.Rating))
+            .ForCtorParam("comment", opt => opt.MapFrom(src => src.Comment))
+            .ForCtorParam("visitDate", opt => opt.MapFrom(src => src.VisitDate))
+            .ForCtorParam("reviewDate", opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForCtorParam("tourId", opt => opt.MapFrom(src => src.TourId))
+            .ForCtorParam("touristId", opt => opt.MapFrom(src => src.TouristId))
+            .ForCtorParam("image", opt => opt.MapFrom(src => src.Image != null ? Base64Converter.ConvertToByteArray(src.Image) : null))
+            .ForCtorParam("completionPercentage", opt => opt.MapFrom(src => src.CompletionPercentage))
+            .ReverseMap()
+            .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
+
         CreateMap<KeyPointDto, KeyPoint>()
             .ForCtorParam("name", opt => opt.MapFrom(src => src.Name))
             .ForCtorParam("description", opt => opt.MapFrom(src => src.Description))
