@@ -6,14 +6,7 @@ using Explorer.Blog.Core.Domain.RepositoryInterfaces;
 using Explorer.Blog.Core.Utilities;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.API.Internal;
-using Explorer.Stakeholders.API.Public;
 using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Blog.Core.UseCases
 {
@@ -41,7 +34,7 @@ namespace Explorer.Blog.Core.UseCases
             {
                 newBlogPost = new BlogPost(title, description, userId);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
@@ -71,7 +64,7 @@ namespace Explorer.Blog.Core.UseCases
             }
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
+
             try
             {
                 blogPost.UpdateBlog(title, description, userId);
@@ -80,7 +73,7 @@ namespace Explorer.Blog.Core.UseCases
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
-            
+
             _blogPostRepositoy.Update(blogPost);
 
             var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
@@ -92,7 +85,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                 blogPost = _blogPostRepositoy.Get(id);
+                blogPost = _blogPostRepositoy.Get(id);
             }
             catch (Exception e)
             {
@@ -242,8 +235,8 @@ namespace Explorer.Blog.Core.UseCases
             }
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
-            var commentToRemove = blogPost.comments.FirstOrDefault(c => c.Id ==  commentId && c.userId == userId);
+
+            var commentToRemove = blogPost.comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
             if (commentToRemove == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
@@ -326,11 +319,11 @@ namespace Explorer.Blog.Core.UseCases
             var image = Base64Converter.ConvertToByteArray(imageData);
             if (image == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Invalid image data.");
 
-            
+
             try
             {
                 blogPost.RemoveImage(image, contentType);
-            } 
+            }
             catch (Exception e)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
@@ -371,7 +364,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
+
             try
             {
                 blogPost.AddOrUpdateRating((VoteType)voteType, userId);
@@ -469,8 +462,8 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
-            
+
+
             try
             {
                 var renderedMarkdown = blogPost.RenderDescriptionToMarkdown();
@@ -482,7 +475,44 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok();
         }
 
-        
+        public Result UpdateBlogStatusBasedOnVotesAndComments(long blogId)
+        {
+            BlogPost blogPost;
+            try
+            {
+                blogPost = _blogPostRepositoy.Get(blogId);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Error fetching the blog post: " + e.Message);
+            }
+
+            if (blogPost == null)
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
+
+            int upvotes = blogPost.GetUpvoteCount();
+            int downvotes = blogPost.GetDownvoteCount();
+            int commentCount = blogPost.comments.Count;
+
+            if (upvotes - downvotes < -10)
+            {
+                blogPost.UpdateStatus(BlogStatus.Closed, blogPost.userId);
+            }
+            else if (upvotes > 100 || commentCount > 10)
+            {
+                blogPost.UpdateStatus(BlogStatus.Active, blogPost.userId);
+            }
+            else if (upvotes > 500)
+            {
+                blogPost.UpdateStatus(BlogStatus.Famous, blogPost.userId);
+            }
+
+            _blogPostRepositoy.Update(blogPost);
+            return Result.Ok();
+        }
+
+
+
 
 
     }
