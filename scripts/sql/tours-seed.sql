@@ -49,3 +49,8 @@ insert into tours."KeyPoint"
 	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")
 values
 	(45.2526779593883, 19.83754884391624, 'Futoska pijaca', 'Pijaca', '', 3);
+
+insert into tours."ShoppingCarts"
+	("TotalPrice", "TouristId")
+values
+	('{"Amount":0,"Currency":0}', 3);
