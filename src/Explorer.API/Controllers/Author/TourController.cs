@@ -36,8 +36,9 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [HttpPost("review")]
+        [AllowAnonymous]
         [Authorize(Policy = "touristPolicy")]
+        [HttpPost("review")]
         public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
         {
             var result = _tourService.AddReview(review);
