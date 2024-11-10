@@ -10,15 +10,17 @@ namespace Explorer.Stakeholders.API.Dtos;
 public class NotificationDto
 {
     public long Id { get; set; }
-    public long UserId { get; private set; }
-    public string Content { get; private set; }
-    public bool IsRead { get; private set; }
-    public DateTime CreatedAt { get; private set; }
+    public long UserId { get; set; }
+    public string Content { get; set; }
+    public bool IsRead { get; set; }
+    public DateTime CreatedAt { get; set; }
     public int Type { get; private set; }
-    public long? SenderId { get; private set; }
-    public long? clubId { get; private set; }
-    public string? Message { get; private set; }
-    public AttachmentDto? Attachment { get; private set; }
+    public long? SenderId { get; set; }
+    public long? ProfileMessageId { get; set; }
+    public long? ClubMessageId { get; set; }
+    public long? ClubId { get; set; }
+    public string? Message { get; set; }
+    public AttachmentDto? Attachment { get; set; }
 }
 
 

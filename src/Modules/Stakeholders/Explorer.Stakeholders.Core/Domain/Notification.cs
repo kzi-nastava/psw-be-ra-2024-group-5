@@ -11,7 +11,9 @@ public class Notification: Entity
     public DateTime CreatedAt { get; private set; }
     public NotificationType Type { get; private set; }
     public long? SenderId { get; private set; } // if the notification is a message from sb
-    public long? clubId { get; private set; } // if the notification is related to a club activity
+    public long? ProfileMessageId { get; private set; } 
+    public long? ClubMessageId { get; private set; }
+    public long? ClubId { get; private set; } // if the notification is related to a club activity
     public string? Message { get; private set; }
     public Attachment? Attachment { get; private set; }
 }

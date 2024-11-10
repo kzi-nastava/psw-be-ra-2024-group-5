@@ -34,6 +34,10 @@ public class StakeholdersContext : DbContext
             .ToTable("ClubMessages", "stakeholders")
             .Property(m => m.Attachment).HasColumnType("jsonb");
 
+        modelBuilder.Entity<Notification>()
+        .ToTable("Notifications", "stakeholders")
+        .Property(n => n.Attachment).HasColumnType("jsonb");
+
         ConfigureStakeholder(modelBuilder);
     }
 
@@ -87,6 +91,12 @@ public class StakeholdersContext : DbContext
             .WithOne()
             .HasForeignKey(cm => cm.ClubId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         //modelBuilder.Entity<ProfileMessage>()
         //    .ToTable("ProfileMessages", "stakeholders")
