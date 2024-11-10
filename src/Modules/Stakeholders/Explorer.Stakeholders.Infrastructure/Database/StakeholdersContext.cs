@@ -84,7 +84,7 @@ public class StakeholdersContext : DbContext
         modelBuilder.Entity<Club>()
             .HasMany(c => c.ClubMessages)
             .WithOne()
-            .HasForeignKey(m => m.ClubId)
+            .HasForeignKey(cm => cm.ClubId)
             .OnDelete(DeleteBehavior.Cascade);
 
         //modelBuilder.Entity<ProfileMessage>()
