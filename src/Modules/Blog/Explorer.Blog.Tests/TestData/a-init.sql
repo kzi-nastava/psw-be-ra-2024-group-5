@@ -33,6 +33,17 @@ VALUES
 INSERT INTO blog."blogs" ("Id", "userId", title, description, "createdDate", status, votes, images)
 VALUES 
     (-1, -11, 'Exploring the Art of Writing', 'A deep dive into the nuances of creative writing.', '2024-11-07', 1, '[]', '[]'),
-    (-2, -12, 'The Wonders of Language', 'Discovering how language shapes our world.', '2024-11-07', 1, '[]', '[]'),
-    (-3, -13, 'Inspiration in Daily Life', 'Finding motivation and beauty in everyday moments.', '2024-11-07', 1, '[]', '[]'),
-    (-4, -11, 'A Journey through Europe', 'Experiencing culture, history, and adventure across Europe.', '2024-11-07', 1, '[]', '[]');
+    (-2, -11, 'The Wonders of Language', 'Discovering how language shapes our world.', '2024-11-07', 1, '[]', '[]'),
+    (-3, -11, 'Inspiration in Daily Life', 'Finding motivation and beauty in everyday moments.', '2024-11-07', 1, '[]', '[]'),
+    (-4, -11, 'A Journey through Europe', 'Experiencing culture, history, and adventure across Europe.', '2024-11-07', 1, '[]', '[]'),
+    (-5, -11, 'Exploring the Art of Writing', 'A deep dive into the nuances of creative writing.', '2024-11-07', 1, '[]', '[]');
+
+INSERT INTO blog."BlogComments"(
+    "Id", "blogId", "userId", "commentText", "creationTime", "lastEditedTime")
+VALUES 
+    (-1, -1, -11, 'Great blog post! Really insightful.', '2024-11-07 10:00:00', NULL),
+    (-2, -1, -11, 'I enjoyed reading this post. Keep up the good work!', '2024-11-07 10:30:00', NULL),
+    (-3, -2, -11, 'I disagree with some points, but overall well-written.', '2024-11-07 11:00:00', NULL),
+    (-4, -4, -11, 'Looking forward to more content from you!', '2024-11-07 11:30:00', NULL);
+
+

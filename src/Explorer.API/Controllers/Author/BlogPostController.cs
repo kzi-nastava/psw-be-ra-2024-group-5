@@ -40,23 +40,22 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateBlogPost(long id, [FromBody]  CreateBlogPostDto dto)
+        public ActionResult<BlogPostDto> UpdateBlogPost(long id, [FromBody]  CreateBlogPostDto dto)
         {
             var result = _blogPostService.UpdateBlogPost(id, dto.title, dto.description, dto.userId);
-            var resp = CreateResponse(result);
             return CreateResponse(result);
 
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteBlogPost(long id, [FromQuery] int userId)
+        public ActionResult<BlogPostDto> DeleteBlogPost(long id, [FromQuery] int userId)
         {
                 var result = _blogPostService.DeleteBlogPost(id, userId);
                 return CreateResponse(result);
         }
 
-       [HttpPut("{blogId}/status")]
-        public ActionResult UpdateStatus(long blogId, [FromBody] BlogStatusDto newStatus, [FromQuery] int userId)
+        [HttpPut("{blogId}/status")]
+        public ActionResult<BlogPostDto> UpdateStatus(long blogId, [FromBody] BlogStatusDto newStatus, [FromQuery] int userId)
         {
    
                 var result = _blogPostService.UpdateStatus(blogId, newStatus, userId);
@@ -65,7 +64,7 @@ namespace Explorer.API.Controllers.Author
 
 
         [HttpPost("{blogId}/comments")]
-        public ActionResult AddComment(long blogId, [FromBody] BlogCommentDto dto)
+        public ActionResult<BlogCommentDto> AddComment(long blogId, [FromBody] BlogCommentDto dto)
         {
             var result = _blogPostService.AddComment(blogId, dto.commentText, (int)dto.userId);
             return CreateResponse(result);
@@ -79,14 +78,14 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPut("{blogId}/comments/{commentId}")]
-        public ActionResult EditComment(long blogId, long commentId, [FromBody] BlogCommentDto dto)
+        public ActionResult<BlogCommentDto> EditComment(long blogId, long commentId, [FromBody] BlogCommentDto dto)
         {
             var result = _blogPostService.EditComment(blogId, commentId, dto.commentText, (int)dto.userId);
             return CreateResponse(result);
         }
 
         [HttpDelete("{blogId}/comments/{commentId}")]
-        public ActionResult RemoveComment(long blogId, long commentId, [FromQuery] int userId)
+        public ActionResult<BlogCommentDto> RemoveComment(long blogId, long commentId, [FromQuery] int userId)
         {
             var result = _blogPostService.RemoveComment(blogId, commentId, userId);
             return CreateResponse(result);
@@ -114,14 +113,14 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPost("{blogId}/vote")]
-        public ActionResult AddVote(long blogId, [FromBody] BlogVoteDto dto)
+        public ActionResult<BlogVoteDto> AddVote(long blogId, [FromBody] BlogVoteDto dto)
         {
             var result = _blogPostService.AddVote(blogId, dto.type, dto.userId);
             return CreateResponse(result);
         }
 
         [HttpDelete("{blogId}/vote")]
-        public ActionResult RemoveVote(long blogId, [FromQuery] int userId)
+        public ActionResult<BlogVoteDto> RemoveVote(long blogId, [FromQuery] int userId)
         {
             var result = _blogPostService.RemoveVote(blogId, userId);
             return CreateResponse(result);

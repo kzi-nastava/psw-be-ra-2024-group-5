@@ -66,7 +66,7 @@ namespace Explorer.Blog.Tests.Integration
         }
 
         [Theory]
-        [InlineData(-1, "Updated Title", "Updated Description", -11, 200)]   // Success
+        [InlineData(-4, "Updated Title", "Updated Description", -11, 200)]   // Success
         [InlineData(-1, "", "Updated Description", -11, 400)]               // Missing title
         [InlineData(-1, "Updated Title", "", -11, 400)]                     // Missing description
         [InlineData(-1, "Updated Title", "Updated Description", 2, 400)]  // Unauthorized user
@@ -85,7 +85,7 @@ namespace Explorer.Blog.Tests.Integration
             };
 
             // Act
-            var result = (ObjectResult)controller.UpdateBlogPost(blogId, updateBlogDto);
+            var result = (ObjectResult)controller.UpdateBlogPost(blogId, updateBlogDto).Result;
 
             // Assert
             result.ShouldNotBeNull();
@@ -93,7 +93,7 @@ namespace Explorer.Blog.Tests.Integration
         }
 
         [Theory]
-        [InlineData(-1, -11, 200)]     // Success: Authorized user
+        [InlineData(-3, -11, 200)]     // Success: Authorized user
         [InlineData(-1, 2, 400)]     // Unauthorized user
         [InlineData(999, -11, 400)]   // Blog post not found
         public async Task DeleteBlogPost(long blogId, int userId, int expectedResponseCode)
@@ -103,7 +103,7 @@ namespace Explorer.Blog.Tests.Integration
             var controller = CreateController(scope);
 
             // Act
-            var result = (ObjectResult)controller.DeleteBlogPost(blogId, userId);
+            var result = (ObjectResult)controller.DeleteBlogPost(blogId, userId).Result;
 
             // Assert
             result.ShouldNotBeNull();
@@ -111,7 +111,7 @@ namespace Explorer.Blog.Tests.Integration
         }
 
         [Theory]
-        [InlineData(-1, BlogStatusDto.Published, -11, 200)]  // Success: Authorized user, valid status
+        [InlineData(-3, BlogStatusDto.Published, -11, 200)]  // Success: Authorized user, valid status
         [InlineData(-1, BlogStatusDto.Closed, 2, 400)]     // Unauthorized user
         [InlineData(999, BlogStatusDto.Published, -11, 400)]// Blog not found
         [InlineData(-1, (BlogStatusDto)99, -11, 400)]        // Invalid status value
@@ -127,14 +127,129 @@ namespace Explorer.Blog.Tests.Integration
             var statusDto = newStatus;
 
             // Act
-            var result = (ObjectResult)controller.UpdateStatus(blogId, statusDto, userId);
+            var result = (ObjectResult)controller.UpdateStatus(blogId, statusDto, userId).Result;
 
             // Assert
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(expectedResponseCode);
         }
 
+        [Theory]
+        [InlineData(-11, -2, "Test comment", 200)]  // Valid comment
+        [InlineData(-11, -1, "", 400)]             // Invalid - Empty comment text
+        [InlineData(-11, -2, null, 400)]           // Invalid - Null comment text
+        public void CreatesComment(int userId, int blogId, string commentText, int expectedResponseCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
 
+            var newComment = new BlogCommentDto
+            {
+                userId = userId,
+                commentText = commentText
+            };
+
+            // Act
+            var result = (ObjectResult)controller.AddComment(blogId, newComment).Result;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(expectedResponseCode);
+        }
+
+        [Theory]
+        [InlineData(-2, -3, -11, "This is a test comment", 200)]
+        [InlineData(-2, -1, -11, "", 400)]  // Invalid - Empty comment text
+        [InlineData(-2, -1, -11, null, 400)] // Invalid - Null comment text
+        public void EditComment(long blogId, long commentId, int userId, string commentText, int expectedStatusCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            var commentDto = new BlogCommentDto
+            {
+                userId = userId,
+                commentText = commentText
+            };
+
+            // Act
+            var result = (ObjectResult)controller.EditComment(blogId, commentId, commentDto).Result;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(expectedStatusCode);
+        }
+
+        [Theory]
+        [InlineData(-11, -4, -4, 200)]   // Successful deletion
+        [InlineData(-21, -4, -1, 400)]   // Unauthorized user
+        [InlineData(-11, 999, -1, 400)] // Non-existent blog ID
+        public void DeletesComment(int userId, int blogId, int commentId, int expectedResponseCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            // Act
+            var deleteResult = (ObjectResult)controller.RemoveComment(blogId, commentId, userId).Result;
+
+            // Assert
+            deleteResult.ShouldNotBeNull();
+            deleteResult.StatusCode.ShouldBe(expectedResponseCode);
+        }
+
+        [Theory]
+        [InlineData(-1, -11, 0, 200)]  // Valid upvote
+        [InlineData(-1, -11, 1, 200)]  // Valid downvote
+        [InlineData(-99, -11, 0, 400)] // Invalid blog ID
+        //[InlineData(-1, -99, 0, 400)]  // Invalid user ID
+        public void AddVote(long blogId, int userId, int voteType, int expectedStatusCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            var voteDto = new BlogVoteDto
+            {
+                userId = userId,
+                type = (VoteTypeDto)voteType
+            };
+
+            // Act
+            var result = (ObjectResult)controller.AddVote(blogId, voteDto).Result;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(expectedStatusCode);
+        }
+
+        [Theory]
+        [InlineData(-5, -11, 200)]   // Valid vote removal
+        [InlineData(-99, -11, 400)]  // Invalid blog ID
+        [InlineData(-1, -99, 400)]   // Invalid user ID
+        public void RemoveVote(long blogId, int userId, int expectedStatusCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            var voteDto = new BlogVoteDto
+            {
+                userId = userId,
+                type = VoteTypeDto.Upvote
+            };
+
+            // Act
+            var r = controller.AddVote(blogId, voteDto);
+
+            var result = (ObjectResult)controller.RemoveVote(blogId, userId).Result;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(expectedStatusCode);
+        }
 
         private static BlogPostController CreateController(IServiceScope scope)
         {

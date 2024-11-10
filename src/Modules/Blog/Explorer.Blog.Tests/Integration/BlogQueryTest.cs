@@ -12,56 +12,36 @@
 //namespace Explorer.Blog.Tests.Integration;
 
 //[Collection("Sequential")]
-//public class BlogQueryTest : BaseBlogIntegrationTest
+//public class BlogQueryTest : IClassFixture<BlogFixture>
 //{
-//    public BlogQueryTest(BlogTestFactory factory) : base(factory) { }
-
-//    [Fact]
-//    public void ConvertsMarkdownToHTML()
+//    private BlogFixture fixture;
+//    public BlogQueryTest(BlogFixture fixture)
 //    {
-//        // Arrange
-//        using var scope = Factory.Services.CreateScope();
-//        var controller = CreateController(scope);
-//        var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-
-//        var existingBlog = dbContext.blogs.FirstOrDefault(b => b.Id == -1);
-//        existingBlog.ShouldNotBeNull(); 
-
-
-//        // Act
-//        var actionResult = controller.Preview((int)existingBlog.Id);
-
-//        var result = actionResult.Result as OkObjectResult;
-//        var htmlResult = result?.Value as string;
-
-//        // Assert - Check if Markdown was correctly converted to HTML
-//        htmlResult.ShouldNotBeNull();
-//        htmlResult.ShouldBe("<p>This is <strong>bold</strong> and <em>italic</em> text.</p>\n");
-
+//        this.fixture = fixture;
 //    }
 
 //    [Fact]
 //    public void RetrievesAll()
 //    {
 //        // Arrange
-//        using var scope = Factory.Services.CreateScope();
+//        using var scope = fixture.Factory.Services.CreateScope();
 //        var controller = CreateController(scope);
 
 //        // Act
-//        var result = ((ObjectResult)controller.GetAll(0, 0).Result)?.Value as PagedResult<BlogDTO>;
+//        var result = controller.GetAllBlogPosts(0, 0).Result;
 
 //        // Assert
 //        result.ShouldNotBeNull();
-//        result.Results.Count.ShouldBe(3);
-//        result.TotalCount.ShouldBe(3);
+//        result.ShouldBe(4);
+//        result.TotalCount.ShouldBe(4);
 //    }
 
 
-//    private static BlogController CreateController(IServiceScope scope)
+//    private static BlogPostController CreateController(IServiceScope scope)
 //    {
-//        return new BlogController(scope.ServiceProvider.GetRequiredService<IBlogService>())
+//        return new BlogPostController(scope.ServiceProvider.GetRequiredService<IBlogPostService>())
 //        {
-//            ControllerContext = BuildContext("-1")
+//            ControllerContext = BlogFixture.BuildContext("-1")
 //        };
 //    }
 //}

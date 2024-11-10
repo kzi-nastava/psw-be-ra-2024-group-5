@@ -14,17 +14,17 @@ namespace Explorer.Blog.API.Public
         Result<CreateBlogPostDto> CreateBlogPost(string title, string description, int userId, List<BlogImageDto> images);
         Result<BlogPostDto> GetBlogPostById(long id);
         Task<Result<PagedResult<BlogPostDto>>> GetAllBlogPosts(int page, int pageSize);
-        Result UpdateBlogPost(long id, string title, string description, int userId);
-        Result DeleteBlogPost(long id, int userId);
-        Result UpdateStatus(long blogId, BlogStatusDto newStatus, int userId);
+        Result<BlogPostDto> UpdateBlogPost(long id, string title, string description, int userId);
+        Result<BlogPostDto> DeleteBlogPost(long id, int userId);
+        Result<BlogPostDto> UpdateStatus(long blogId, BlogStatusDto newStatus, int userId);
 
-        Result AddComment(long blogId, string text, int userId);
-        Result EditComment(long blogId, long commentId, string newText, int userId);
-        Result RemoveComment(long blogId, long commentId, int userId);
+        Result<BlogCommentDto> AddComment(long blogId, string text, int userId);
+        Result<BlogCommentDto> EditComment(long blogId, long commentId, string newText, int userId);
+        Result<BlogCommentDto> RemoveComment(long blogId, long commentId, int userId);
         Result<IReadOnlyCollection<BlogCommentDto>> GetAllComments(long blogId);
 
-        Result AddVote(long blogId, VoteTypeDto voteType, int userId);
-        Result RemoveVote(long blogId, int userId);
+        Result<BlogVoteDto> AddVote(long blogId, VoteTypeDto voteType, int userId);
+        Result<BlogVoteDto> RemoveVote(long blogId, int userId);
         Result<int> GetUpvoteCount(long blogId);
         Result<int> GetDownvoteCount(long blogId);
 

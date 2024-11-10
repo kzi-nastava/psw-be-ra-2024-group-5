@@ -97,6 +97,9 @@ public class BlogPost : Entity
         if (status != BlogStatus.Published)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
+        //if (this.userId != userId)
+        //    throw new InvalidOperationException("User cant vote.");
+
         var existingRating = _votes.FirstOrDefault(r => r.userId == userId);
 
         if (existingRating != null)

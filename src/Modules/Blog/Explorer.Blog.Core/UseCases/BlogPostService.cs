@@ -5,10 +5,12 @@ using Explorer.Blog.Core.Domain;
 using Explorer.Blog.Core.Domain.RepositoryInterfaces;
 using Explorer.Blog.Core.Utilities;
 using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.API.Internal;
 using Explorer.Stakeholders.API.Public;
 using FluentResults;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,16 +21,21 @@ namespace Explorer.Blog.Core.UseCases
     {
         private readonly IBlogPostRepository _blogPostRepositoy;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public BlogPostService(IBlogPostRepository blogPostRepositoy, IMapper mapper) : base(mapper)
+        public BlogPostService(IBlogPostRepository blogPostRepositoy, IMapper mapper, IUserService userService) : base(mapper)
         {
             _blogPostRepositoy = blogPostRepositoy;
             _mapper = mapper;
+            _userService = userService;
         }
 
 
         public Result<CreateBlogPostDto> CreateBlogPost(string title, string description, int userId, List<BlogImageDto> images)
         {
+            if (!_userService.CheckAuthorExists(userId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Author does not exist.");
+
             BlogPost newBlogPost;
             try
             {
@@ -51,7 +58,7 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok(createdBlogDto);
         }
 
-        public Result UpdateBlogPost(long id, string title, string description, int userId)
+        public Result<BlogPostDto> UpdateBlogPost(long id, string title, string description, int userId)
         {
             BlogPost blogPost;
             try
@@ -75,10 +82,12 @@ namespace Explorer.Blog.Core.UseCases
             }
             
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
+            return Result.Ok(blogPostDto);
         }
 
-        public Result DeleteBlogPost(long id, int userId)
+        public Result<BlogPostDto> DeleteBlogPost(long id, int userId)
         {
             BlogPost blogPost;
             try
@@ -92,7 +101,35 @@ namespace Explorer.Blog.Core.UseCases
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
             if (blogPost.userId != userId) return Result.Fail(FailureCode.InvalidArgument).WithError("User is not authorized to delete this blog post.");
             _blogPostRepositoy.Delete(id);
-            return Result.Ok();
+
+            var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
+            return Result.Ok(blogPostDto);
+        }
+        public Result<BlogPostDto> UpdateStatus(long blogId, BlogStatusDto newStatus, int userId)
+        {
+            BlogPost blogPost;
+            try
+            {
+                blogPost = _blogPostRepositoy.Get(blogId);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
+            }
+            if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
+
+            try
+            {
+                blogPost.UpdateStatus((BlogStatus)newStatus, userId);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
+            }
+            _blogPostRepositoy.Update(blogPost);
+
+            var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
+            return Result.Ok(blogPostDto);
         }
 
         public async Task<Result<PagedResult<BlogPostDto>>> GetAllBlogPosts(int page, int pageSize)
@@ -122,8 +159,11 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok(blogPostDto);
         }
 
-        public Result AddComment(long blogId, string text, int userId)
+        public Result<BlogCommentDto> AddComment(long blogId, string text, int userId)
         {
+            if (!_userService.UserExists(userId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("User does not exist.");
+
             BlogPost blogPost;
             try
             {
@@ -142,16 +182,25 @@ namespace Explorer.Blog.Core.UseCases
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
+
+            var commentToAdd = blogPost.comments.FirstOrDefault(c => c.userId == userId && c.blogId == blogId);
+            if (commentToAdd == null)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
+            }
+
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogCommentDto = _mapper.Map<BlogCommentDto>(commentToAdd);
+            return Result.Ok(blogCommentDto);
         }
 
-        public Result EditComment(long blogId, long commentId, string newText, int userId)
+        public Result<BlogCommentDto> EditComment(long blogId, long commentId, string newText, int userId)
         {
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.Get(blogId);
+                blogPost = _blogPostRepositoy.GetBlogPost((int)blogId);
             }
             catch (Exception e)
             {
@@ -159,6 +208,13 @@ namespace Explorer.Blog.Core.UseCases
             }
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
+
+            var commentToEdit = blogPost.comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
+            if (commentToEdit == null)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
+            }
+
             try
             {
                 blogPost.EditComment(commentId, newText, userId);
@@ -168,15 +224,17 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogCommentDto = _mapper.Map<BlogCommentDto>(commentToEdit);
+            return Result.Ok(blogCommentDto);
         }
 
-        public Result RemoveComment(long blogId, long commentId, int userId)
+        public Result<BlogCommentDto> RemoveComment(long blogId, long commentId, int userId)
         {
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.Get(blogId);
+                blogPost = _blogPostRepositoy.GetBlogPost((int)blogId);
             }
             catch (Exception e)
             {
@@ -185,6 +243,11 @@ namespace Explorer.Blog.Core.UseCases
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
             
+            var commentToRemove = blogPost.comments.FirstOrDefault(c => c.Id ==  commentId && c.userId == userId);
+            if (commentToRemove == null)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
+            }
             try
             {
                 blogPost.RemoveComment(commentId, userId);
@@ -194,7 +257,9 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogCommentDto = _mapper.Map<BlogCommentDto>(commentToRemove);
+            return Result.Ok(blogCommentDto);
         }
 
         public Result<IReadOnlyCollection<BlogCommentDto>> GetAllComments(long blogId)
@@ -291,8 +356,11 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok((IReadOnlyCollection<BlogImageDto>)imagesDto);
         }
 
-        public Result AddVote(long blogId, VoteTypeDto voteType, int userId)
+        public Result<BlogVoteDto> AddVote(long blogId, VoteTypeDto voteType, int userId)
         {
+            if (!_userService.UserExists(userId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("User does not exist.");
+
             BlogPost blogPost;
             try
             {
@@ -303,6 +371,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
+            
             try
             {
                 blogPost.AddOrUpdateRating((VoteType)voteType, userId);
@@ -311,12 +380,20 @@ namespace Explorer.Blog.Core.UseCases
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
-            
+
+            var voteToAdd = blogPost.votes.FirstOrDefault(v => v.userId == userId);
+            if (voteToAdd == null)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Vote not found for the specified user.");
+            }
+
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogVoteDto = _mapper.Map<BlogVoteDto>(voteToAdd);
+            return Result.Ok(blogVoteDto);
         }
 
-        public Result RemoveVote(long blogId, int userId)
+        public Result<BlogVoteDto> RemoveVote(long blogId, int userId)
         {
             BlogPost blogPost;
             try
@@ -328,7 +405,13 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
+
+            var voteToRemove = blogPost.votes.FirstOrDefault(v => v.userId == userId);
+            if (voteToRemove == null)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Vote not found for the specified user.");
+            }
+
             try
             {
                 blogPost.RemoveRating(userId);
@@ -339,7 +422,9 @@ namespace Explorer.Blog.Core.UseCases
             }
 
             _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
+
+            var blogVoteDto = _mapper.Map<BlogVoteDto>(voteToRemove);
+            return Result.Ok(blogVoteDto);
         }
 
         public Result<int> GetUpvoteCount(long blogId)
@@ -397,31 +482,7 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok();
         }
 
-        public Result UpdateStatus(long blogId, BlogStatusDto newStatus, int userId)
-        {
-            BlogPost blogPost;
-            try
-            {
-                blogPost = _blogPostRepositoy.Get(blogId);
-            }
-            catch (Exception e)
-            {
-                return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
-            }
-
-            if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            
-            try
-            {
-                blogPost.UpdateStatus((BlogStatus)newStatus, userId);
-            }
-            catch (Exception e)
-            {
-                return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
-            }
-            _blogPostRepositoy.Update(blogPost);
-            return Result.Ok();
-        }
+        
 
 
     }
