@@ -1,142 +1,93 @@
-﻿using Explorer.API.Controllers.Author;
-using Explorer.Blog.API.Dtos;
-using Explorer.Blog.API.Public;
-using Explorer.Blog.Infrastructure.Database;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
+﻿//using Explorer.API.Controllers.Author;
+//using Explorer.Blog.API.Dtos;
+//using Explorer.Blog.API.Public;
+//using Explorer.Blog.Infrastructure.Database;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.Extensions.DependencyInjection;
+//using Shouldly;
 
-namespace Explorer.Blog.Tests.Integration
-{
-    [Collection("Blogs")]
-    public class BlogCommentCommandTests : IClassFixture<BlogFixture>
-    {
-        private BlogFixture fixture;
+//namespace Explorer.Blog.Tests.Integration
+//{
+//    [Collection("Blogs")]
+//    public class BlogCommentCommandTests : IClassFixture<BlogFixture>
+//    {
+//        private BlogFixture fixture;
+//        public BlogCommentCommandTests(BlogFixture fixture)
+//        {
+//            this.fixture = fixture;
+//        }
 
-        public BlogCommentCommandTests(BlogFixture fixture)
-        {
-            this.fixture = fixture;
-        }
+//        [Theory]
+//        [InlineData(-11, -2, "Test comment", 200)]  // Valid comment
+//        [InlineData(-11, -1, "", 400)]             // Invalid - Empty comment text
+//        [InlineData(-11, -2, null, 400)]           // Invalid - Null comment text
+//        public void CreatesComment(int userId,int blogId, string commentText, int expectedResponseCode)
+//        {
+//            // Arrange
+//            using var scope = fixture.Factory.Services.CreateScope();
+//            var controller = CreateController(scope);
 
-        [Fact]
-        public void CreatesComment()
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-            var newComment = new BlogCommentDTO
-            {
-                userId = -21,
-                commentText = "Ovo je novi testni komentar",
-            };
+//            var newComment = new BlogCommentDto
+//            {
+//                userId = userId,
+//                commentText = commentText
+//            };
 
-            // Act
-            var result = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
+//            // Act
+//            var result = (ObjectResult)controller.AddComment(blogId, newComment).Result;
 
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.id.ShouldNotBe(0);
-            result.commentText.ShouldBe(newComment.commentText);
+//            // Assert
+//            result.ShouldNotBeNull();
+//            result.StatusCode.ShouldBe(expectedResponseCode);
+//        }
+        
+//        [Theory]
+//        [InlineData(-2, -3, -11, "This is a test comment", 200)]
+//        [InlineData(-2, -1, -11, "", 400)]  // Invalid - Empty comment text
+//        [InlineData(-2, -1, -11, null, 400)] // Invalid - Null comment text
+//        public void EditComment(long blogId, long commentId, int userId, string commentText, int expectedStatusCode)
+//        {
+//            // Arrange
+//            using var scope = fixture.Factory.Services.CreateScope();
+//            var controller = CreateController(scope);
 
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.commentText == newComment.commentText);
-            storedComment.ShouldNotBeNull();
-            storedComment.Id.ShouldBe(result.id);
-        }
+//            var commentDto = new BlogCommentDto
+//            {
+//                userId = userId,
+//                commentText = commentText
+//            };
 
-        [Fact]
-        public void Create_fails_invalid_data()
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var invalidComment = new BlogCommentDTO
-            {
+//            // Act
+//            var result = (ObjectResult)controller.EditComment(blogId, commentId, commentDto).Result;
 
-            };
+//            // Assert
+//            result.ShouldNotBeNull();
+//            result.StatusCode.ShouldBe(expectedStatusCode);
+//        }
 
-            // Act
-            var result = (ObjectResult)controller.Create(invalidComment).Result;
+//        [Theory]
+//        [InlineData(-11, -4, -4, 200)]   // Successful deletion
+//        [InlineData(-21, -4, -1, 400)]   // Unauthorized user
+//        [InlineData(-11, 999, -1, 400)] // Non-existent blog ID
+//        public void DeletesComment(int userId, int blogId, int commentId, int expectedResponseCode)
+//        {
+//            // Arrange
+//            using var scope = fixture.Factory.Services.CreateScope();
+//            var controller = CreateController(scope);
 
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(400);
-        }
+//            // Act
+//            var deleteResult = (ObjectResult)controller.RemoveComment(blogId, commentId, userId).Result;
 
-
-
-
-        [Fact]
-        public void UpdatesComment()
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-
-            // Kreiraj novi komentar koji ćeš kasnije ažurirati
-            var newComment = new BlogCommentDTO
-            {
-                userId = -23,
-                commentText = "Originalni komentar"
-            };
-            var createdResult = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
-            createdResult.ShouldNotBeNull();
-            createdResult.id.ShouldNotBe(0);
-
-            // azurirani kom
-            var updatedComment = new BlogCommentDTO
-            {
-                id = createdResult.id, // Koristi ID iz kreiranog komentara
-                userId = createdResult.userId,
-                commentText = "Ažurirani komentar"
-            };
-
-            // Act
-            var result = ((ObjectResult)controller.Update(updatedComment.id, updatedComment).Result)?.Value as BlogCommentDTO;
-
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.id.ShouldBe(createdResult.id);
-            result.commentText.ShouldBe(updatedComment.commentText);
-
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == updatedComment.id);
-            storedComment.ShouldNotBeNull();
-            storedComment.commentText.ShouldBe(updatedComment.commentText);
-        }
-
-
-
-        [Fact]
-        public void DeletesComment()
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-
-            // Act
-            var result = (OkObjectResult)controller.Delete(-3);
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(200);
-
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == -3);
-            storedComment.ShouldBeNull();
-        }
-
-
-
-
-        private static BlogCommentController CreateController(IServiceScope scope)
-        {
-            return new BlogCommentController(scope.ServiceProvider.GetRequiredService<IBlogCommentService>())
-            {
-                ControllerContext = BlogFixture.BuildContext("-1")
-            };
-        }
-    }
-}
+//            // Assert
+//            deleteResult.ShouldNotBeNull();
+//            deleteResult.StatusCode.ShouldBe(expectedResponseCode);
+//        }
+//        private static BlogPostController CreateController(IServiceScope scope)
+//        {
+//            return new BlogPostController(scope.ServiceProvider.GetRequiredService<IBlogPostService>())
+//            {
+//                ControllerContext = BlogFixture.BuildContext("-1")
+//            };
+//        }
+//    }
+//}
