@@ -18,6 +18,9 @@ namespace Explorer.Stakeholders.API.Public
         Result<List<ClubMembershipDto>> GetAllMemberships();
         Result DeleteMembership(long clubId, long userId);
         Result CreateMembership(long clubId, long userId);
-
+        Result AddMessageToClub(long clubId, ClubMessageDto messageDto, long userId);
+        Result RemoveMessageFromClub(long clubId, long messageId, long userId);
+        Result UpdateMessageInClub(long clubId, long messageId, long userId, string newContent);
+        Result<PagedResult<ClubMessageDto>> GetPagedMessagesByClubId(long clubId, int page, int pageSize);
     }
 }
