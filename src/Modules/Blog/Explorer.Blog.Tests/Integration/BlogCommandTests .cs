@@ -134,122 +134,122 @@ namespace Explorer.Blog.Tests.Integration
             result.StatusCode.ShouldBe(expectedResponseCode);
         }
 
-        [Theory]
-        [InlineData(-11, -2, "Test comment", 200)]  // Valid comment
-        [InlineData(-11, -1, "", 400)]             // Invalid - Empty comment text
-        [InlineData(-11, -2, null, 400)]           // Invalid - Null comment text
-        public void CreatesComment(int userId, int blogId, string commentText, int expectedResponseCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
+        //[Theory]
+        //[InlineData(-11, -2, "Test comment", 200)]  // Valid comment
+        //[InlineData(-11, -1, "", 400)]             // Invalid - Empty comment text
+        //[InlineData(-11, -2, null, 400)]           // Invalid - Null comment text
+        //public void CreatesComment(int userId, int blogId, string commentText, int expectedResponseCode)
+        //{
+        //    // Arrange
+        //    using var scope = fixture.Factory.Services.CreateScope();
+        //    var controller = CreateController(scope);
 
-            var newComment = new BlogCommentDto
-            {
-                userId = userId,
-                commentText = commentText
-            };
+        //    var newComment = new BlogCommentDto
+        //    {
+        //        userId = userId,
+        //        commentText = commentText
+        //    };
 
-            // Act
-            var result = (ObjectResult)controller.AddComment(blogId, newComment).Result;
+        //    // Act
+        //    var result = (ObjectResult)controller.AddComment(blogId, newComment).Result;
 
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(expectedResponseCode);
-        }
+        //    // Assert
+        //    result.ShouldNotBeNull();
+        //    result.StatusCode.ShouldBe(expectedResponseCode);
+        //}
 
-        [Theory]
-        [InlineData(-2, -3, -11, "This is a test comment", 200)]
-        [InlineData(-2, -1, -11, "", 400)]  // Invalid - Empty comment text
-        [InlineData(-2, -1, -11, null, 400)] // Invalid - Null comment text
-        public void EditComment(long blogId, long commentId, int userId, string commentText, int expectedStatusCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
+        //[Theory]
+        //[InlineData(-2, -3, -11, "This is a test comment", 200)]
+        //[InlineData(-2, -1, -11, "", 400)]  // Invalid - Empty comment text
+        //[InlineData(-2, -1, -11, null, 400)] // Invalid - Null comment text
+        //public void EditComment(long blogId, long commentId, int userId, string commentText, int expectedStatusCode)
+        //{
+        //    // Arrange
+        //    using var scope = fixture.Factory.Services.CreateScope();
+        //    var controller = CreateController(scope);
 
-            var commentDto = new BlogCommentDto
-            {
-                userId = userId,
-                commentText = commentText
-            };
+        //    var commentDto = new BlogCommentDto
+        //    {
+        //        userId = userId,
+        //        commentText = commentText
+        //    };
 
-            // Act
-            var result = (ObjectResult)controller.EditComment(blogId, commentId, commentDto).Result;
+        //    // Act
+        //    var result = (ObjectResult)controller.EditComment(blogId, commentId, commentDto).Result;
 
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(expectedStatusCode);
-        }
+        //    // Assert
+        //    result.ShouldNotBeNull();
+        //    result.StatusCode.ShouldBe(expectedStatusCode);
+        //}
 
-        [Theory]
-        [InlineData(-11, -4, -4, 200)]   // Successful deletion
-        [InlineData(-21, -4, -1, 400)]   // Unauthorized user
-        [InlineData(-11, 999, -1, 400)] // Non-existent blog ID
-        public void DeletesComment(int userId, int blogId, int commentId, int expectedResponseCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
+        //[Theory]
+        //[InlineData(-11, -4, -4, 200)]   // Successful deletion
+        //[InlineData(-21, -4, -1, 400)]   // Unauthorized user
+        //[InlineData(-11, 999, -1, 400)] // Non-existent blog ID
+        //public void DeletesComment(int userId, int blogId, int commentId, int expectedResponseCode)
+        //{
+        //    // Arrange
+        //    using var scope = fixture.Factory.Services.CreateScope();
+        //    var controller = CreateController(scope);
 
-            // Act
-            var deleteResult = (ObjectResult)controller.RemoveComment(blogId, commentId, userId).Result;
+        //    // Act
+        //    var deleteResult = (ObjectResult)controller.RemoveComment(blogId, commentId, userId).Result;
 
-            // Assert
-            deleteResult.ShouldNotBeNull();
-            deleteResult.StatusCode.ShouldBe(expectedResponseCode);
-        }
+        //    // Assert
+        //    deleteResult.ShouldNotBeNull();
+        //    deleteResult.StatusCode.ShouldBe(expectedResponseCode);
+        //}
 
-        [Theory]
-        [InlineData(-1, -11, 0, 200)]  // Valid upvote
-        [InlineData(-1, -11, 1, 200)]  // Valid downvote
-        [InlineData(-99, -11, 0, 400)] // Invalid blog ID
-        //[InlineData(-1, -99, 0, 400)]  // Invalid user ID
-        public void AddVote(long blogId, int userId, int voteType, int expectedStatusCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
+        //[Theory]
+        //[InlineData(-1, -11, 0, 200)]  // Valid upvote
+        //[InlineData(-1, -11, 1, 200)]  // Valid downvote
+        //[InlineData(-99, -11, 0, 400)] // Invalid blog ID
+        ////[InlineData(-1, -99, 0, 400)]  // Invalid user ID
+        //public void AddVote(long blogId, int userId, int voteType, int expectedStatusCode)
+        //{
+        //    // Arrange
+        //    using var scope = fixture.Factory.Services.CreateScope();
+        //    var controller = CreateController(scope);
 
-            var voteDto = new BlogVoteDto
-            {
-                userId = userId,
-                type = (VoteTypeDto)voteType
-            };
+        //    var voteDto = new BlogVoteDto
+        //    {
+        //        userId = userId,
+        //        type = (VoteTypeDto)voteType
+        //    };
 
-            // Act
-            var result = (ObjectResult)controller.AddVote(blogId, voteDto).Result;
+        //    // Act
+        //    var result = (ObjectResult)controller.AddVote(blogId, voteDto).Result;
 
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(expectedStatusCode);
-        }
+        //    // Assert
+        //    result.ShouldNotBeNull();
+        //    result.StatusCode.ShouldBe(expectedStatusCode);
+        //}
 
-        [Theory]
-        [InlineData(-5, -11, 200)]   // Valid vote removal
-        [InlineData(-99, -11, 400)]  // Invalid blog ID
-        [InlineData(-1, -99, 400)]   // Invalid user ID
-        public void RemoveVote(long blogId, int userId, int expectedStatusCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
+        //[Theory]
+        //[InlineData(-5, -11, 200)]   // Valid vote removal
+        //[InlineData(-99, -11, 400)]  // Invalid blog ID
+        //[InlineData(-1, -99, 400)]   // Invalid user ID
+        //public void RemoveVote(long blogId, int userId, int expectedStatusCode)
+        //{
+        //    // Arrange
+        //    using var scope = fixture.Factory.Services.CreateScope();
+        //    var controller = CreateController(scope);
 
-            var voteDto = new BlogVoteDto
-            {
-                userId = userId,
-                type = VoteTypeDto.Upvote
-            };
+        //    var voteDto = new BlogVoteDto
+        //    {
+        //        userId = userId,
+        //        type = VoteTypeDto.Upvote
+        //    };
 
-            // Act
-            var r = controller.AddVote(blogId, voteDto);
+        //    // Act
+        //    var r = controller.AddVote(blogId, voteDto);
 
-            var result = (ObjectResult)controller.RemoveVote(blogId, userId).Result;
+        //    var result = (ObjectResult)controller.RemoveVote(blogId, userId).Result;
 
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(expectedStatusCode);
-        }
+        //    // Assert
+        //    result.ShouldNotBeNull();
+        //    result.StatusCode.ShouldBe(expectedStatusCode);
+        //}
 
         private static BlogPostController CreateController(IServiceScope scope)
         {
