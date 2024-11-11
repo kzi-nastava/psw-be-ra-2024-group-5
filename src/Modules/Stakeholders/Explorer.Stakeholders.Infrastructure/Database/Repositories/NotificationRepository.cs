@@ -18,7 +18,8 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         public PagedResult<Notification> GetPagedNotifications(long userId, int page, int pageSize)
         {
             var query = DbContext.Notifications
-                .Where(n => n.UserReadStatuses.Any(r => r.UserId == userId));  
+                .Include(n => n.UserReadStatuses)  
+                .Where(n => n.UserReadStatuses.Any(r => r.UserId == userId));
 
             var totalItems = query.Count();
             var notifications = query
@@ -28,6 +29,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
 
             return new PagedResult<Notification>(notifications, totalItems);
         }
+
 
         public void MarkAsRead(long notificationId, long userId)
         {
