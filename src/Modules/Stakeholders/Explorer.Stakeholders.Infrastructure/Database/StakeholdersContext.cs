@@ -16,6 +16,7 @@ public class StakeholdersContext : DbContext
     public DbSet<ClubMembership> Memberships { get; set; }
     public DbSet<Following> Followers { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<NotificationReadStatus> NotificationReadStatuses { get; set; }
 
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
@@ -92,11 +93,24 @@ public class StakeholdersContext : DbContext
             .HasForeignKey(cm => cm.ClubId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Notification>()
-            .HasOne<User>()
+        modelBuilder.Entity<NotificationReadStatus>()
+            .HasKey(nrs => new { nrs.UserId, nrs.NotificationId });
+
+        modelBuilder.Entity<NotificationReadStatus>()
+            .HasOne<Notification>()   
+            .WithMany(n => n.UserReadStatuses)  
+            .HasForeignKey(nrs => nrs.NotificationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificationReadStatus>()
+            .HasOne<User>()   
             .WithMany()
-            .HasForeignKey(n => n.UserId)
+            .HasForeignKey(nrs => nrs.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<NotificationReadStatus>()
+           .ToTable("NotificationReadStatuses", "stakeholders")
+           .HasKey(nrs => new { nrs.NotificationId, nrs.UserId });
 
         //modelBuilder.Entity<ProfileMessage>()
         //    .ToTable("ProfileMessages", "stakeholders")

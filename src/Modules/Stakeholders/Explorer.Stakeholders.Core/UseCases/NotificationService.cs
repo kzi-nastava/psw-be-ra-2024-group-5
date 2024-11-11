@@ -36,9 +36,9 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Ok(pagedNotificationDtos);
         }
 
-        public Result MarkNotificationAsRead(long notificationId)
+        public Result MarkNotificationAsRead(long notificationId, long userId)
         {
-            _notificationRepository.MarkAsRead(notificationId);
+            _notificationRepository.MarkAsRead(notificationId, userId);
             return Result.Ok();
         }
 
@@ -48,7 +48,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Ok();
         }
 
-        public Result<NotificationDto> SendNotification(long userId, NotificationDto notificationDto)
+        public Result<NotificationDto> SendNotification(NotificationDto notificationDto)
         {
             var notification = MapToDomain(notificationDto);
 

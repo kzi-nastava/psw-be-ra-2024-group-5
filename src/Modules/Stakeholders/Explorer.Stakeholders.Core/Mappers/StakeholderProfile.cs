@@ -93,5 +93,7 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.ResourceId, opt => opt.MapFrom(src => src.ResourceId))
             .ForMember(dest => dest.ResourceType, opt => opt.MapFrom(src => (ResourceType)src.ResourceType));
 
+        CreateMap<NotificationReadStatus, NotificationReadStatusDto>().ReverseMap();
+
     }
 }

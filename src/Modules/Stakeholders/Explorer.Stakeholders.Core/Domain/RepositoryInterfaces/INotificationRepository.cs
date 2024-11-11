@@ -10,7 +10,7 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     public interface INotificationRepository: ICrudRepository<Notification>
     {
         PagedResult<Notification> GetPagedNotifications(long userId, int page, int pageSize);
-        void MarkAsRead(long notificationId);
+        void MarkAsRead(long notificationId, long userId);
         void MarkAllAsRead(long userId);
         void Add(Notification notification);
     }

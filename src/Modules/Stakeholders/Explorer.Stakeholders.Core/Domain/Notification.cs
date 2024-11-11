@@ -5,9 +5,8 @@ namespace Explorer.Stakeholders.Core.Domain;
 
 public class Notification: Entity
 {
-    public long UserId { get; private set; }
+    public List<long> UserIds { get; private set; }
     public string Content { get; private set; }
-    public bool IsRead { get; set; }
     public DateTime CreatedAt { get; private set; }
     public NotificationType Type { get; private set; }
     public long? SenderId { get; private set; } // if the notification is a message from sb
@@ -16,6 +15,7 @@ public class Notification: Entity
     public long? ClubId { get; private set; } // if the notification is related to a club activity
     public string? Message { get; private set; }
     public Attachment? Attachment { get; private set; }
+    public List<NotificationReadStatus> UserReadStatuses { get; set; }
 }
 
 public enum NotificationType

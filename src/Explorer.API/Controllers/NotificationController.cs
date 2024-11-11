@@ -28,9 +28,9 @@ public class NotificationController: BaseApiController
     }
 
     [HttpPost("{notificationId}/read")]
-    public ActionResult MarkNotificationAsRead(long notificationId)
+    public ActionResult MarkNotificationAsRead(long notificationId, long userId)
     {
-        var result = _notificationService.MarkNotificationAsRead(notificationId);
+        var result = _notificationService.MarkNotificationAsRead(notificationId, userId);
 
         if (result.IsFailed)
         {
@@ -53,10 +53,10 @@ public class NotificationController: BaseApiController
         return Ok();
     }
 
-    [HttpPost("{userId}/send")]
-    public ActionResult<NotificationDto> SendNotification(long userId, [FromBody] NotificationDto notificationDto)
+    [HttpPost("send")]
+    public ActionResult<NotificationDto> SendNotification([FromBody] NotificationDto notificationDto)
     {
-        var result = _notificationService.SendNotification(userId, notificationDto);
+        var result = _notificationService.SendNotification(notificationDto);
 
         if (result.IsFailed)
         {

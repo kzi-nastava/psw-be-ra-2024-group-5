@@ -13,8 +13,8 @@ namespace Explorer.Stakeholders.API.Public
     public interface INotificationService
     {
         Result<PagedResult<NotificationDto>> GetPagedNotifications(long userId, int page, int pageSize);
-        Result MarkNotificationAsRead(long notificationId);
+        Result MarkNotificationAsRead(long notificationId, long userId);
         Result MarkAllNotificationsAsRead(long userId);
-        Result<NotificationDto> SendNotification(long userId, NotificationDto notificationDto);
+        Result<NotificationDto> SendNotification(NotificationDto notificationDto);
     }
 }
