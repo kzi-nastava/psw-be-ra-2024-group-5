@@ -234,7 +234,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
             var tourExecution = _tourExecutionRepository.GetByTourAndUser(tourId, touristId);
 
-            SetTouristPermissions(tourTouristDto, tourExecution, tour);
+            SetTouristPermissions(tourTouristDto, tourExecution, tour,touristId);
 
             return Result.Ok(tourTouristDto);
         }
@@ -244,14 +244,14 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-    private void SetTouristPermissions(TourTouristDto tourTouristDto, TourExecution tourExecution, Tour tour)
+    private void SetTouristPermissions(TourTouristDto tourTouristDto, TourExecution tourExecution, Tour tour, long touristId)
     {
 
-        tourTouristDto.CanBeBought = tour.Status == TourStatus.Published &&
-                                     tourExecution == null;
+        tourTouristDto.CanBeBought = tour.Status == TourStatus.Published && 
+                                     !_shoppingCartRepository.IsTourBought(touristId, tour.Id);
 
-        tourTouristDto.CanBeActivated = tourExecution != null &&
-                                        tourExecution.Status == TourExecutionStatus.Active;
+        tourTouristDto.CanBeActivated = tourExecution == null &&
+                                        _shoppingCartRepository.IsTourBought(touristId, tour.Id);
 
         if (tourExecution != null)
         {
