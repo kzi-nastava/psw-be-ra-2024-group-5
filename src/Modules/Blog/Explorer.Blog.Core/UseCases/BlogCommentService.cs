@@ -9,7 +9,7 @@ using FluentResults;
 
 namespace Explorer.Blog.Core.UseCases
 {
-    public class BlogCommentService : CrudService<BlogCommentDTO, BlogComment>, IBlogCommentService
+    public class BlogCommentService : CrudService<BlogCommentDto, BlogComment>, IBlogCommentService
     {
         private readonly IMapper _mapper;
         private readonly ICommentRepository _commentRepository;
@@ -22,7 +22,7 @@ namespace Explorer.Blog.Core.UseCases
             _mapper = mapper;
         }
 
-        public Result<BlogCommentDTO> CreateComment(BlogCommentDTO commentDto)
+        public Result<BlogCommentDto> CreateComment(BlogCommentDto commentDto)
         {
             if (commentDto == null)
                 return Result.Fail("Comment data is required.");
@@ -32,20 +32,20 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(new FluentResults.Error($"User with ID {commentDto.userId} does not exist."));
             }
 
-            var blogComment = new BlogComment(commentDto.userId, commentDto.commentText);
+            var blogComment = new BlogComment(commentDto.blogId, commentDto.userId, commentDto.commentText);
 
             Result<BlogComment> result = CrudRepository.Create(blogComment);
 
             if (result.IsSuccess)
             {
-                var createdCommentDto = _mapper.Map<BlogCommentDTO>(blogComment);
+                var createdCommentDto = _mapper.Map<BlogCommentDto>(blogComment);
                 return Result.Ok(createdCommentDto);
             }
 
             return Result.Fail(result.Errors);
         }
 
-        public Result<BlogCommentDTO> GetCommentById(int id)
+        public Result<BlogCommentDto> GetCommentById(int id)
         {
             var result = Get(id);
 
@@ -55,7 +55,7 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Fail(result.Errors);
         }
 
-        public Result<BlogCommentDTO> UpdateComment(long id, BlogCommentDTO updatedCommentDto)
+        public Result<BlogCommentDto> UpdateComment(long id, BlogCommentDto updatedCommentDto)
         {
             var existingComment = CrudRepository.Get(id);
             if (existingComment == null)
@@ -74,7 +74,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(new FluentResults.Error("Failed to update comment").WithMetadata("ErrorMessage", e.Message));
             }
 
-            var updatedCommentDtoMapped = _mapper.Map<BlogCommentDTO>(existingComment);
+            var updatedCommentDtoMapped = _mapper.Map<BlogCommentDto>(existingComment);
             return Result.Ok(updatedCommentDtoMapped);
         }
 
@@ -105,7 +105,7 @@ namespace Explorer.Blog.Core.UseCases
         }
 
 
-        public Result<List<BlogCommentDTO>> GetAllCommentsByUser(long userId)
+        public Result<List<BlogCommentDto>> GetAllCommentsByUser(long userId)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Explorer.Blog.Core.UseCases
                     return Result.Fail(new FluentResults.Error("No comments found for this user."));
                 }
 
-                var commentDtos = _mapper.Map<List<BlogCommentDTO>>(comments);
+                var commentDtos = _mapper.Map<List<BlogCommentDto>>(comments);
 
                 return Result.Ok(commentDtos);
             }

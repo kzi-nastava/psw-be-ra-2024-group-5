@@ -20,9 +20,9 @@ namespace Explorer.Blog.Infrastructure {
         }
 
         private static void SetupCore(IServiceCollection services) {
-            services.AddScoped(typeof(ICrudRepository<BlogPost>), typeof(CrudDatabaseRepository<BlogPost, BlogContext>));
-            services.AddScoped<IBlogService, BlogService>();
-            services.AddScoped(typeof(ICrudRepository<BlogImage>), typeof(CrudDatabaseRepository<BlogImage, BlogContext>));
+            services.AddScoped<IBlogPostService, BlogPostService>();
+            services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+
             services.AddScoped<IBlogCommentService, BlogCommentService>();
             services.AddScoped<ICommentRepository, CommentRepository>();
 

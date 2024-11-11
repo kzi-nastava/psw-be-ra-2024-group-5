@@ -17,12 +17,16 @@ namespace Explorer.Blog.Core.Domain
         private BlogVote() { }
 
         [JsonConstructor]
-        public BlogVote(int userId, DateTime voteTime, VoteType type)
+        public BlogVote(int userId, VoteType type)
         {
             this.userId = userId;
-            this.voteTime = voteTime;
+            this.voteTime = DateTime.UtcNow;
+
+            if (!Enum.IsDefined(typeof(VoteType), type))
+                throw new ArgumentException("Invalid status value.", nameof(type));
             this.type = type;
         }
+
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
