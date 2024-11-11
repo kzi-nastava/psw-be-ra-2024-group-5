@@ -181,7 +181,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
         foreach (var re in tDto.Reviews ?? Enumerable.Empty<TourReviewDto>()) {
             var img = Base64Converter.ConvertToByteArray(re.Image);
-            var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img);
+            var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img, re.CompletionPercentage);
             reviews.Add(r);
         }
 
@@ -229,7 +229,6 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             var tour = _tourRepository.GetById((int)tourId);
             if (tour == null) return Result.Fail("Tour not found");
 
-            //var tourDto = _mapper.Map<TourDto>(tour);
             var tourDto = MapTourToDto(tour);
             var tourTouristDto = new TourTouristDto(tourDto);
 
