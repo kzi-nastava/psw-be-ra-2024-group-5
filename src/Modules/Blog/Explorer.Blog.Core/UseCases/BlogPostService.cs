@@ -475,7 +475,7 @@ namespace Explorer.Blog.Core.UseCases
             return Result.Ok();
         }
 
-        public Result UpdateBlogStatusBasedOnVotesAndComments(long blogId)
+        public Result UpdateBlogStatusBasedOnVotesAndComments(long blogId, int userId)
         {
             BlogPost blogPost;
             try
@@ -484,35 +484,40 @@ namespace Explorer.Blog.Core.UseCases
             }
             catch (Exception e)
             {
+                Console.WriteLine("Error fetching the blog post: " + e.Message);
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Error fetching the blog post: " + e.Message);
             }
 
             if (blogPost == null)
+            {
+                Console.WriteLine("Blog post not found.");
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
+            }
 
             int upvotes = blogPost.GetUpvoteCount();
             int downvotes = blogPost.GetDownvoteCount();
-            int commentCount = blogPost.comments.Count;
+            int commentCount = GetCommentCount(blogPost.Id);
 
-            if (upvotes - downvotes < -10)
+            blogPost.UpdateStatusBasedOnVotesAndComments(upvotes, downvotes, commentCount, userId);
+
+            try
             {
-                blogPost.UpdateStatus(BlogStatus.Closed, blogPost.userId);
+                _blogPostRepositoy.Update(blogPost);
+                Console.WriteLine("Blog status updated successfully in the database.");
             }
-            else if (upvotes > 100 || commentCount > 10)
+            catch (Exception ex)
             {
-                blogPost.UpdateStatus(BlogStatus.Active, blogPost.userId);
-            }
-            else if (upvotes > 500)
-            {
-                blogPost.UpdateStatus(BlogStatus.Famous, blogPost.userId);
+                Console.WriteLine("Error saving the blog post status to the database: " + ex.Message);
+                return Result.Fail("Database error").WithError("Error saving the blog post status: " + ex.Message);
             }
 
-            _blogPostRepositoy.Update(blogPost);
             return Result.Ok();
         }
 
-
-
+        public int GetCommentCount(long blogId)
+        {
+            return _blogPostRepositoy.GetCommentCountForBlog(blogId);
+        }
 
 
     }

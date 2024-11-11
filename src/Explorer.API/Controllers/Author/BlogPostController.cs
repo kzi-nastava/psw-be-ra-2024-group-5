@@ -114,6 +114,8 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("{blogId}/vote")]
         public ActionResult<BlogVoteDto> AddVote(long blogId, [FromBody] BlogVoteDto dto)
         {
+            Console.WriteLine($"Received vote data: userId = {dto.userId}, type = {dto.type}, voteTime = {dto.voteTime}");
+
             var result = _blogPostService.AddVote(blogId, dto.type, dto.userId);
             return CreateResponse(result);
         }
@@ -146,19 +148,13 @@ namespace Explorer.API.Controllers.Author
             return CreateResponse(result);
         }
 
-        [HttpPost("{blogId}/update-status")]
-        public ActionResult UpdateBlogStatusBasedOnVotesAndComments(long blogId)
+        [HttpPut("{blogId}/update-status")]
+        public ActionResult<BlogPostDto> UpdateBlogStatusBasedOnVotesAndComments(long blogId, [FromQuery] int userId)
         {
-            try
-            {
-                _blogPostService.UpdateBlogStatusBasedOnVotesAndComments(blogId);
-                return Ok("Blog status updated successfully.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = _blogPostService.UpdateBlogStatusBasedOnVotesAndComments(blogId, userId);
+            return CreateResponse(result);
         }
+
 
     }
 }

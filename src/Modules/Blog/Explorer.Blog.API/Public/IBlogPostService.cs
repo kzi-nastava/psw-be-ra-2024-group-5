@@ -29,7 +29,7 @@ namespace Explorer.Blog.API.Public
 
         Result<string> RenderDescriptionToMarkdown(long blogId);
 
-        Result UpdateBlogStatusBasedOnVotesAndComments(long blogId);
+        Result UpdateBlogStatusBasedOnVotesAndComments(long blogId, int userId);
 
 
     }

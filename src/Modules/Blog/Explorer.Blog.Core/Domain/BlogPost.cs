@@ -12,7 +12,7 @@ public class BlogPost : Entity
     public BlogStatus status { get; private set; }
 
     private readonly List<BlogComment> _comments = new List<BlogComment>();
-    public IReadOnlyCollection<BlogComment> comments => _comments.AsReadOnly();
+    public virtual IReadOnlyCollection<BlogComment> comments => _comments.AsReadOnly();
 
     private readonly List<BlogVote> _votes = new List<BlogVote>();
     public IReadOnlyCollection<BlogVote> votes => _votes.AsReadOnly();
@@ -61,41 +61,36 @@ public class BlogPost : Entity
         {
             throw new ArgumentException("Invalid status value.", nameof(newStatus));
         }
-        Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
         status = newStatus;
 
-        if (newStatus == BlogStatus.Published)
-        {
-            status = GetNewStatusBasedOnVotesAndComments();
-            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-        }
     }
 
-    public BlogStatus GetNewStatusBasedOnVotesAndComments()
+    public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount, int currentUserId)
     {
-        int upvotes = GetUpvoteCount();
-        int downvotes = GetDownvoteCount();
-        int commentCount = comments.Count;
-
-        Console.WriteLine($"Upvotes: {upvotes}, Downvotes: {downvotes}, Comments: {commentCount}");
-
-
-        if (upvotes - downvotes < -10)
+        if (status == BlogStatus.Published || status == BlogStatus.Active || status == BlogStatus.Famous)
         {
-            return BlogStatus.Closed;
+            if (upvotes - downvotes < -10)
+            {
+                Console.WriteLine("Setting status to Closed");
+                UpdateStatus(BlogStatus.Closed, currentUserId);
+            }
+            else if (upvotes > 100 || commentCount > 10)
+            {
+                Console.WriteLine("Setting status to Active");
+                UpdateStatus(BlogStatus.Active, currentUserId);
+            }
+            else if (upvotes > 500)
+            {
+                Console.WriteLine("Setting status to Famous");
+                UpdateStatus(BlogStatus.Famous, currentUserId);
+            }
+            else if (upvotes <= 10)
+            {
+                Console.WriteLine("Setting status back to Published");
+                UpdateStatus(BlogStatus.Published, currentUserId);
+            }
         }
-        else if (upvotes > 100 || commentCount > 10)
-        {
-            return BlogStatus.Active;
-        }
-        else if (upvotes > 500)
-        {
-            return BlogStatus.Famous;
-        }
-
-        return status; // Ostavlja trenutni status ako se nijedan uslov ne ispuni
     }
 
 
@@ -129,7 +124,7 @@ public class BlogPost : Entity
 
     public void AddOrUpdateRating(VoteType value, int userId)
     {
-        if (status != BlogStatus.Published)
+        if (status == BlogStatus.Draft)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
         //if (this.userId != userId)
