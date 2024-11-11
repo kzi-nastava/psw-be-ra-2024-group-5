@@ -8,7 +8,7 @@ public class BlogPost : Entity
     public int userId { get; private set; }
     public string title { get; private set; }
     public string description { get; private set; }
-    public DateTime createdDate { get; private set; } 
+    public DateTime createdDate { get; private set; }
     public BlogStatus status { get; private set; }
 
     private readonly List<BlogComment> _comments = new List<BlogComment>();
@@ -23,7 +23,7 @@ public class BlogPost : Entity
 
     public BlogPost() { }
 
-    public BlogPost(string title, string description,int userId)
+    public BlogPost(string title, string description, int userId)
     {
         this.title = title ?? throw new ArgumentNullException(nameof(title));
         this.description = description ?? throw new ArgumentNullException(nameof(description));
@@ -61,9 +61,44 @@ public class BlogPost : Entity
         {
             throw new ArgumentException("Invalid status value.", nameof(newStatus));
         }
+        Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
         status = newStatus;
+
+        if (newStatus == BlogStatus.Published)
+        {
+            status = GetNewStatusBasedOnVotesAndComments();
+            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        }
     }
+
+    public BlogStatus GetNewStatusBasedOnVotesAndComments()
+    {
+        int upvotes = GetUpvoteCount();
+        int downvotes = GetDownvoteCount();
+        int commentCount = comments.Count;
+
+        Console.WriteLine($"Upvotes: {upvotes}, Downvotes: {downvotes}, Comments: {commentCount}");
+
+
+        if (upvotes - downvotes < -10)
+        {
+            return BlogStatus.Closed;
+        }
+        else if (upvotes > 100 || commentCount > 10)
+        {
+            return BlogStatus.Active;
+        }
+        else if (upvotes > 500)
+        {
+            return BlogStatus.Famous;
+        }
+
+        return status; // Ostavlja trenutni status ako se nijedan uslov ne ispuni
+    }
+
+
 
     public void AddComment(long id, string text, int userId)
     {
@@ -115,7 +150,7 @@ public class BlogPost : Entity
     {
         if (status != BlogStatus.Published)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
-        
+
         var existingRating = _votes.FirstOrDefault(r => r.userId == userId);
 
         if (existingRating != null)
