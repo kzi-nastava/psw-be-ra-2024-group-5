@@ -2,6 +2,7 @@ using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos;
+
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
@@ -9,16 +10,26 @@ using Explorer.Tours.Core.Utilities;
 using FluentResults;
 using System.Collections.Generic;
 using System.Linq;
+using Explorer.Tours.API.Enum;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
 public class TourService : BaseService<TourDto, Tour>, ITourService {
     private readonly ITourRepository _tourRepository;
     private readonly IMapper equipmentMapper;
+    protected readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper) : base(mapper) {
+    private readonly IShoppingCartRepository _shoppingCartRepository;
+    private readonly ITourExecutionRepository _tourExecutionRepository;
+
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository) : base(mapper)
+    {
         _tourRepository = repository;
+        _tourExecutionRepository = tourExecutionRepository;
         _userRepository = userRepository;
+        _mapper = mapper;
+        _shoppingCartRepository = shoppingCartRepository;
+        _tourExecutionRepository = tourExecutionRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
     }
 
@@ -33,33 +44,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-    public Result<TourTouristDto> GetForTouristById(long id, long touristId)
-    {
-        try
-        {
-            var user = this._userRepository.Get(touristId);
 
-            if (user == null || user.Role != Stakeholders.Core.Domain.UserRole.Tourist)
-            {
-                return Result.Fail(FailureCode.Forbidden);
-            }
-
-            var tour = _tourRepository.GetById((int)id);
-            var tourDto = MapTourToDto(tour);
-
-            /*
-             Ovde treba napraviti logiku, da li moze komentarisati, dal je kupio
-            Koliko keypointova..
-             */
-            var tourTouristDto = new TourTouristDto(tourDto);
-
-            return Result.Ok(tourTouristDto);
-        }
-        catch (Exception e)
-        {
-            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
-        }
-    }
 
     public Result<List<TourDto>> GetByAuthorId(int id) {
         try {
@@ -196,7 +181,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
         foreach (var re in tour.Reviews ?? Enumerable.Empty<TourReview>()) {
             var img = Base64Converter.ConvertFromByteArray(re.Image);
-            var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId);
+            var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId, re.CompletionPercentage);
             reviews.Add(r);
         }
 
@@ -226,7 +211,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
         foreach (var re in tDto.Reviews ?? Enumerable.Empty<TourReviewDto>()) {
             var img = Base64Converter.ConvertToByteArray(re.Image);
-            var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img);
+            var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img, re.CompletionPercentage);
             reviews.Add(r);
         }
 
@@ -267,6 +252,105 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
     }
 
+    public Result<TourTouristDto> GetForTouristById(long tourId, long touristId)
+    {
+        try
+        {
+            var tour = _tourRepository.GetById((int)tourId);
+            if (tour == null) return Result.Fail("Tour not found");
+
+            var tourDto = MapTourToDto(tour);
+            var tourTouristDto = new TourTouristDto(tourDto);
+
+            var tourExecution = _tourExecutionRepository.GetByTourAndUser(tourId, touristId);
+
+            SetTouristPermissions(tourTouristDto, tourExecution, tour);
+
+            return Result.Ok(tourTouristDto);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(ex.Message);
+        }
+    }
+
+    private void SetTouristPermissions(TourTouristDto tourTouristDto, TourExecution tourExecution, Tour tour)
+    {
+
+        tourTouristDto.CanBeBought = tour.Status == TourStatus.Published &&
+                                     tourExecution == null;
+
+        tourTouristDto.CanBeActivated = tourExecution != null &&
+                                        tourExecution.Status == TourExecutionStatus.Active;
+
+        if (tourExecution != null)
+        {
+            var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
+            var isWithinTimeLimit = IsWithinTimeLimit(tourExecution);
+
+            tourTouristDto.CanBeReviewed = completionPercentage >= 35 &&
+                                           isWithinTimeLimit &&
+                                           !tour.Reviews.Any(r => r.TouristId == tourExecution.UserId);
+        }
+    }
+    private bool IsWithinTimeLimit(TourExecution execution)
+    {
+        if (execution.LastActivity == null) return false;
+
+        var daysSinceLastActivity = (DateTime.UtcNow - execution.LastActivity.Value).TotalDays;
+        return daysSinceLastActivity <= 7;
+    }
+
+    private double CalculateCompletionPercentage(TourExecution execution, Tour tour)
+    {
+        var completedPoints = execution.KeyPointProgresses.Count;
+        var totalPoints = tour.KeyPoints.Count;
+
+        if (totalPoints == 0) return 0;
+        return (completedPoints * 100.0) / totalPoints;
+    }
+
+    public Result<TourReviewDto> AddReview(TourReviewDto reviewDto)
+    {
+        try
+        {
+            var tour = _tourRepository.GetById((int)reviewDto.TourId);
+            if (tour == null) return Result.Fail("Tour not found");
+
+            var tourExecution = _tourExecutionRepository.GetByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
+            if (tourExecution == null) return Result.Fail("No tour execution found");
+
+            var tourTouristResult = GetForTouristById((int)reviewDto.TourId, (int)reviewDto.TouristId);
+            if (tourTouristResult.IsFailed) return Result.Fail(tourTouristResult.Errors);
+
+            if (!tourTouristResult.Value.CanBeReviewed)
+                return Result.Fail("Tourist cannot review this tour");
+
+            var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
+
+            var reviewDate = DateTime.UtcNow;
+            var review = new TourReview(
+                reviewDto.Rating,
+                reviewDto.Comment,
+                reviewDto.VisitDate,
+                reviewDate,
+                reviewDto.TourId,
+                reviewDto.TouristId,
+                Base64Converter.ConvertToByteArray(reviewDto.Image)
+            );
+            review.CompletionPercentage = completionPercentage;
+
+            tour.AddReview(review);
+            _tourRepository.Update(tour);
+
+            return Result.Ok(_mapper.Map<TourReviewDto>(review));
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(ex.Message);
+        }
+    }
+
     public Result PublishTour(int tourId)
     {
         var tour = _tourRepository.GetById(tourId);
@@ -278,6 +362,22 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         if (!tour.Publish())
         {
             return Result.Fail("Tour cannot be published. Ensure all requirements are met.");
+        }
+
+        _tourRepository.Update(tour);
+        return Result.Ok();
+    }
+
+    public Result ArchiveTour(int tourId)
+    {
+        var tour = _tourRepository.GetById(tourId);
+        if (tour == null)
+        {
+            return Result.Fail(FailureCode.NotFound).WithError("Tour not found.");
+        }
+        if (!tour.Archive())
+        {
+            return Result.Fail("Tour cannot be archived. Ensure all requirements are met.");
         }
 
         _tourRepository.Update(tour);

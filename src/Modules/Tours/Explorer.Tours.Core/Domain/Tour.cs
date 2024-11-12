@@ -60,6 +60,7 @@ public class Tour : Entity {
 
     }
 
+
     public static List<Tour> FilterToursByLocation(List<Tour> tours, double startLat, double endLat, double startLong, double endLong)
     {
         var filteredTours = new List<Tour>();
@@ -82,6 +83,27 @@ public class Tour : Entity {
         return filteredTours;
     }
 
+
+    public void AddReview(TourReview review)
+    {
+        ValidateReviewAddition(review);
+        Reviews.Add(review);
+    }
+
+    private void ValidateReviewAddition(TourReview review)
+    {
+        if (review == null) throw new ArgumentNullException(nameof(review));
+        if (Status != TourStatus.Published)
+            throw new InvalidOperationException("Cannot review an unpublished tour");
+        if (Reviews.Any(r => r.TouristId == review.TouristId))
+            throw new InvalidOperationException("Tourist has already reviewed this tour");
+    }
+
+    public List<TourReview> GetReviews()
+    {
+        return Reviews.ToList();
+    }
+
     public List<KeyPoint> AddKeyPoint(KeyPoint keyPoint) {
         KeyPoints.Add(keyPoint);
         return KeyPoints;
@@ -92,7 +114,7 @@ public class Tour : Entity {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description)
             || KeyPoints == null || KeyPoints.Count < 2
             || TransportDurations == null || !TransportDurations.Any()
-            || Status == TourStatus.Published || Status == TourStatus.Archived
+            || Status == TourStatus.Published 
             || string.IsNullOrWhiteSpace(Tags) || Level == null)
         {
             return false;
@@ -100,6 +122,18 @@ public class Tour : Entity {
 
         Status = TourStatus.Published;
         PublishedTime = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool Archive()
+    {
+        if(Status == TourStatus.Draft || Status == TourStatus.Archived)
+        {
+            return false;
+        }
+
+        Status = TourStatus.Archived;
+        ArchivedTime = DateTime.UtcNow;
         return true;
     }
 

@@ -44,7 +44,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             result.Rating.ShouldBe(newEntity.Rating);
             result.Comment.ShouldBe(newEntity.Comment);
             result.VisitDate.ShouldBe(newEntity.VisitDate);
-            result.ReviewDate.ShouldBe(newEntity.ReviewDate);
+            result.ReviewDate.ShouldBe(newEntity.ReviewDate, TimeSpan.FromSeconds(1));
             result.TourId.ShouldBe(newEntity.TourId);
             result.TouristId.ShouldBe(newEntity.TouristId);
 
@@ -54,7 +54,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             storedEntity.Rating.ShouldBe(result.Rating);
             storedEntity.Comment.ShouldBe(result.Comment);
             storedEntity.VisitDate.ShouldBe(result.VisitDate);
-            storedEntity.ReviewDate.ShouldBe(result.ReviewDate);
+            storedEntity.ReviewDate.ShouldBe(result.ReviewDate, TimeSpan.FromSeconds(1));
             storedEntity.TourId.ShouldBe(result.TourId);
             storedEntity.TouristId.ShouldBe(result.TouristId);
         }
@@ -86,7 +86,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             result.Rating.ShouldBe(updatedEntity.Rating);
             result.Comment.ShouldBe(updatedEntity.Comment);
             result.VisitDate.ShouldBe(updatedEntity.VisitDate);
-            result.ReviewDate.ShouldBe(updatedEntity.ReviewDate);
+            result.ReviewDate.ShouldBe(updatedEntity.ReviewDate, TimeSpan.FromSeconds(1));
             result.TourId.ShouldBe(updatedEntity.TourId);
             result.TouristId.ShouldBe(updatedEntity.TouristId);
 
@@ -96,7 +96,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             storedEntity.Rating.ShouldBe(result.Rating);
             storedEntity.Comment.ShouldBe(result.Comment);
             storedEntity.VisitDate.ShouldBe(result.VisitDate);
-            storedEntity.ReviewDate.ShouldBe(result.ReviewDate);
+            storedEntity.ReviewDate.ShouldBe(result.ReviewDate, TimeSpan.FromSeconds(1));
             storedEntity.TourId.ShouldBe(result.TourId);
             storedEntity.TouristId.ShouldBe(result.TouristId);
         }

@@ -36,6 +36,10 @@ namespace Explorer.Tours.Core.Domain {
             SessionEnd = DateTime.UtcNow;
         }
 
+        public bool IsCompleted() {
+            return Status == TourExecutionStatus.Completed;
+        }
+
         public KeyPointProgress? Progress(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
             LastActivity = DateTime.UtcNow;
 

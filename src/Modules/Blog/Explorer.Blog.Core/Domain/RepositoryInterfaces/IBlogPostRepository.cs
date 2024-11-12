@@ -9,5 +9,8 @@ namespace Explorer.Blog.Core.Domain.RepositoryInterfaces
 {
     public interface IBlogPostRepository : ICrudRepository<BlogPost>
     {
+        BlogPost GetBlogPost(int id);
+        Task<PagedResult<BlogPost>> GetPagedBlogs(int page, int pageSize);
+        BlogPost Update(BlogPost aggregateRoot);
     }
 }
