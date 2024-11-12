@@ -37,6 +37,15 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpPost("review")]
+        public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
+        {
+            var result = _tourService.AddReview(review);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
         [HttpGet("published/{page:int}/{pageSize:int}")]
         public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
         {

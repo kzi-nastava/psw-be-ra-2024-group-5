@@ -13,9 +13,11 @@ namespace Explorer.Tours.API.Dtos
         public string? Image { get; set; }
         public long TourId { get; set; }
         public long TouristId { get; set; }
+        public double CompletionPercentage { get; set; }
 
         public TourReviewDto() { }
-        public TourReviewDto(long id, int rating, string comment, DateTime visitDate, DateTime reviewDate, string? image, long tourId, long touristId) {
+        public TourReviewDto(long id, int rating, string comment, DateTime visitDate, DateTime reviewDate, string? image, long tourId, long touristId, double completionPercentage)
+        {
             Id = id;
             Rating = rating;
             Comment = comment;
@@ -24,6 +26,8 @@ namespace Explorer.Tours.API.Dtos
             Image = image;
             TourId = tourId;
             TouristId = touristId;
+            CompletionPercentage = completionPercentage;
+
         }
 
     }
