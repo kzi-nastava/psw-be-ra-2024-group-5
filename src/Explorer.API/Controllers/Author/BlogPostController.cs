@@ -1,7 +1,6 @@
 ﻿using Explorer.Blog.API.Dtos;
 using Explorer.Blog.API.Public;
 using Explorer.BuildingBlocks.Core.UseCases;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Explorer.API.Controllers.Author
@@ -19,8 +18,8 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("create")]
         public ActionResult<CreateBlogPostDto> CreateBlog([FromBody] CreateBlogPostDto dto)
         {
-                var result = _blogPostService.CreateBlogPost(dto.title, dto.description, dto.userId, dto.images);
-                return CreateResponse(result);
+            var result = _blogPostService.CreateBlogPost(dto.title, dto.description, dto.userId, dto.images);
+            return CreateResponse(result);
         }
 
 
@@ -40,7 +39,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPut("{id}")]
-        public ActionResult<BlogPostDto> UpdateBlogPost(long id, [FromBody]  CreateBlogPostDto dto)
+        public ActionResult<BlogPostDto> UpdateBlogPost(long id, [FromBody] CreateBlogPostDto dto)
         {
             var result = _blogPostService.UpdateBlogPost(id, dto.title, dto.description, dto.userId);
             return CreateResponse(result);
@@ -50,16 +49,16 @@ namespace Explorer.API.Controllers.Author
         [HttpDelete("{id}")]
         public ActionResult<BlogPostDto> DeleteBlogPost(long id, [FromQuery] int userId)
         {
-                var result = _blogPostService.DeleteBlogPost(id, userId);
-                return CreateResponse(result);
+            var result = _blogPostService.DeleteBlogPost(id, userId);
+            return CreateResponse(result);
         }
 
         [HttpPut("{blogId}/status")]
         public ActionResult<BlogPostDto> UpdateStatus(long blogId, [FromBody] BlogStatusDto newStatus, [FromQuery] int userId)
         {
-   
-                var result = _blogPostService.UpdateStatus(blogId, newStatus, userId);
-                return CreateResponse(result);
+
+            var result = _blogPostService.UpdateStatus(blogId, newStatus, userId);
+            return CreateResponse(result);
         }
 
 
@@ -115,6 +114,8 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("{blogId}/vote")]
         public ActionResult<BlogVoteDto> AddVote(long blogId, [FromBody] BlogVoteDto dto)
         {
+            Console.WriteLine($"Received vote data: userId = {dto.userId}, type = {dto.type}, voteTime = {dto.voteTime}");
+
             var result = _blogPostService.AddVote(blogId, dto.type, dto.userId);
             return CreateResponse(result);
         }
@@ -146,5 +147,14 @@ namespace Explorer.API.Controllers.Author
             var result = _blogPostService.RenderDescriptionToMarkdown(blogId);
             return CreateResponse(result);
         }
+
+        [HttpPut("{blogId}/update-status")]
+        public ActionResult<BlogPostDto> UpdateBlogStatusBasedOnVotesAndComments(long blogId, [FromQuery] int userId)
+        {
+            var result = _blogPostService.UpdateBlogStatusBasedOnVotesAndComments(blogId, userId);
+            return CreateResponse(result);
+        }
+
+
     }
 }
