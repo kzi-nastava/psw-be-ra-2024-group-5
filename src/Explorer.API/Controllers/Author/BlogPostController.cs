@@ -18,7 +18,7 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("create")]
         public ActionResult<CreateBlogPostDto> CreateBlog([FromBody] CreateBlogPostDto dto)
         {
-            var result = _blogPostService.CreateBlogPost(dto.title, dto.description, dto.userId, dto.images);
+            var result = _blogPostService.CreateBlogPost(dto.Title, dto.Description, dto.UserId, dto.Images);
             return CreateResponse(result);
         }
 
@@ -41,7 +41,7 @@ namespace Explorer.API.Controllers.Author
         [HttpPut("{id}")]
         public ActionResult<BlogPostDto> UpdateBlogPost(long id, [FromBody] CreateBlogPostDto dto)
         {
-            var result = _blogPostService.UpdateBlogPost(id, dto.title, dto.description, dto.userId);
+            var result = _blogPostService.UpdateBlogPost(id, dto.Title, dto.Description, dto.UserId);
             return CreateResponse(result);
 
         }
@@ -65,7 +65,7 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("{BlogId}/Comments")]
         public ActionResult<BlogCommentDto> AddComment(long blogId, [FromBody] BlogCommentDto dto)
         {
-            var result = _blogPostService.AddComment(blogId, dto.commentText, (int)dto.userId);
+            var result = _blogPostService.AddComment(blogId, dto.CommentText, (int)dto.UserId);
             return CreateResponse(result);
         }
 
@@ -79,7 +79,7 @@ namespace Explorer.API.Controllers.Author
         [HttpPut("{BlogId}/Comments/{commentId}")]
         public ActionResult<BlogCommentDto> EditComment(long blogId, long commentId, [FromBody] BlogCommentDto dto)
         {
-            var result = _blogPostService.EditComment(blogId, commentId, dto.commentText, (int)dto.userId);
+            var result = _blogPostService.EditComment(blogId, commentId, dto.CommentText, (int)dto.UserId);
             return CreateResponse(result);
         }
 
@@ -93,7 +93,7 @@ namespace Explorer.API.Controllers.Author
         [HttpPost("{BlogId}/Images")]
         public ActionResult AddImage(long blogId, [FromBody] BlogImageDto dto)
         {
-            var result = _blogPostService.AddImage(blogId, dto.base64Data, dto.contentType);
+            var result = _blogPostService.AddImage(blogId, dto.Base64Data, dto.ContentType);
             return CreateResponse(result);
         }
 
@@ -107,16 +107,16 @@ namespace Explorer.API.Controllers.Author
         [HttpDelete("{BlogId}/Images")]
         public ActionResult RemoveImage(long blogId, [FromBody] BlogImageDto dto)
         {
-            var result = _blogPostService.RemoveImage(blogId, dto.base64Data, dto.contentType);
+            var result = _blogPostService.RemoveImage(blogId, dto.Base64Data, dto.ContentType);
             return CreateResponse(result);
         }
 
         [HttpPost("{BlogId}/vote")]
         public ActionResult<BlogVoteDto> AddVote(long blogId, [FromBody] BlogVoteDto dto)
         {
-            Console.WriteLine($"Received vote data: UserId = {dto.userId}, Type = {dto.type}, VoteTime = {dto.voteTime}");
+            Console.WriteLine($"Received vote data: UserId = {dto.UserId}, Type = {dto.Type}, VoteTime = {dto.VoteTime}");
 
-            var result = _blogPostService.AddVote(blogId, dto.type, dto.userId);
+            var result = _blogPostService.AddVote(blogId, dto.Type, dto.UserId);
             return CreateResponse(result);
         }
 

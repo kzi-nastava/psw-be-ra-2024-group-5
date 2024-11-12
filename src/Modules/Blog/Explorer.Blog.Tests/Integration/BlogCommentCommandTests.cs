@@ -25,8 +25,8 @@ namespace Explorer.Blog.Tests.Integration {
             var controller = CreateController(scope);
 
             var newComment = new BlogCommentDto {
-                userId = userId,
-                commentText = commentText
+                UserId = userId,
+                CommentText = commentText
             };
 
             // Act
@@ -47,8 +47,8 @@ namespace Explorer.Blog.Tests.Integration {
             var controller = CreateController(scope);
 
             var commentDto = new BlogCommentDto {
-                userId = userId,
-                commentText = commentText
+                UserId = userId,
+                CommentText = commentText
             };
 
             // Act

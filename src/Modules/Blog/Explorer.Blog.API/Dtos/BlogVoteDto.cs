@@ -8,9 +8,9 @@ namespace Explorer.Blog.API.Dtos
 {
     public class BlogVoteDto
     {
-        public int userId { get; set; }
-        public VoteTypeDto type { get; set; }
-        public DateTime voteTime { get; set; }
+        public int UserId { get; set; }
+        public VoteTypeDto Type { get; set; }
+        public DateTime VoteTime { get; set; }
     }
 
     public enum VoteTypeDto

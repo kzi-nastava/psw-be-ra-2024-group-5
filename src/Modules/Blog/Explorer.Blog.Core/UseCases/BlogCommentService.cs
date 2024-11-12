@@ -27,12 +27,12 @@ namespace Explorer.Blog.Core.UseCases
             if (commentDto == null)
                 return Result.Fail("Comment data is required.");
 
-            if (!_userRepository.UserExistsById(commentDto.userId))
+            if (!_userRepository.UserExistsById(commentDto.UserId))
             {
-                return Result.Fail(new FluentResults.Error($"User with ID {commentDto.userId} does not exist."));
+                return Result.Fail(new FluentResults.Error($"User with ID {commentDto.UserId} does not exist."));
             }
 
-            var blogComment = new BlogComment(commentDto.blogId, commentDto.userId, commentDto.commentText);
+            var blogComment = new BlogComment(commentDto.BlogId, commentDto.UserId, commentDto.CommentText);
 
             Result<BlogComment> result = CrudRepository.Create(blogComment);
 

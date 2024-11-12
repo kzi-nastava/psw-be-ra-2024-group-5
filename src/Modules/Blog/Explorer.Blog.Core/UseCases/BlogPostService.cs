@@ -41,9 +41,9 @@ namespace Explorer.Blog.Core.UseCases
 
             foreach (var imageDto in images)
             {
-                var imageData = Base64Converter.ConvertToByteArray(imageDto.base64Data);
+                var imageData = Base64Converter.ConvertToByteArray(imageDto.Base64Data);
 
-                newBlogPost.AddImage(imageData, imageDto.contentType);
+                newBlogPost.AddImage(imageData, imageDto.ContentType);
             }
 
             _blogPostRepositoy.Create(newBlogPost);

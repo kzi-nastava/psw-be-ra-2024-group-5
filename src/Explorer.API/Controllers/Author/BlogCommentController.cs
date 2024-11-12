@@ -20,7 +20,7 @@ namespace Explorer.API.Controllers.Author
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(commentDto.commentText))
+                if (string.IsNullOrWhiteSpace(commentDto.CommentText))
                 {
                     return BadRequest("Invalid UserId or CommentText");
                 }
