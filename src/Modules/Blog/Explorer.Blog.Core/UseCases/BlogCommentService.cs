@@ -12,10 +12,10 @@ namespace Explorer.Blog.Core.UseCases
     public class BlogCommentService : CrudService<BlogCommentDto, BlogComment>, IBlogCommentService
     {
         private readonly IMapper _mapper;
-        private readonly ICommentRepository _commentRepository;
+        private readonly IBlogCommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
 
-        public BlogCommentService(ICommentRepository repository, IUserRepository userRepository, IMapper mapper) : base(repository, mapper)
+        public BlogCommentService(IBlogCommentRepository repository, IUserRepository userRepository, IMapper mapper) : base(repository, mapper)
         {
             _userRepository = userRepository;
             _commentRepository = repository;

@@ -8,7 +8,7 @@ public class BlogContext : DbContext
 {
     public BlogContext(DbContextOptions<BlogContext> options) : base(options) {}
 
-    public DbSet<BlogDomain> blogs { get; set; }
+    public DbSet<BlogDomain> Blogs { get; set; }
     public DbSet<BlogComment> BlogComments { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
