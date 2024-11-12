@@ -11,9 +11,9 @@ namespace Explorer.Blog.Core.Domain
 {
     public class BlogImage : ValueObject
     {
-        public byte[] base64Data { get; private set; }  
-        public string contentType { get; private set; }
-        public int blogId { get; private set; }
+        public byte[] Base64Data { get; private set; }  
+        public string ContentType { get; private set; }
+        public int BlogId { get; private set; }
 
 
         public BlogImage() { }
@@ -21,16 +21,16 @@ namespace Explorer.Blog.Core.Domain
         [JsonConstructor]
         public BlogImage(byte[] base64Data, string contentType, int blogId)
         {
-            this.base64Data = base64Data ?? throw new ArgumentNullException(nameof(base64Data));
-            this.contentType = !string.IsNullOrWhiteSpace(contentType) ? contentType : throw new ArgumentNullException(nameof(contentType));
-            this.blogId = blogId;
+            this.Base64Data = base64Data ?? throw new ArgumentNullException(nameof(base64Data));
+            this.ContentType = !string.IsNullOrWhiteSpace(contentType) ? contentType : throw new ArgumentNullException(nameof(contentType));
+            this.BlogId = blogId;
         }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
-            yield return base64Data;
-            yield return contentType;
-            yield return blogId;
+            yield return Base64Data;
+            yield return ContentType;
+            yield return BlogId;
         }
     }
 }

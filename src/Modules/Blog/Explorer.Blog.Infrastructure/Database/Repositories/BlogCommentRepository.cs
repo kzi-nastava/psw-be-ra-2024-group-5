@@ -15,8 +15,8 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
         public List<BlogComment> GetAllByUser(long userId)
         {
             return _context.BlogComments
-                           .Where(comment => comment.userId == userId)
-                           .OrderByDescending(comment => comment.creationTime) //  najnoviji kom. prvo
+                           .Where(comment => comment.UserId == userId)
+                           .OrderByDescending(comment => comment.CreationTime) //  najnoviji kom. prvo
                            .ToList();
         }
 

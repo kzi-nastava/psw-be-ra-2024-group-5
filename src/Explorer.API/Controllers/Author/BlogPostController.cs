@@ -53,7 +53,7 @@ namespace Explorer.API.Controllers.Author
             return CreateResponse(result);
         }
 
-        [HttpPut("{blogId}/status")]
+        [HttpPut("{BlogId}/Status")]
         public ActionResult<BlogPostDto> UpdateStatus(long blogId, [FromBody] BlogStatusDto newStatus, [FromQuery] int userId)
         {
 
@@ -62,93 +62,93 @@ namespace Explorer.API.Controllers.Author
         }
 
 
-        [HttpPost("{blogId}/comments")]
+        [HttpPost("{BlogId}/Comments")]
         public ActionResult<BlogCommentDto> AddComment(long blogId, [FromBody] BlogCommentDto dto)
         {
             var result = _blogPostService.AddComment(blogId, dto.commentText, (int)dto.userId);
             return CreateResponse(result);
         }
 
-        [HttpGet("{blogId}/comments")]
+        [HttpGet("{BlogId}/Comments")]
         public ActionResult<IReadOnlyCollection<BlogCommentDto>> GetAllComments(long blogId)
         {
             var result = _blogPostService.GetAllComments(blogId);
             return CreateResponse(result);
         }
 
-        [HttpPut("{blogId}/comments/{commentId}")]
+        [HttpPut("{BlogId}/Comments/{commentId}")]
         public ActionResult<BlogCommentDto> EditComment(long blogId, long commentId, [FromBody] BlogCommentDto dto)
         {
             var result = _blogPostService.EditComment(blogId, commentId, dto.commentText, (int)dto.userId);
             return CreateResponse(result);
         }
 
-        [HttpDelete("{blogId}/comments/{commentId}")]
+        [HttpDelete("{BlogId}/Comments/{commentId}")]
         public ActionResult<BlogCommentDto> RemoveComment(long blogId, long commentId, [FromQuery] int userId)
         {
             var result = _blogPostService.RemoveComment(blogId, commentId, userId);
             return CreateResponse(result);
         }
 
-        [HttpPost("{blogId}/images")]
+        [HttpPost("{BlogId}/Images")]
         public ActionResult AddImage(long blogId, [FromBody] BlogImageDto dto)
         {
             var result = _blogPostService.AddImage(blogId, dto.base64Data, dto.contentType);
             return CreateResponse(result);
         }
 
-        [HttpGet("{blogId}/images")]
+        [HttpGet("{BlogId}/Images")]
         public ActionResult<IReadOnlyCollection<BlogImageDto>> GetAllImages(long blogId)
         {
             var result = _blogPostService.GetAllImages(blogId);
             return CreateResponse(result);
         }
 
-        [HttpDelete("{blogId}/images")]
+        [HttpDelete("{BlogId}/Images")]
         public ActionResult RemoveImage(long blogId, [FromBody] BlogImageDto dto)
         {
             var result = _blogPostService.RemoveImage(blogId, dto.base64Data, dto.contentType);
             return CreateResponse(result);
         }
 
-        [HttpPost("{blogId}/vote")]
+        [HttpPost("{BlogId}/vote")]
         public ActionResult<BlogVoteDto> AddVote(long blogId, [FromBody] BlogVoteDto dto)
         {
-            Console.WriteLine($"Received vote data: userId = {dto.userId}, type = {dto.type}, voteTime = {dto.voteTime}");
+            Console.WriteLine($"Received vote data: UserId = {dto.userId}, Type = {dto.type}, VoteTime = {dto.voteTime}");
 
             var result = _blogPostService.AddVote(blogId, dto.type, dto.userId);
             return CreateResponse(result);
         }
 
-        [HttpDelete("{blogId}/vote")]
+        [HttpDelete("{BlogId}/vote")]
         public ActionResult<BlogVoteDto> RemoveVote(long blogId, [FromQuery] int userId)
         {
             var result = _blogPostService.RemoveVote(blogId, userId);
             return CreateResponse(result);
         }
 
-        [HttpGet("{blogId}/upvotes")]
+        [HttpGet("{BlogId}/upvotes")]
         public ActionResult<int> GetUpvoteCount(long blogId)
         {
             var result = _blogPostService.GetUpvoteCount(blogId);
             return CreateResponse(result);
         }
 
-        [HttpGet("{blogId}/downvotes")]
+        [HttpGet("{BlogId}/downvotes")]
         public ActionResult<int> GetDownvoteCount(long blogId)
         {
             var result = _blogPostService.GetDownvoteCount(blogId);
             return CreateResponse(result);
         }
 
-        [HttpGet("{blogId}/render")]
+        [HttpGet("{BlogId}/render")]
         public ActionResult<string> RenderDescriptionToMarkdown(long blogId)
         {
             var result = _blogPostService.RenderDescriptionToMarkdown(blogId);
             return CreateResponse(result);
         }
 
-        [HttpPut("{blogId}/update-status")]
+        [HttpPut("{BlogId}/update-Status")]
         public ActionResult<BlogPostDto> UpdateBlogStatusBasedOnVotesAndComments(long blogId, [FromQuery] int userId)
         {
             var result = _blogPostService.UpdateBlogStatusBasedOnVotesAndComments(blogId, userId);

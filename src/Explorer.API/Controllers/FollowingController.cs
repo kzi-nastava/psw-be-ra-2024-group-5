@@ -19,7 +19,7 @@ public class FollowingController: BaseApiController
         _followerService = followerService;
     }
 
-    [HttpPost("follow/{userId}/{followedUserId}")]
+    [HttpPost("follow/{UserId}/{followedUserId}")]
     [Authorize]
     public ActionResult AddFollower(long userId, long followedUserId)
     {
@@ -33,7 +33,7 @@ public class FollowingController: BaseApiController
         return CreateResponse(result);
     }
 
-    [HttpDelete("unfollow/{userId}/{followedUserId}")]
+    [HttpDelete("unfollow/{UserId}/{followedUserId}")]
     [Authorize]
     public ActionResult RemoveFollower(long userId, long followedUserId) 
     {
@@ -47,7 +47,7 @@ public class FollowingController: BaseApiController
         return CreateResponse(result);
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet("{UserId}")]
     [Authorize]
     public ActionResult<PagedResult<UserProfileDto>> GetPagedFollowersByUserId(long userId, int page, int pageSize) 
     {
@@ -61,7 +61,7 @@ public class FollowingController: BaseApiController
         return CreateResponse(result);
     }
 
-    [HttpGet("isFollowing/{userId}/{followedUserId}")]
+    [HttpGet("isFollowing/{UserId}/{followedUserId}")]
     [Authorize]
     public ActionResult<bool> IsFollowing(long userId, long followedUserId)
     {

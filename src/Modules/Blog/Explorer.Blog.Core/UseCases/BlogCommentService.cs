@@ -118,7 +118,7 @@ namespace Explorer.Blog.Core.UseCases
 
                 if (comments == null || comments.Count == 0)
                 {
-                    return Result.Fail(new FluentResults.Error("No comments found for this user."));
+                    return Result.Fail(new FluentResults.Error("No Comments found for this user."));
                 }
 
                 var commentDtos = _mapper.Map<List<BlogCommentDto>>(comments);
@@ -127,7 +127,7 @@ namespace Explorer.Blog.Core.UseCases
             }
             catch (Exception ex)
             {
-                return Result.Fail(new FluentResults.Error($"Error fetching comments for user {userId}: {ex.Message}"));
+                return Result.Fail(new FluentResults.Error($"Error fetching Comments for user {userId}: {ex.Message}"));
             }
         }
 

@@ -14,13 +14,13 @@ public class BlogContext : DbContext
     {
         modelBuilder.HasDefaultSchema("blog");
 
-        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.votes).HasColumnType("jsonb");
-        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.images).HasColumnType("jsonb");
+        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.Votes).HasColumnType("jsonb");
+        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.Images).HasColumnType("jsonb");
 
         modelBuilder.Entity<BlogComment>()
                 .HasOne<BlogPost>()
-                .WithMany(blogPost => blogPost.comments)
-                .HasForeignKey(comment => comment.blogId)
+                .WithMany(blogPost => blogPost.Comments)
+                .HasForeignKey(comment => comment.BlogId)
                 .OnDelete(DeleteBehavior.Cascade);
     }
 

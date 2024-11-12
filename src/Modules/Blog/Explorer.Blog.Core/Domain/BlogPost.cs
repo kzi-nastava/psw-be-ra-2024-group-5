@@ -5,41 +5,41 @@ namespace Explorer.Blog.Core.Domain;
 
 public class BlogPost : Entity
 {
-    public int userId { get; private set; }
-    public string title { get; private set; }
-    public string description { get; private set; }
-    public DateTime createdDate { get; private set; }
-    public BlogStatus status { get; private set; }
+    public int UserId { get; private set; }
+    public string Title { get; private set; }
+    public string Description { get; private set; }
+    public DateTime CreatedDate { get; private set; }
+    public BlogStatus Status { get; private set; }
 
     private readonly List<BlogComment> _comments = new List<BlogComment>();
-    public virtual IReadOnlyCollection<BlogComment> comments => _comments.AsReadOnly();
+    public virtual IReadOnlyCollection<BlogComment> Comments => _comments.AsReadOnly();
 
     private readonly List<BlogVote> _votes = new List<BlogVote>();
-    public IReadOnlyCollection<BlogVote> votes => _votes.AsReadOnly();
+    public IReadOnlyCollection<BlogVote> Votes => _votes.AsReadOnly();
 
     private readonly List<BlogImage> _images = new List<BlogImage>();
-    public IReadOnlyCollection<BlogImage> images => _images.AsReadOnly();
+    public IReadOnlyCollection<BlogImage> Images => _images.AsReadOnly();
 
 
     public BlogPost() { }
 
     public BlogPost(string title, string description, int userId)
     {
-        this.title = title ?? throw new ArgumentNullException(nameof(title));
-        this.description = description ?? throw new ArgumentNullException(nameof(description));
-        if (!Enum.IsDefined(typeof(BlogStatus), status))
+        this.Title = title ?? throw new ArgumentNullException(nameof(title));
+        this.Description = description ?? throw new ArgumentNullException(nameof(description));
+        if (!Enum.IsDefined(typeof(BlogStatus), Status))
         {
-            throw new ArgumentException("Invalid status value.", nameof(status));
+            throw new ArgumentException("Invalid Status value.", nameof(Status));
         }
 
-        this.userId = userId;
-        this.status = BlogStatus.Draft;
-        this.createdDate = DateTime.UtcNow;
+        this.UserId = userId;
+        this.Status = BlogStatus.Draft;
+        this.CreatedDate = DateTime.UtcNow;
     }
 
     public void UpdateBlog(string title, string description, int userId)
     {
-        if (this.userId != userId)
+        if (this.UserId != userId)
             throw new UnauthorizedAccessException("Only the blog creator can update the blog post.");
 
         if (string.IsNullOrWhiteSpace(title))
@@ -48,46 +48,46 @@ public class BlogPost : Entity
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description cannot be empty.", nameof(description));
 
-        this.title = title;
-        this.description = description;
+        this.Title = title;
+        this.Description = description;
     }
     public void UpdateStatus(BlogStatus newStatus, int currentUserId)
     {
-        if (userId != currentUserId)
+        if (UserId != currentUserId)
         {
-            throw new UnauthorizedAccessException("Only the blog creator can change the status.");
+            throw new UnauthorizedAccessException("Only the blog creator can change the Status.");
         }
         if (!Enum.IsDefined(typeof(BlogStatus), newStatus))
         {
-            throw new ArgumentException("Invalid status value.", nameof(newStatus));
+            throw new ArgumentException("Invalid Status value.", nameof(newStatus));
         }
 
-        status = newStatus;
+        Status = newStatus;
 
     }
 
     public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount, int currentUserId)
     {
-        if (status == BlogStatus.Published || status == BlogStatus.Active || status == BlogStatus.Famous)
+        if (Status == BlogStatus.Published || Status == BlogStatus.Active || Status == BlogStatus.Famous)
         {
             if (upvotes - downvotes < -10)
             {
-                Console.WriteLine("Setting status to Closed");
+                Console.WriteLine("Setting Status to Closed");
                 UpdateStatus(BlogStatus.Closed, currentUserId);
             }
             else if (upvotes > 100 || commentCount > 10)
             {
-                Console.WriteLine("Setting status to Active");
+                Console.WriteLine("Setting Status to Active");
                 UpdateStatus(BlogStatus.Active, currentUserId);
             }
             else if (upvotes > 500)
             {
-                Console.WriteLine("Setting status to Famous");
+                Console.WriteLine("Setting Status to Famous");
                 UpdateStatus(BlogStatus.Famous, currentUserId);
             }
             else if (upvotes <= 10)
             {
-                Console.WriteLine("Setting status back to Published");
+                Console.WriteLine("Setting Status back to Published");
                 UpdateStatus(BlogStatus.Published, currentUserId);
             }
         }
@@ -108,7 +108,7 @@ public class BlogPost : Entity
 
     public void EditComment(long commentId, string newCommentText, int userId)
     {
-        var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
+        var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
         if (comment == null)
             throw new UnauthorizedAccessException("Comment not found or unauthorized.");
         comment.EditComment(newCommentText);
@@ -116,7 +116,7 @@ public class BlogPost : Entity
 
     public void RemoveComment(long commentId, int userId)
     {
-        var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
+        var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
         if (comment == null)
             throw new UnauthorizedAccessException("Comment not found or unauthorized.");
         _comments.Remove(comment);
@@ -124,13 +124,13 @@ public class BlogPost : Entity
 
     public void AddOrUpdateRating(VoteType value, int userId)
     {
-        if (status == BlogStatus.Draft)
+        if (Status == BlogStatus.Draft)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
-        //if (this.userId != userId)
+        //if (this.UserId != UserId)
         //    throw new InvalidOperationException("User cant vote.");
 
-        var existingRating = _votes.FirstOrDefault(r => r.userId == userId);
+        var existingRating = _votes.FirstOrDefault(r => r.UserId == userId);
 
         if (existingRating != null)
         {
@@ -143,10 +143,10 @@ public class BlogPost : Entity
 
     public void RemoveRating(int userId)
     {
-        if (status != BlogStatus.Published)
+        if (Status != BlogStatus.Published)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
-        var existingRating = _votes.FirstOrDefault(r => r.userId == userId);
+        var existingRating = _votes.FirstOrDefault(r => r.UserId == userId);
 
         if (existingRating != null)
             _votes.Remove(existingRating);
@@ -154,18 +154,18 @@ public class BlogPost : Entity
 
     public int GetUpvoteCount()
     {
-        return _votes.Count(v => v.type == VoteType.Upvote);
+        return _votes.Count(v => v.Type == VoteType.Upvote);
     }
 
     public int GetDownvoteCount()
     {
-        return _votes.Count(v => v.type == VoteType.Downvote);
+        return _votes.Count(v => v.Type == VoteType.Downvote);
     }
 
     public void AddImage(byte[] imageData, string contentType)
     {
-        if (status == BlogStatus.Closed)
-            throw new InvalidOperationException("Adding images is allowed only for blogs that are not closed.");
+        if (Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Adding Images is allowed only for blogs that are not closed.");
 
         var image = new BlogImage(imageData, contentType, (int)this.Id);
         _images.Add(image);
@@ -173,7 +173,7 @@ public class BlogPost : Entity
 
     public void RemoveImage(byte[] imageData, string contentType)
     {
-        var image = _images.FirstOrDefault(img => img.base64Data.SequenceEqual(imageData) && img.contentType == contentType);
+        var image = _images.FirstOrDefault(img => img.Base64Data.SequenceEqual(imageData) && img.ContentType == contentType);
 
         if (image == null)
             throw new InvalidOperationException("Image not found.");
@@ -189,7 +189,7 @@ public class BlogPost : Entity
 
     public string RenderDescriptionToMarkdown()
     {
-        return Markdown.ToHtml(description);
+        return Markdown.ToHtml(Description);
     }
 }
 
