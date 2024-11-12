@@ -10,6 +10,6 @@ namespace Explorer.Tours.Core.Domain.RepositoryInterfaces {
         public new TourExecution Update(TourExecution entity);
         public new TourExecution Get(long id);
         public TourExecution GetActive(long userId);
-        public TourExecution GetByTourAndUser(long tourId, long userId);
+        public List<TourExecution> GetRecentByTourAndUser(long tourId, long userId);
     }
 }

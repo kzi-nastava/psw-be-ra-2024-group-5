@@ -256,51 +256,70 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     {
         try
         {
+            var user = this._userRepository.Get(touristId);
+
+            if (user == null || user.Role != Stakeholders.Core.Domain.UserRole.Tourist)
+            {
+                return Result.Fail(FailureCode.Forbidden);
+            }
+
             var tour = _tourRepository.GetById((int)tourId);
-            if (tour == null) return Result.Fail("Tour not found");
+
+            if (tour == null || tour.Status != API.Enum.TourStatus.Published)
+            {
+                return Result.Fail(FailureCode.InvalidArgument);
+            }
 
             var tourDto = MapTourToDto(tour);
             var tourTouristDto = new TourTouristDto(tourDto);
 
-            var tourExecution = _tourExecutionRepository.GetByTourAndUser(tourId, touristId);
+            var activeTour = _tourExecutionRepository.GetActive(touristId);
+            bool isTourInCart = _shoppingCartRepository.IsTourInCart(touristId, tourId);
+            bool isTourBought = _shoppingCartRepository.IsTourBought(touristId, tourId);
 
-            SetTouristPermissions(tourTouristDto, tourExecution, tour,touristId);
+            //dok ne kupi ne moze da vidi sve keypointove
+            if (!isTourBought)
+            {
+                tourTouristDto.Tour.KeyPoints = new List<KeyPointDto>
+                {
+                    tourTouristDto.Tour.KeyPoints[0]
+                };
 
-            return Result.Ok(tourTouristDto);
+                if (!isTourInCart)
+                    tourTouristDto.CanBeBought = true;
+                
+
+                return Result.Ok(tourTouristDto);
+            }
+            else {
+                //moze da aktivira
+                if (activeTour == null)
+                {
+                    tourTouristDto.CanBeActivated = true;
+                }
+
+                var recentExecutions = _tourExecutionRepository.GetRecentByTourAndUser(tourId, touristId);
+
+                foreach (var tourExecution in recentExecutions)
+                {
+                    var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
+                    bool tourReviewFound = !tour.Reviews.Any(r => r.TouristId == tourExecution.UserId);
+
+                    if (completionPercentage >= 35 && tourReviewFound)
+                    {
+                        tourTouristDto.CanBeReviewed = true;
+                        break;
+                    }
+                }
+
+                return Result.Ok(tourTouristDto);
+            }
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            return Result.Fail(ex.Message);
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
         }
-    }
-
-    private void SetTouristPermissions(TourTouristDto tourTouristDto, TourExecution tourExecution, Tour tour, long touristId)
-    {
-
-        tourTouristDto.CanBeBought = tour.Status == TourStatus.Published && 
-                                     !_shoppingCartRepository.IsTourBought(touristId, tour.Id);
-
-        tourTouristDto.CanBeActivated = tourExecution == null &&
-                                        _shoppingCartRepository.IsTourBought(touristId, tour.Id);
-
-        if (tourExecution != null)
-        {
-            var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
-            var isWithinTimeLimit = IsWithinTimeLimit(tourExecution);
-
-            tourTouristDto.CanBeReviewed = completionPercentage >= 35 &&
-                                           isWithinTimeLimit &&
-                                           !tour.Reviews.Any(r => r.TouristId == tourExecution.UserId);
-        }
-    }
-    private bool IsWithinTimeLimit(TourExecution execution)
-    {
-        if (execution.LastActivity == null) return false;
-
-        var daysSinceLastActivity = (DateTime.UtcNow - execution.LastActivity.Value).TotalDays;
-        return daysSinceLastActivity <= 7;
-    }
-
+    } 
     private double CalculateCompletionPercentage(TourExecution execution, Tour tour)
     {
         var completedPoints = execution.KeyPointProgresses.Count;
@@ -317,8 +336,8 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             var tour = _tourRepository.GetById((int)reviewDto.TourId);
             if (tour == null) return Result.Fail("Tour not found");
 
-            var tourExecution = _tourExecutionRepository.GetByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
-            if (tourExecution == null) return Result.Fail("No tour execution found");
+            var tourExecutions = _tourExecutionRepository.GetRecentByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
+            if (tourExecutions.Count == 0) return Result.Fail("No tour execution found");
 
             var tourTouristResult = GetForTouristById((int)reviewDto.TourId, (int)reviewDto.TouristId);
             if (tourTouristResult.IsFailed) return Result.Fail(tourTouristResult.Errors);
@@ -326,7 +345,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
             if (!tourTouristResult.Value.CanBeReviewed)
                 return Result.Fail("Tourist cannot review this tour");
 
-            var completionPercentage = CalculateCompletionPercentage(tourExecution, tour);
+            var maxCompletion = tourExecutions.Max(te => CalculateCompletionPercentage(te, tour));
 
             var reviewDate = DateTime.UtcNow;
             var review = new TourReview(
@@ -338,7 +357,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 reviewDto.TouristId,
                 Base64Converter.ConvertToByteArray(reviewDto.Image)
             );
-            review.CompletionPercentage = completionPercentage;
+            review.CompletionPercentage = maxCompletion;
 
             tour.AddReview(review);
             _tourRepository.Update(tour);

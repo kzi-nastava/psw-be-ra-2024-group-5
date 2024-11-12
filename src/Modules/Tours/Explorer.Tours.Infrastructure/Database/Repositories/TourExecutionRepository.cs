@@ -38,13 +38,15 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
             return tourExecution;
         }
 
-        public TourExecution GetByTourAndUser(long tourId, long userId)
+        public List<TourExecution> GetRecentByTourAndUser(long tourId, long userId)
         {
             var tourExecution = DbContext.TourExecutions
-                .Where(te => te.TourId == tourId && te.UserId == userId)
+                .Where(te => te.TourId == tourId
+                             && te.UserId == userId
+                             && te.LastActivity != null
+                             && (DateTime.UtcNow - te.LastActivity.Value).TotalDays <= 7)
                 .Include(te => te.KeyPointProgresses)
-                .ThenInclude(kpp => kpp.KeyPoint)
-                .FirstOrDefault();
+                .ToList();
 
             return tourExecution;
         }
