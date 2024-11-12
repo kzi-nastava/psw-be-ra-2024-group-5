@@ -19,8 +19,12 @@ public abstract class BaseTestFactory : WebApplicationFactory<Program>
         {
             var scriptFiles = Directory.GetFiles(scriptFolder);
             Array.Sort(scriptFiles);
-            var script = string.Join('\n', scriptFiles.Select(File.ReadAllText));
-            context.Database.ExecuteSqlRaw(script);
+
+            foreach(var scriptFile in scriptFiles)
+            {
+                var script = File.ReadAllText(scriptFile);
+                context.Database.ExecuteSqlRaw(script);
+            }
         }
         catch (Exception ex)
         {
