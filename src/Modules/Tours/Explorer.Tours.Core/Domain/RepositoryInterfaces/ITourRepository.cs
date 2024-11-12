@@ -10,4 +10,6 @@ public interface ITourRepository : ICrudRepository<Tour> {
     Tour? GetById(int id);
     List<Tour>? GetByAuthorId(int authorId);
     List<Tour> GetPublishedPaged(int page, int pageSize);
+
+    public List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
 }

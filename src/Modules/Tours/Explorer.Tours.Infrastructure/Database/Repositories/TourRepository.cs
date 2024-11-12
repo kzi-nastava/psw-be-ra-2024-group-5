@@ -82,4 +82,27 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .Take(pageSize)
             .ToList();
     }
+
+    public List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat)
+    {
+        if (page < 1 || pageSize < 1)
+        {
+            return new List<Tour>();
+        }
+
+        var allTours = DbContext.Tours
+            .Where(t => t.Status == API.Enum.TourStatus.Published)
+            .Include(t => t.KeyPoints)
+            .ToList();
+
+        // Use the Tour aggregate's filtering method
+        var filteredTours = Tour.FilterToursByLocation(allTours, startLat, endLat, startLong, endLong);
+
+        return filteredTours
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+
 }
