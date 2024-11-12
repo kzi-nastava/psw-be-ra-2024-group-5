@@ -59,7 +59,29 @@ public class Tour : Entity {
         ArchivedTime = DateTime.MinValue; // ili null da bude
 
     }
-    
+
+    public static List<Tour> FilterToursByLocation(List<Tour> tours, double startLat, double endLat, double startLong, double endLong)
+    {
+        var filteredTours = new List<Tour>();
+
+        foreach (var tour in tours)
+        {
+            bool tourFound = false;
+            foreach (var keypoint in tour.KeyPoints)
+            {
+                if ((startLat < keypoint.Latitude && endLat > keypoint.Latitude) &&
+                    (startLong < keypoint.Longitude && endLong > keypoint.Longitude))
+                {
+                    filteredTours.Add(tour);
+                    tourFound = true;
+                    break;
+                }
+            }
+        }
+
+        return filteredTours;
+    }
+
     public List<KeyPoint> AddKeyPoint(KeyPoint keyPoint) {
         KeyPoints.Add(keyPoint);
         return KeyPoints;

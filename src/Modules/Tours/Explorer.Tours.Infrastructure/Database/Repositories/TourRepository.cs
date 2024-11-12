@@ -88,46 +88,18 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             return new List<Tour>();
         }
 
-
         var allTours = DbContext.Tours
-     .Where(t => t.Status == API.Enum.TourStatus.Published)
-     .Include(t => t.KeyPoints).ToList();
+            .Where(t => t.Status == API.Enum.TourStatus.Published)
+            .Include(t => t.KeyPoints)
+            .ToList();
 
-       
-        
-        var searchtours = new List<Tour>();
+        // Use the Tour aggregate's filtering method
+        var filteredTours = Tour.FilterToursByLocation(allTours, startLat, endLat, startLong, endLong);
 
-        foreach (var t in allTours)
-        {
-            bool tourFound = false;
-
-            foreach (var keypoint in t.KeyPoints)
-            {
-                if ((startLat < keypoint.Latitude && endLat > keypoint.Latitude) &&
-                    (startLong < keypoint.Longitude && endLong > keypoint.Longitude))
-                {
-                    searchtours.Add(t);
-                    tourFound = true;
-                    break; 
-                }
-            }
-
-            if (tourFound)
-            {
-                continue; 
-            }
-        }
-
-        return searchtours
+        return filteredTours
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
-          
-
-
-
-    
-
     }
 
 
