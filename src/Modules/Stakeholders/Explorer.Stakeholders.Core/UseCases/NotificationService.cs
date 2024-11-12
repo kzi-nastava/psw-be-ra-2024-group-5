@@ -48,7 +48,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Ok();
         }
 
-        public Result<NotificationDto> SendNotification(NotificationDto notificationDto)
+        public NotificationDto SendNotification(NotificationDto notificationDto)
         {
             var notification = MapToDomain(notificationDto);
 
@@ -56,7 +56,7 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             var notificationResultDto = _mapper.Map<NotificationDto>(notification);
 
-            return Result.Ok(notificationResultDto);
+            return notificationResultDto;
         }
     }
 }

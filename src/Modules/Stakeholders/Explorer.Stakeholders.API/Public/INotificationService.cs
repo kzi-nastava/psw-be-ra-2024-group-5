@@ -15,6 +15,6 @@ namespace Explorer.Stakeholders.API.Public
         Result<PagedResult<NotificationDto>> GetPagedNotifications(long userId, int page, int pageSize);
         Result MarkNotificationAsRead(long notificationId, long userId);
         Result MarkAllNotificationsAsRead(long userId);
-        Result<NotificationDto> SendNotification(NotificationDto notificationDto);
+        NotificationDto SendNotification(NotificationDto notificationDto);
     }
 }

@@ -52,18 +52,4 @@ public class NotificationController: BaseApiController
 
         return Ok();
     }
-
-    [HttpPost("send")]
-    public ActionResult<NotificationDto> SendNotification([FromBody] NotificationDto notificationDto)
-    {
-        var result = _notificationService.SendNotification(notificationDto);
-
-        if (result.IsFailed)
-        {
-            return BadRequest(result.Errors);  
-        }
-
-        return Ok(result.Value);   
-    }
-
 }
