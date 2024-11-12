@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace Explorer.Blog.Tests.Integration {
-    [Collection("Blogs")]
+
+    [Collection("Blog")]
     public class BlogCommentCommandTests : IClassFixture<BlogFixture> {
         private BlogFixture fixture;
         public BlogCommentCommandTests(BlogFixture fixture) {

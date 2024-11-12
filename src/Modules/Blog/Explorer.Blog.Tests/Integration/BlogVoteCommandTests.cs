@@ -12,7 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Explorer.Blog.Tests.Integration {
-    [Collection("Blogs")]
+
+    [Collection("Blog")]
     public class BlogVoteCommandTests : IClassFixture<BlogFixture> {
         private BlogFixture fixture;
         public BlogVoteCommandTests(BlogFixture fixture) {
