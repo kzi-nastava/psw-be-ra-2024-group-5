@@ -20,6 +20,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpGet("{page:int}/{pageSize:int}")]
+        [AllowAnonymous]
         public ActionResult<FacilityDto> GetPaged(int page, int pageSize)
         {
             var result = _facilityService.GetPaged(page, pageSize);
@@ -32,6 +33,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpGet("{id:long}")]
+        [AllowAnonymous]
         public ActionResult<FacilityDto> Get(long id)
         {
             var result = this._facilityService.Get(id);
