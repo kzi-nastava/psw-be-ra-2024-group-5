@@ -71,7 +71,7 @@ namespace Explorer.Stakeholders.Tests.Integration
                     break;
 
                 default:
-                    Assert.True(false, "Unexpected result type.");
+                    Assert.True(false, "Unexpected result Type.");
                     break;
             }
         }

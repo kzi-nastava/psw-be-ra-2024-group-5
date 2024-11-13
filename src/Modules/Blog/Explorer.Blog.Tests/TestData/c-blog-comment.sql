@@ -1,6 +1,6 @@
 
 INSERT INTO blog."BlogComments"(
-    "Id", "blogId", "userId", "commentText", "creationTime", "lastEditedTime")
+    "Id", "BlogId", "UserId", "CommentText", "CreationTime", "LastEditedTime")
 VALUES 
     (-1, -1, -11, 'Great blog post! Really insightful.', '2024-11-07 10:00:00', NULL),
     (-2, -1, -11, 'I enjoyed reading this post. Keep up the good work!', '2024-11-07 10:30:00', NULL),

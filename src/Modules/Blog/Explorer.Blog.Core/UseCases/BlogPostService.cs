@@ -41,9 +41,9 @@ namespace Explorer.Blog.Core.UseCases
 
             foreach (var imageDto in images)
             {
-                var imageData = Base64Converter.ConvertToByteArray(imageDto.base64Data);
+                var imageData = Base64Converter.ConvertToByteArray(imageDto.Base64Data);
 
-                newBlogPost.AddImage(imageData, imageDto.contentType);
+                newBlogPost.AddImage(imageData, imageDto.ContentType);
             }
 
             _blogPostRepositoy.Create(newBlogPost);
@@ -92,7 +92,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            if (blogPost.userId != userId) return Result.Fail(FailureCode.InvalidArgument).WithError("User is not authorized to delete this blog post.");
+            if (blogPost.UserId != userId) return Result.Fail(FailureCode.InvalidArgument).WithError("User is not authorized to delete this blog post.");
             _blogPostRepositoy.Delete(id);
 
             var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
@@ -176,7 +176,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
 
-            var commentToAdd = blogPost.comments.FirstOrDefault(c => c.userId == userId && c.blogId == blogId);
+            var commentToAdd = blogPost.Comments.FirstOrDefault(c => c.UserId == userId && c.BlogId == blogId);
             if (commentToAdd == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
@@ -202,7 +202,7 @@ namespace Explorer.Blog.Core.UseCases
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
 
-            var commentToEdit = blogPost.comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
+            var commentToEdit = blogPost.Comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
             if (commentToEdit == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
@@ -236,7 +236,7 @@ namespace Explorer.Blog.Core.UseCases
 
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
 
-            var commentToRemove = blogPost.comments.FirstOrDefault(c => c.Id == commentId && c.userId == userId);
+            var commentToRemove = blogPost.Comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
             if (commentToRemove == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
@@ -374,7 +374,7 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
 
-            var voteToAdd = blogPost.votes.FirstOrDefault(v => v.userId == userId);
+            var voteToAdd = blogPost.Votes.FirstOrDefault(v => v.UserId == userId);
             if (voteToAdd == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Vote not found for the specified user.");
@@ -399,7 +399,7 @@ namespace Explorer.Blog.Core.UseCases
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
 
-            var voteToRemove = blogPost.votes.FirstOrDefault(v => v.userId == userId);
+            var voteToRemove = blogPost.Votes.FirstOrDefault(v => v.UserId == userId);
             if (voteToRemove == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Vote not found for the specified user.");
@@ -503,12 +503,12 @@ namespace Explorer.Blog.Core.UseCases
             try
             {
                 _blogPostRepositoy.Update(blogPost);
-                Console.WriteLine("Blog status updated successfully in the database.");
+                Console.WriteLine("Blog Status updated successfully in the database.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error saving the blog post status to the database: " + ex.Message);
-                return Result.Fail("Database error").WithError("Error saving the blog post status: " + ex.Message);
+                Console.WriteLine("Error saving the blog post Status to the database: " + ex.Message);
+                return Result.Fail("Database error").WithError("Error saving the blog post Status: " + ex.Message);
             }
 
             return Result.Ok();

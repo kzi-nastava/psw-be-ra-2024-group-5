@@ -13,7 +13,7 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
         public new BlogPost GetBlogPost(int id)
         {
             return DbContext.Set<BlogPost>()
-                .Include(b => b.comments)
+                .Include(b => b.Comments)
                 .FirstOrDefault(b => b.Id == id)
                 ?? throw new KeyNotFoundException("Blog post not found with id: " + id);
         }
@@ -21,7 +21,7 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
         public async Task<PagedResult<BlogPost>> GetPagedBlogs(int page, int pageSize)
         {
             var source = DbContext.Set<BlogPost>()
-                .Include(b => b.comments)
+                .Include(b => b.Comments)
                 .AsQueryable();
 
             var totalCount = await source.CountAsync();
@@ -47,7 +47,7 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
 
         public int GetCommentCountForBlog(long blogId)
         {
-            return DbContext.BlogComments.Count(c => c.blogId == blogId);
+            return DbContext.BlogComments.Count(c => c.BlogId == blogId);
         }
 
 

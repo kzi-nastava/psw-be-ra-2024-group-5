@@ -31,8 +31,8 @@ namespace Explorer.Blog.Tests.Integration {
             var controller = CreateController(scope);
 
             var voteDto = new BlogVoteDto {
-                userId = userId,
-                type = (VoteTypeDto)voteType
+                UserId = userId,
+                Type = (VoteTypeDto)voteType
             };
 
             // Act
@@ -53,8 +53,8 @@ namespace Explorer.Blog.Tests.Integration {
             var controller = CreateController(scope);
 
             var voteDto = new BlogVoteDto {
-                userId = userId,
-                type = VoteTypeDto.Upvote
+                UserId = userId,
+                Type = VoteTypeDto.Upvote
             };
 
             // Act

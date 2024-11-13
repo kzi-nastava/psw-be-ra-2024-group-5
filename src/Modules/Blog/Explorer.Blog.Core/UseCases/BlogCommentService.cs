@@ -12,10 +12,10 @@ namespace Explorer.Blog.Core.UseCases
     public class BlogCommentService : CrudService<BlogCommentDto, BlogComment>, IBlogCommentService
     {
         private readonly IMapper _mapper;
-        private readonly ICommentRepository _commentRepository;
+        private readonly IBlogCommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
 
-        public BlogCommentService(ICommentRepository repository, IUserRepository userRepository, IMapper mapper) : base(repository, mapper)
+        public BlogCommentService(IBlogCommentRepository repository, IUserRepository userRepository, IMapper mapper) : base(repository, mapper)
         {
             _userRepository = userRepository;
             _commentRepository = repository;
@@ -27,12 +27,12 @@ namespace Explorer.Blog.Core.UseCases
             if (commentDto == null)
                 return Result.Fail("Comment data is required.");
 
-            if (!_userRepository.UserExistsById(commentDto.userId))
+            if (!_userRepository.UserExistsById(commentDto.UserId))
             {
-                return Result.Fail(new FluentResults.Error($"User with ID {commentDto.userId} does not exist."));
+                return Result.Fail(new FluentResults.Error($"User with ID {commentDto.UserId} does not exist."));
             }
 
-            var blogComment = new BlogComment(commentDto.blogId, commentDto.userId, commentDto.commentText);
+            var blogComment = new BlogComment(commentDto.BlogId, commentDto.UserId, commentDto.CommentText);
 
             Result<BlogComment> result = CrudRepository.Create(blogComment);
 
@@ -118,7 +118,7 @@ namespace Explorer.Blog.Core.UseCases
 
                 if (comments == null || comments.Count == 0)
                 {
-                    return Result.Fail(new FluentResults.Error("No comments found for this user."));
+                    return Result.Fail(new FluentResults.Error("No Comments found for this user."));
                 }
 
                 var commentDtos = _mapper.Map<List<BlogCommentDto>>(comments);
@@ -127,7 +127,7 @@ namespace Explorer.Blog.Core.UseCases
             }
             catch (Exception ex)
             {
-                return Result.Fail(new FluentResults.Error($"Error fetching comments for user {userId}: {ex.Message}"));
+                return Result.Fail(new FluentResults.Error($"Error fetching Comments for user {userId}: {ex.Message}"));
             }
         }
 

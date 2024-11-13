@@ -8,19 +8,19 @@ public class BlogContext : DbContext
 {
     public BlogContext(DbContextOptions<BlogContext> options) : base(options) {}
 
-    public DbSet<BlogDomain> blogs { get; set; }
+    public DbSet<BlogDomain> Blogs { get; set; }
     public DbSet<BlogComment> BlogComments { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("blog");
 
-        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.votes).HasColumnType("jsonb");
-        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.images).HasColumnType("jsonb");
+        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.Votes).HasColumnType("jsonb");
+        modelBuilder.Entity<BlogPost>().Property(blogPost => blogPost.Images).HasColumnType("jsonb");
 
         modelBuilder.Entity<BlogComment>()
                 .HasOne<BlogPost>()
-                .WithMany(blogPost => blogPost.comments)
-                .HasForeignKey(comment => comment.blogId)
+                .WithMany(blogPost => blogPost.Comments)
+                .HasForeignKey(comment => comment.BlogId)
                 .OnDelete(DeleteBehavior.Cascade);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Explorer.Blog.Core.Domain.RepositoryInterfaces
 {
-    public interface ICommentRepository : ICrudRepository<BlogComment>
+    public interface IBlogCommentRepository : ICrudRepository<BlogComment>
     {
         List<BlogComment> GetAllByUser(long userId);
     }

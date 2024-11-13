@@ -10,29 +10,29 @@ namespace Explorer.Blog.Core.Domain
 {
     public class BlogVote : ValueObject
     {
-        public int userId { get;} 
-        public DateTime voteTime { get;}
-        public VoteType type { get;}
+        public int UserId { get;} 
+        public DateTime VoteTime { get;}
+        public VoteType Type { get;}
 
         private BlogVote() { }
 
         [JsonConstructor]
         public BlogVote(int userId, VoteType type)
         {
-            this.userId = userId;
-            this.voteTime = DateTime.UtcNow;
+            this.UserId = userId;
+            this.VoteTime = DateTime.UtcNow;
 
             if (!Enum.IsDefined(typeof(VoteType), type))
-                throw new ArgumentException("Invalid status value.", nameof(type));
-            this.type = type;
+                throw new ArgumentException("Invalid Status value.", nameof(type));
+            this.Type = type;
         }
 
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
-            yield return userId;
-            yield return voteTime;
-            yield return type;
+            yield return UserId;
+            yield return VoteTime;
+            yield return Type;
         }
     }
 

@@ -8,9 +8,9 @@ namespace Explorer.Blog.API.Dtos
 {
     public class CreateBlogPostDto
     {
-        public int userId { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public List<BlogImageDto> images { get; set; } = new();
+        public int UserId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public List<BlogImageDto> Images { get; set; } = new();
     }
 }

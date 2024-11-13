@@ -54,7 +54,7 @@ namespace Explorer.API.Controllers.Tourist
                 return BadRequest("User ID not found.");
             }
 
-            // Pretvaranje userId u long
+            // Pretvaranje UserId u long
             if (!long.TryParse(userId, out long parsedUserId))
             {
                 return BadRequest("Invalid user ID.");

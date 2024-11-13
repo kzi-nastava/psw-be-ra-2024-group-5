@@ -18,7 +18,7 @@ namespace Explorer.API.Controllers.Tourist
             _tourExecutionService = tourExecutionService;
         }
 
-        [HttpGet("{userId:long}")]
+        [HttpGet("{UserId:long}")]
         public ActionResult<TourExecutionDto> GetActive(long userId) {
             var result = _tourExecutionService.GetActive(userId);
             return CreateResponse(result);

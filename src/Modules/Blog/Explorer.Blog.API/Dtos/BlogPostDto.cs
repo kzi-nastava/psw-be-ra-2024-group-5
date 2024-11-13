@@ -8,17 +8,15 @@ namespace Explorer.Blog.API.Dtos
 {
     public class BlogPostDto
     {
-        public int id { get; set; }
-        public int userId { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public DateTime createdDate { get; set; }
-        public BlogStatusDto status { get; set; }
-        public List<BlogCommentDto> comments { get; set; } = new();
-        public List<BlogImageDto> images { get; set; } = new();
-        public List<BlogVoteDto> votes { get; set; } = new();
-
-
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public BlogStatusDto Status { get; set; }
+        public List<BlogCommentDto> Comments { get; set; } = new();
+        public List<BlogImageDto> Images { get; set; } = new();
+        public List<BlogVoteDto> Votes { get; set; } = new();
     }
 
     public enum BlogStatusDto

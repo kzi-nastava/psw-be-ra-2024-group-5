@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Explorer.API.Controllers.Author
 {
     //[Authorize(Policy = "userPolicy")]
-    [Route("api/blog/comments")]
+    [Route("api/blog/Comments")]
     public class BlogCommentController : BaseApiController
     {
         private readonly IBlogCommentService _blogCommentService;
@@ -20,9 +20,9 @@ namespace Explorer.API.Controllers.Author
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(commentDto.commentText))
+                if (string.IsNullOrWhiteSpace(commentDto.CommentText))
                 {
-                    return BadRequest("Invalid userId or commentText");
+                    return BadRequest("Invalid UserId or CommentText");
                 }
 
                 var result = _blogCommentService.CreateComment(commentDto);
@@ -81,7 +81,7 @@ namespace Explorer.API.Controllers.Author
             return Ok(result.Value);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{UserId}")]
         public ActionResult<List<BlogCommentDto>> GetCommentsByUser(long userId)
         {
             var result = _blogCommentService.GetAllCommentsByUser(userId);

@@ -4,10 +4,10 @@ using Explorer.BuildingBlocks.Infrastructure.Database;
 
 namespace Explorer.Blog.Infrastructure.Database.Repositories
 {
-    public class CommentRepository : CrudDatabaseRepository<BlogComment, BlogContext>, ICommentRepository
+    public class BlogCommentRepository : CrudDatabaseRepository<BlogComment, BlogContext>, IBlogCommentRepository
     {
         private readonly BlogContext _context;
-        public CommentRepository(BlogContext context) : base(context)
+        public BlogCommentRepository(BlogContext context) : base(context)
         {
             _context = context;
         }
@@ -15,8 +15,8 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
         public List<BlogComment> GetAllByUser(long userId)
         {
             return _context.BlogComments
-                           .Where(comment => comment.userId == userId)
-                           .OrderByDescending(comment => comment.creationTime) //  najnoviji kom. prvo
+                           .Where(comment => comment.UserId == userId)
+                           .OrderByDescending(comment => comment.CreationTime) //  najnoviji kom. prvo
                            .ToList();
         }
 

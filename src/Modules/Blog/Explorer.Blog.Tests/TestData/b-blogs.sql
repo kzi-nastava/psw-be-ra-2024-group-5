@@ -1,4 +1,4 @@
-﻿INSERT INTO blog."blogs" ("Id", "userId", title, description, "createdDate", status, votes, images)
+﻿INSERT INTO blog."Blogs" ("Id", "UserId", "Title", "Description", "CreatedDate", "Status", "Votes", "Images")
 VALUES 
     (-1, -11, 'Exploring the Art of Writing', 'A deep dive into the nuances of creative writing.', '2024-11-07', 1, json_build_array(), json_build_array()),
     (-2, -11, 'The Wonders of Language', 'Discovering how language shapes our world.', '2024-11-07', 1, json_build_array(), json_build_array()),
