@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Dtos.Messages;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
@@ -17,15 +18,17 @@ namespace Explorer.Stakeholders.Core.UseCases.Identity
         private readonly ICrudRepository<Following> _followingRepository;
         private readonly IFollowingService _followingService;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
 
         public ProfileMessagesService(IUserProfileRepository userProfileRepository, ICrudRepository<User> userRepository,
-            ICrudRepository<Person> personRepository, IFollowingService followingService, IMapper mapper)
+            ICrudRepository<Person> personRepository, IFollowingService followingService, IMapper mapper, INotificationService notificationService)
         {
             _userProfileRepository = userProfileRepository;
             _userRepository = userRepository;
             _personRepository = personRepository;
             _followingService = followingService;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
         public Result<MessageDto> SendMessage(long senderId, long recipientId, string content, AttachmentDto? attachment)
@@ -54,6 +57,8 @@ namespace Explorer.Stakeholders.Core.UseCases.Identity
                 recipientProfile.AddMessage(message);
                 _userProfileRepository.Update(recipientProfile);
 
+                SendNotification(senderId, recipientId, content, attachment);
+
                 return Result.Ok(new MessageDto(-1, senderId, GetProfileDisplayName(senderId) ?? "",
                     message.Content, message.SentAt, message.IsRead, attachment));
             }
@@ -61,6 +66,31 @@ namespace Explorer.Stakeholders.Core.UseCases.Identity
             {
                 return Result.Fail(FailureCode.NotFound).WithError("Sender or recipient not found.");
             }
+        }
+
+        private void SendNotification(long senderId, long recipientId, string content, AttachmentDto? attachment)
+        {
+            var notificationDto = new NotificationDto
+            {
+                Content = "You have a new message!",
+                CreatedAt = DateTime.UtcNow,
+                SenderId = senderId,
+                UserIds =  new List<long> { recipientId },
+                Type = 0,
+                Message = content,
+                Attachment = attachment,
+                UserReadStatuses = new List<NotificationReadStatusDto>
+                {
+                    new NotificationReadStatusDto
+                    {
+                        UserId = recipientId,
+                        NotificationId = 0,
+                        IsRead = false
+                    }
+                }
+            };
+
+            _notificationService.SendNotification(notificationDto);
         }
 
         public Result ViewMessage(long profileId, long messageId)

@@ -61,6 +61,8 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.FollowedUserId, opt => opt.MapFrom(src => src.FollowedUserId));
 
+        CreateMap<NotificationDto, Notification>().ReverseMap();
+
         CreateMap<ClubMessage, ClubMessageDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
@@ -90,6 +92,8 @@ public class StakeholderProfile : Profile
         CreateMap<AttachmentDto, Attachment>()
             .ForMember(dest => dest.ResourceId, opt => opt.MapFrom(src => src.ResourceId))
             .ForMember(dest => dest.ResourceType, opt => opt.MapFrom(src => (ResourceType)src.ResourceType));
+
+        CreateMap<NotificationReadStatus, NotificationReadStatusDto>().ReverseMap();
 
     }
 }
