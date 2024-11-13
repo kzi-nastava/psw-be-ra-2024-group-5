@@ -65,12 +65,6 @@ public class FollowingController: BaseApiController
     [Authorize]
     public ActionResult<bool> IsFollowing(long userId, long followedUserId)
     {
-        var currentUserId = GetCurrentUserId();
-        if (userId != currentUserId)
-        {
-            return Forbid();
-        }
-
         var result = _followerService.IsAlreadyFollowing(userId, followedUserId);
         return Ok(result);
     }
