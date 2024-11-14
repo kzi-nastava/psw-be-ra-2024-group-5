@@ -2,6 +2,7 @@
 
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Enum;
 using FluentResults;
 
 namespace Explorer.Tours.API.Public.Administration;
@@ -14,7 +15,7 @@ public interface ITourService {
     Result Delete(int Id);
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);
-    Result PublishTour(int tourId);
+    Result PublishTour(int tourId, double priceAmount, Currency currency);
 
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
     Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
