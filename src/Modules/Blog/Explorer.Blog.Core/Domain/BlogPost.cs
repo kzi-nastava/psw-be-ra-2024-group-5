@@ -76,7 +76,7 @@ public class BlogPost : Entity
         Status = newStatus;
     }
 
-    public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount, int currentUserId)
+    public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount)
     {
         if (Status == BlogStatus.Published || Status == BlogStatus.Active || Status == BlogStatus.Famous)
         {
@@ -109,6 +109,8 @@ public class BlogPost : Entity
     {
         var comment = new BlogComment(id, userId, text);
         _comments.Add(comment);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public IReadOnlyCollection<BlogComment> GetAllComments()
@@ -149,6 +151,8 @@ public class BlogPost : Entity
 
         var rating = new BlogVote(userId, value);
         _votes.Add(rating);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public void RemoveRating(int userId)
