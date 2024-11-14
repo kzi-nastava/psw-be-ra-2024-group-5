@@ -23,7 +23,7 @@ public class Tour : Entity {
     //Constructor with all parametars
     public Tour(long id, string? name, string? description, string? tags,
         TourLevel? level, TourStatus status, Money price, long authorId,
-        List<KeyPoint> keyPoints, List<TourReview> reviews ,double? length,
+        List<KeyPoint> keyPoints, List<TourReview> reviews, double? length,
         List<TransportDuration> transportDurations, DateTime publishedTime, DateTime archivedTime) {
         Id = id;
         Name = name;
@@ -42,8 +42,8 @@ public class Tour : Entity {
     }
 
     //Constructor for creation
-    public Tour(string? name, string? description, TourLevel? level, string? tags,
-        long authorId, List<KeyPoint> keyPoints ,double? length, List<TransportDuration> transportDurations) {
+    public Tour(string? name, string? description, string? tags, TourLevel? level,
+        long authorId, List<KeyPoint> keyPoints, double? length, List<TransportDuration> transportDurations) {
         Name = name;
         Description = description;
         Tags = tags;

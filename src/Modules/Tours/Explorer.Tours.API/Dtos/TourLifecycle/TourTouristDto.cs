@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.API.Dtos
+namespace Explorer.Tours.API.Dtos.TourLifecycle
 {
     public class TourTouristDto
     {
@@ -16,7 +16,8 @@ namespace Explorer.Tours.API.Dtos
         public bool CanBeReviewed { get; set; } = false;
         public TourTouristDto() { }
 
-        public TourTouristDto(TourDto tour) {
+        public TourTouristDto(TourDto tour)
+        {
             Tour = tour;
         }
     }

@@ -1,10 +1,11 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Explorer.API.Controllers.Author {
+namespace Explorer.API.Controllers.Author
+{
     [Authorize(Policy = "authorPolicy")]
     [Route("api/tour")]
     public class TourController : BaseApiController {

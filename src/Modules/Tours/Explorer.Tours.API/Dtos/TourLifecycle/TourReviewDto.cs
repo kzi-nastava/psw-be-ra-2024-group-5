@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Explorer.Tours.API.Dtos
+namespace Explorer.Tours.API.Dtos.TourLifecycle
 {
     public class TourReviewDto
     {

@@ -7,6 +7,7 @@
     public string? Description { get; set; }
     public string? Image { get; set; } 
     public long TourId { get; set; } // SHUOLD BE REMOVED
+    public KeyPointDto() { }
 
     public KeyPointDto(long id, double latitude, double longitude, string name, string? description, string? image, long tourId) {
         Id = id;
@@ -26,5 +27,4 @@
         TourId = tourId;
     }
 
-    public KeyPointDto() { }
 }

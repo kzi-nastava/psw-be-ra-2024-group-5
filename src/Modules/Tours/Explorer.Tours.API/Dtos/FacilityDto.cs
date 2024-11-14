@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Explorer.Tours.API.Enum;
 namespace Explorer.Tours.API.Dtos
 {
     public class FacilityDto
@@ -15,6 +10,15 @@ namespace Explorer.Tours.API.Dtos
         public string? Image { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
+        public FacilityDto() { }
+        public FacilityDto(long id, string name, string? description, FacilityType type, string? image, double longitude, double latitude) {
+            Id = id;
+            Name = name;
+            Description = description;
+            Type = type;
+            Image = image;
+            Longitude = longitude;
+            Latitude = latitude;
+        }
     }
-    public enum FacilityType { Wc, Restaurant, Parking, Other };
 }
