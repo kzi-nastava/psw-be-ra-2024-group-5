@@ -2,8 +2,10 @@
 using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Dtos.Messages;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
+using Explorer.Stakeholders.Core.Domain.Messages;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 
@@ -12,10 +14,11 @@ namespace Explorer.Stakeholders.Core.UseCases;
 public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUserProfileService
 {
     private readonly IMapper _mapper;
-    private readonly ICrudRepository<UserProfile> _userProfileRepository;
+    private readonly IUserProfileRepository _userProfileRepository;
     private readonly ICrudRepository<User> _userRepository;
     private readonly ICrudRepository<Person> _personRepository;
-    public UserProfileService(ICrudRepository<UserProfile> userProfileRepository, ICrudRepository<User> userRepository, ICrudRepository<Person> personRepository, IMapper mapper) : base(mapper)
+
+    public UserProfileService(IUserProfileRepository userProfileRepository, ICrudRepository<User> userRepository, ICrudRepository<Person> personRepository, IMapper mapper) : base(mapper)
     {
         _mapper = mapper;
         _userProfileRepository = userProfileRepository;
@@ -56,38 +59,38 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
     public Result<UserProfileDto> Get(long id)
     {
-        UserProfile userProfile = null;
-        Person person = null;
+        //UserProfile userProfile = null;
+        //Person person = null;
 
         try
         {
-            userProfile = _userProfileRepository.Get(id);
+            var userProfile = _userProfileRepository.Get(id);
+            var person = GetPersonByUserId(id);
+
+            if (userProfile != null && person != null)
+            {
+                var userProfileDto = _mapper.Map<UserProfileDto>((userProfile, person));
+
+                userProfileDto.Messages = userProfile.ProfileMessages
+                    .Select(m => new MessageDto(m.Id, m.SenderId, GetProfileDisplayName(m.SenderId) ?? "",
+                    m.Content, m.SentAt, m.IsRead, new AttachmentDto())).ToList();
+
+                return Result.Ok(userProfileDto);
+            }
+                
+
+            var emptyProfile = new UserProfile(person!.UserId);
+            return Result.Ok(_mapper.Map<UserProfileDto>((emptyProfile, person)));
         }
         catch (KeyNotFoundException)
         {
-            userProfile = null;
+            return Result.Fail(FailureCode.NotFound).WithError($"Profile with id:{id} not found.");
         }
-
-        if (userProfile != null)
+        catch (Exception e)
         {
-            person = GetPersonByUserId(userProfile.UserId);
-            return Result.Ok(_mapper.Map<UserProfileDto>((userProfile, person)));
+            return Result.Fail(FailureCode.Internal).WithError(e.Message);
         }
-
-        person = GetPersonByUserId(id);
-        if (person == null)
-        {
-            return Result.Fail<UserProfileDto>("Profile not found.");
-        }
-
-        var emptyProfile = new UserProfile();
-        emptyProfile.setUserId(person.UserId);
-        emptyProfile.setBiography(string.Empty);
-        emptyProfile.setMotto(string.Empty);
-
-        return Result.Ok(_mapper.Map<UserProfileDto>((emptyProfile, person)));
     }
-
 
     private UserProfile GetUserProfileByUserId(long userId)
     {
@@ -116,6 +119,25 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
         person.setName(userProfileDto.Name);
         person.setSurname(userProfileDto.Surname);
-        _personRepository.Update(person); //ovdje pada test - exception key not found iako -11 id postoji
+        _personRepository.Update(person);  
+    }
+
+    private string? GetProfileDisplayName(long profileId)
+    {
+        try
+        {
+            var userProfile = _userProfileRepository.Get(profileId);
+
+            if (userProfile == null) return null;
+
+            var person = GetPersonByUserId(userProfile.UserId);
+            var displayName = person.Name + " " + person.Surname;
+
+            return displayName;
+        }
+        catch (KeyNotFoundException)
+        {
+            return null;
+        }
     }
 }

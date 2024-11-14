@@ -6,131 +6,78 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
-namespace Explorer.Blog.Tests.Integration
-{
-    [Collection("Sequential")]
-    public class BlogCommentCommandTests : BaseBlogIntegrationTest
-    {
-        public BlogCommentCommandTests(BlogTestFactory factory) : base(factory) { }
+namespace Explorer.Blog.Tests.Integration {
 
-        [Fact]
-        public void CreatesComment()
-        {
-            // Arrange
-            using var scope = Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-            var newComment = new BlogCommentDTO
-            {
-                userId = 1,
-                commentText = "Ovo je novi testni komentar",
-            };
-
-            // Act
-            var result = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
-
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.id.ShouldNotBe(0);
-            result.commentText.ShouldBe(newComment.commentText);
-
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.commentText == newComment.commentText);
-            storedComment.ShouldNotBeNull();
-            storedComment.Id.ShouldBe(result.id);
+    [Collection("Blog")]
+    public class BlogCommentCommandTests : IClassFixture<BlogFixture> {
+        private BlogFixture fixture;
+        public BlogCommentCommandTests(BlogFixture fixture) {
+            this.fixture = fixture;
         }
 
-        [Fact]
-        public void Create_fails_invalid_data()
-        {
+        [Theory]
+        [InlineData(-11, -2, "Test comment", 200)]  // Valid comment
+        [InlineData(-11, -1, "", 400)]             // Invalid - Empty comment text
+        [InlineData(-11, -2, null, 400)]           // Invalid - Null comment text
+        public void CreatesComment(int userId, int blogId, string commentText, int expectedResponseCode) {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var invalidComment = new BlogCommentDTO
-            {
 
+            var newComment = new BlogCommentDto {
+                UserId = userId,
+                CommentText = commentText
             };
 
             // Act
-            var result = (ObjectResult)controller.Create(invalidComment).Result;
+            var result = (ObjectResult)controller.AddComment(blogId, newComment).Result;
 
             // Assert
             result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(400);
+            result.StatusCode.ShouldBe(expectedResponseCode);
         }
 
-
-
-
-        [Fact]
-        public void UpdatesComment()
-        {
+        [Theory]
+        [InlineData(-2, -3, -11, "This is a test comment", 200)]
+        [InlineData(-2, -1, -11, "", 400)]  // Invalid - Empty comment text
+        [InlineData(-2, -1, -11, null, 400)] // Invalid - Null comment text
+        public void EditComment(long blogId, long commentId, int userId, string commentText, int expectedStatusCode) {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
-            // Kreiraj novi komentar koji ćeš kasnije ažurirati
-            var newComment = new BlogCommentDTO
-            {
-                userId = 1,
-                commentText = "Originalni komentar"
-            };
-            var createdResult = ((ObjectResult)controller.Create(newComment).Result)?.Value as BlogCommentDTO;
-            createdResult.ShouldNotBeNull();
-            createdResult.id.ShouldNotBe(0);
-
-            // azurirani kom
-            var updatedComment = new BlogCommentDTO
-            {
-                id = createdResult.id, // Koristi ID iz kreiranog komentara
-                userId = createdResult.userId,
-                commentText = "Ažurirani komentar"
+            var commentDto = new BlogCommentDto {
+                UserId = userId,
+                CommentText = commentText
             };
 
             // Act
-            var result = ((ObjectResult)controller.Update(updatedComment.id, updatedComment).Result)?.Value as BlogCommentDTO;
+            var result = (ObjectResult)controller.EditComment(blogId, commentId, commentDto).Result;
 
-            // Assert - Response
+            // Assert
             result.ShouldNotBeNull();
-            result.id.ShouldBe(createdResult.id);
-            result.commentText.ShouldBe(updatedComment.commentText);
-
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == updatedComment.id);
-            storedComment.ShouldNotBeNull();
-            storedComment.commentText.ShouldBe(updatedComment.commentText);
+            result.StatusCode.ShouldBe(expectedStatusCode);
         }
 
-
-
-        [Fact]
-        public void DeletesComment()
-        {
+        [Theory]
+        [InlineData(-11, -4, -4, 200)]   // Successful deletion
+        [InlineData(-21, -4, -1, 400)]   // Unauthorized user
+        [InlineData(-11, 999, -1, 400)] // Non-existent blog ID
+        public void DeletesComment(int userId, int blogId, int commentId, int expectedResponseCode) {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
 
             // Act
-            var result = (OkObjectResult)controller.Delete(-3);
-            // Assert - Response
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(200);
+            var deleteResult = (ObjectResult)controller.RemoveComment(blogId, commentId, userId).Result;
 
-            // Assert - Database
-            var storedComment = dbContext.BlogComments.FirstOrDefault(i => i.Id == -3);
-            storedComment.ShouldBeNull();
+            // Assert
+            deleteResult.ShouldNotBeNull();
+            deleteResult.StatusCode.ShouldBe(expectedResponseCode);
         }
-
-
-
-
-        private static BlogCommentController CreateController(IServiceScope scope)
-        {
-            return new BlogCommentController(scope.ServiceProvider.GetRequiredService<IBlogCommentService>())
-            {
-                ControllerContext = BuildContext("-1")
+        private static BlogPostController CreateController(IServiceScope scope) {
+            return new BlogPostController(scope.ServiceProvider.GetRequiredService<IBlogPostService>()) {
+                ControllerContext = BlogFixture.BuildContext("-1")
             };
         }
     }

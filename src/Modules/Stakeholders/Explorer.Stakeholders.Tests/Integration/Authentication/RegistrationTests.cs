@@ -1,25 +1,30 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Explorer.API.Controllers;
+using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Public;
+using Explorer.Stakeholders.Core.Domain;
+using Explorer.Stakeholders.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Explorer.API.Controllers;
-using Explorer.Stakeholders.API.Dtos;
-using Explorer.Stakeholders.API.Public;
-using Explorer.Stakeholders.Infrastructure.Database;
-using Explorer.Stakeholders.Core.Domain;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Explorer.Stakeholders.Tests.Integration.Authentication;
 
-[Collection("Sequential")]
-public class RegistrationTests : BaseStakeholdersIntegrationTest
+[Collection("Stakeholders")]
+public class RegistrationTests : IClassFixture<StakeholdersFixture>
 {
-    public RegistrationTests(StakeholdersTestFactory factory) : base(factory) { }
+    private StakeholdersFixture fixture;
+
+    public RegistrationTests(StakeholdersFixture fixture)
+    {
+        this.fixture = fixture;
+    }
 
     [Fact]
     public void Successfully_registers_tourist()
     {
         // Arrange
-        using var scope = Factory.Services.CreateScope();
+        using var scope = fixture.Factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
         var controller = CreateController(scope);
         var account = new AccountRegistrationDto

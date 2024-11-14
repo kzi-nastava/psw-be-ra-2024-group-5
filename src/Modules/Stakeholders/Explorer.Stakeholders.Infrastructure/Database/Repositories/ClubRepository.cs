@@ -1,32 +1,47 @@
-﻿using AutoMapper.Execution;
+﻿using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.BuildingBlocks.Infrastructure.Database;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
-using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
 {
     public class ClubRepository : CrudDatabaseRepository<Club, StakeholdersContext>, IClubRepository
     {
-        private readonly StakeholdersContext _dbContext;
-        public ClubRepository(StakeholdersContext dbContext) : base(dbContext)
+        public ClubRepository(StakeholdersContext dbContext) : base(dbContext) { }
+
+        public new Club Get(long clubId)
         {
-            _dbContext = dbContext;
+            var result = DbContext.Clubs.Where(c => c.Id == clubId)
+                .Include(c => c.ClubMessages).FirstOrDefault();
+
+            if (result == null)
+                throw new KeyNotFoundException("Club not found: " + clubId);
+            else return result;
         }
-        //temp
+
+        public new Club Update(Club club)
+        {
+            try
+            {
+                DbContext.Entry(club).State = EntityState.Modified;
+                DbContext.SaveChanges();
+                return club;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new KeyNotFoundException(e.Message);
+            }
+        }
+
         public List<ClubMembership> GetAllMemberships()
         {
-            return _dbContext.Memberships.ToList();
+            return DbContext.Memberships.ToList();
         }
 
         public ClubMembership? CreateMembership(long clubId, long userId)
         {
-            var memberships = _dbContext.Memberships;
+            var memberships = DbContext.Memberships;
 
 
             var membershipExists = memberships
@@ -40,13 +55,13 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             var newMembership = new ClubMembership(clubId, userId);
 
             memberships.Add(newMembership);
-            _dbContext.SaveChanges();
+            DbContext.SaveChanges();
             return newMembership;
         }
 
         public bool DeleteMembership(long clubId, long userId)
         {
-            var memberships = _dbContext.Memberships;
+            var memberships = DbContext.Memberships;
 
             var membership = memberships.FirstOrDefault(m => m.UserId == userId && m.ClubId == clubId);
 
@@ -56,10 +71,8 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             }
 
             memberships.Remove(membership);
-            _dbContext.SaveChanges();
-            return true;      
+            DbContext.SaveChanges();
+            return true;
         }
-
-        
     }
 }

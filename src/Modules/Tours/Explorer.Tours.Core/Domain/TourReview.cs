@@ -6,7 +6,6 @@ namespace Explorer.Tours.Core.Domain
 {
     public class TourReview : Entity
     {
-
         public int Rating { get; private set; }
         public string Comment { get; private set; }
         public DateTime VisitDate { get; private set; }
@@ -14,8 +13,8 @@ namespace Explorer.Tours.Core.Domain
         public byte[]? Image { get; private set; }
         public long TourId { get; private set; }
         public long TouristId { get; private set; }
-
-        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, long tourId, long touristId, byte[]? image = null)
+        public double CompletionPercentage { get; set; }
+        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, long tourId, long touristId, byte[]? image = null, double completionPercentage = 0)
         {
             ValidateRating(rating);
             ValidateComment(comment);
@@ -28,6 +27,24 @@ namespace Explorer.Tours.Core.Domain
             TourId = tourId;
             TouristId = touristId;
             Image = image;
+            CompletionPercentage = completionPercentage;
+        }
+
+        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, long tourId, long touristId, byte[]? image = null, double completionPercentage = 0)
+        {
+            ValidateRating(rating);
+            ValidateComment(comment);
+            ValidateVisitDate(visitDate);
+
+            Id = id;
+            Rating = rating;
+            Comment = comment;
+            VisitDate = visitDate;
+            ReviewDate = reviewDate;
+            TourId = tourId;
+            TouristId = touristId;
+            Image = image;
+            CompletionPercentage = completionPercentage;
         }
 
         private void ValidateRating(int rating)

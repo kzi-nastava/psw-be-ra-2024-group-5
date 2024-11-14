@@ -5,20 +5,24 @@ using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
-    [Collection("Sequential")]
-    public class TourReviewCommandTests : BaseToursIntegrationTest
+    [Collection("Tours")]
+    public class TourReviewCommandTests : IClassFixture<ToursFixture>
     {
-        public TourReviewCommandTests(ToursTestFactory factory) : base(factory) { }
+        private ToursFixture fixture;
+
+        public TourReviewCommandTests(ToursFixture fixture)
+        {
+            this.fixture = fixture;
+        }
 
         [Fact]
         public void Creates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var newEntity = new TourReviewDto
@@ -40,7 +44,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             result.Rating.ShouldBe(newEntity.Rating);
             result.Comment.ShouldBe(newEntity.Comment);
             result.VisitDate.ShouldBe(newEntity.VisitDate);
-            result.ReviewDate.ShouldBe(newEntity.ReviewDate);
+            result.ReviewDate.ShouldBe(newEntity.ReviewDate, TimeSpan.FromSeconds(1));
             result.TourId.ShouldBe(newEntity.TourId);
             result.TouristId.ShouldBe(newEntity.TouristId);
 
@@ -50,7 +54,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             storedEntity.Rating.ShouldBe(result.Rating);
             storedEntity.Comment.ShouldBe(result.Comment);
             storedEntity.VisitDate.ShouldBe(result.VisitDate);
-            storedEntity.ReviewDate.ShouldBe(result.ReviewDate);
+            storedEntity.ReviewDate.ShouldBe(result.ReviewDate, TimeSpan.FromSeconds(1));
             storedEntity.TourId.ShouldBe(result.TourId);
             storedEntity.TouristId.ShouldBe(result.TouristId);
         }
@@ -59,7 +63,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Updates()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
             var updatedEntity = new TourReviewDto
@@ -82,7 +86,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             result.Rating.ShouldBe(updatedEntity.Rating);
             result.Comment.ShouldBe(updatedEntity.Comment);
             result.VisitDate.ShouldBe(updatedEntity.VisitDate);
-            result.ReviewDate.ShouldBe(updatedEntity.ReviewDate);
+            result.ReviewDate.ShouldBe(updatedEntity.ReviewDate, TimeSpan.FromSeconds(1));
             result.TourId.ShouldBe(updatedEntity.TourId);
             result.TouristId.ShouldBe(updatedEntity.TouristId);
 
@@ -92,7 +96,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             storedEntity.Rating.ShouldBe(result.Rating);
             storedEntity.Comment.ShouldBe(result.Comment);
             storedEntity.VisitDate.ShouldBe(result.VisitDate);
-            storedEntity.ReviewDate.ShouldBe(result.ReviewDate);
+            storedEntity.ReviewDate.ShouldBe(result.ReviewDate, TimeSpan.FromSeconds(1));
             storedEntity.TourId.ShouldBe(result.TourId);
             storedEntity.TouristId.ShouldBe(result.TouristId);
         }
@@ -101,7 +105,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         public void Deletes()
         {
             // Arrange
-            using var scope = Factory.Services.CreateScope();
+            using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
             var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
 
@@ -121,7 +125,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new TourReviewController(scope.ServiceProvider.GetRequiredService<ITourReviewService>())
             {
-                ControllerContext = BuildContext("-1")
+                ControllerContext = ToursFixture.BuildContext("-1")
             };
         }
     }

@@ -5,11 +5,11 @@ namespace Explorer.Blog.API.Public
 {
     public interface IBlogCommentService
     {
-        Result<BlogCommentDTO> CreateComment(BlogCommentDTO commentDto);
-        Result<BlogCommentDTO> GetCommentById(int id);
-        Result<BlogCommentDTO> UpdateComment(long id, BlogCommentDTO commentDto);
+        Result<BlogCommentDto> CreateComment(BlogCommentDto commentDto);
+        Result<BlogCommentDto> GetCommentById(int id);
+        Result<BlogCommentDto> UpdateComment(long id, BlogCommentDto commentDto);
         Result<bool> DeleteComment(long id);
-        public Result<List<BlogCommentDTO>> GetAllCommentsByUser(long userId);
+        public Result<List<BlogCommentDto>> GetAllCommentsByUser(long userId);
 
     }
 }

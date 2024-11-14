@@ -22,6 +22,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<PagedResult<KeyPointDto>> GetAll(int tourId, [FromQuery] int page, [FromQuery] int pageSize) {
             var result = _keyPointService.GetPaged(tourId, page, pageSize);
             return CreateResponse(result);

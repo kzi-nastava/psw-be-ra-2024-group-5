@@ -4,27 +4,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Explorer.Blog.Core.Domain
 {
     public class BlogComment : Entity
     {
-        public long Id { get; private set; }
-        public long IdUser {get; private set; }
-        public string commentText { get; private set; }
-        public DateTime creationTime { get; private set; }
-        public DateTime? lastEditedTime { get; private set; }
+        public long BlogId { get; private set; }
+        public long UserId {get; private set; }
+        public string CommentText { get; private set; }
+        public DateTime CreationTime { get; private set; }
+        public DateTime? LastEditedTime { get; private set; }
 
         public BlogComment() { }
-        public BlogComment(long idUser, string commentTxt)
+        public BlogComment(long blogId,long userId, string commentTxt)
         {
             if (string.IsNullOrWhiteSpace(commentTxt))
                 throw new ArgumentException("Comment text cannot be null or empty.");
-            
-            this.IdUser = idUser;
-            this.commentText = commentTxt;
-            this.creationTime = DateTime.UtcNow;
-            this.lastEditedTime = null;
+
+            this.BlogId = blogId;
+            this.UserId = userId;
+            this.CommentText = commentTxt;
+            this.CreationTime = DateTime.UtcNow;
+            this.LastEditedTime = null;
+        }
+
+        public void EditComment(string newText)
+        {
+            CommentText = newText ?? throw new ArgumentNullException(nameof(newText));
+            LastEditedTime = DateTime.UtcNow;
         }
     }
 }

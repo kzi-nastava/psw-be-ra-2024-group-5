@@ -16,7 +16,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpGet("author/{authorId:long}")]
-        public ActionResult<PagedResult<TourDto>> GetByAuthor(long authorId) {
+        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
             var result = _tourService.GetByAuthorId(authorId);
             return CreateResponse(result);
         }
@@ -27,21 +27,84 @@ namespace Explorer.API.Controllers.Author {
             return CreateResponse(result);
         }
 
-        [HttpPost]
-        public ActionResult<TourDto> Create([FromBody] TourDto tour) {
-            var result = _tourService.CreateTour(tour);
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{id:long}/{touristId:long}")]
+        public ActionResult<TourTouristDto> GetForTouristById(long id, long touristId)
+        {
+            var result = _tourService.GetForTouristById(id, touristId);
             return CreateResponse(result);
         }
 
-        [HttpPut("{id:int}")]
-        public ActionResult<TourDto> Update([FromBody] TourDto tour) {
-            var result = _tourService.Update(tour);
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpPost("review")]
+        public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
+        {
+            var result = _tourService.AddReview(review);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("published/{page:int}/{pageSize:int}")]
+        public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
+        {
+            var result = _tourService.GetPublishedPagedTours(page, pageSize);
+            return CreateResponse(result);
+        }
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpPost("published/filtered")]
+        public ActionResult<List<TourCardDto>> GetPublishedPagedToursFiltered([FromBody] TourSearchDto searchDto)
+        {
+            var result = _tourService.GetPublishedPagedToursFiltered(
+                searchDto.Page,
+                searchDto.PageSize,
+                searchDto.StartLong,
+                searchDto.EndLong,
+                searchDto.StartLat,
+                searchDto.EndLat
+            );
+            return CreateResponse(result);
+        }
+
+
+        [HttpPost]
+        public ActionResult<TourDto> Create([FromBody] TourCreationDto tour) {
+            var result = _tourService.Create(tour);
+            return CreateResponse(result);
+        }
+
+        [HttpPut("{id:long}")]
+        public ActionResult<TourDto> Update([FromBody] TourDto tour, long id) {
+            var result = _tourService.Update(tour, id);
             return CreateResponse(result);
         }
 
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id) {
             var result = _tourService.Delete(id);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("publish/{tourId:long}")]
+        public ActionResult PublishTour(int tourId, [FromBody] MoneyDto money)
+        {
+            // Proveriti da li su prosleđeni podaci validni
+            if (money == null || money.Amount <= 0 || money.Currency == null)
+            {
+                return BadRequest("Invalid price or currency.");
+            }
+
+            var result = _tourService.PublishTour(tourId, money.Amount, money.Currency);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("archive/{tourId:long}")]
+
+        public ActionResult ArchiveTour(int tourId)
+        {
+            var result = _tourService.ArchiveTour(tourId);
             return CreateResponse(result);
         }
     }
