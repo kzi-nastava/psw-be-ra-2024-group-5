@@ -11,12 +11,11 @@ namespace Explorer.Tours.API.Dtos
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public FacilityDto() { }
-        public FacilityDto(long id, string name, string? description, FacilityType type, string? image, double longitude, double latitude) {
+        public FacilityDto(long id, string name, string? description, FacilityType type, double longitude, double latitude) {
             Id = id;
             Name = name;
             Description = description;
             Type = type;
-            Image = image;
             Longitude = longitude;
             Latitude = latitude;
         }

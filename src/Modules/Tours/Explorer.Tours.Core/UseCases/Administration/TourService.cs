@@ -117,7 +117,8 @@ public class TourService : ITourService {
                 if (kp == null)
                     throw new Exception("Keypoints list is empty!");
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
-                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
+                firstKeypointDto.Image = imgString;
 
                 resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
                 
@@ -147,7 +148,8 @@ public class TourService : ITourService {
                 if (kp == null)
                     throw new Exception("Keypoints list is empty!");
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
-                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
+                firstKeypointDto.Image = imgString;
 
                 resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
 
