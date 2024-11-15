@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
 using Markdig;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Explorer.Blog.Core.Domain;
 
@@ -51,6 +52,7 @@ public class BlogPost : Entity
         this.Title = title;
         this.Description = description;
     }
+
     public void UpdateStatus(BlogStatus newStatus, int currentUserId)
     {
         if (UserId != currentUserId)
@@ -66,29 +68,37 @@ public class BlogPost : Entity
 
     }
 
-    public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount, int currentUserId)
+    public void Promote(BlogStatus newStatus) {
+        if (!Enum.IsDefined(typeof(BlogStatus), newStatus)) {
+            throw new ArgumentException("Invalid Status value.", nameof(newStatus));
+        }
+
+        Status = newStatus;
+    }
+
+    public void UpdateStatusBasedOnVotesAndComments(int upvotes, int downvotes, int commentCount)
     {
         if (Status == BlogStatus.Published || Status == BlogStatus.Active || Status == BlogStatus.Famous)
         {
             if (upvotes - downvotes < -10)
             {
                 Console.WriteLine("Setting Status to Closed");
-                UpdateStatus(BlogStatus.Closed, currentUserId);
+                Promote(BlogStatus.Closed);
             }
             else if (upvotes > 100 || commentCount > 10)
             {
                 Console.WriteLine("Setting Status to Active");
-                UpdateStatus(BlogStatus.Active, currentUserId);
+                Promote(BlogStatus.Active);
             }
             else if (upvotes > 500)
             {
                 Console.WriteLine("Setting Status to Famous");
-                UpdateStatus(BlogStatus.Famous, currentUserId);
+                Promote(BlogStatus.Famous);
             }
             else if (upvotes <= 10)
             {
                 Console.WriteLine("Setting Status back to Published");
-                UpdateStatus(BlogStatus.Published, currentUserId);
+                Promote(BlogStatus.Published);
             }
         }
     }
@@ -99,6 +109,8 @@ public class BlogPost : Entity
     {
         var comment = new BlogComment(id, userId, text);
         _comments.Add(comment);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public IReadOnlyCollection<BlogComment> GetAllComments()
@@ -139,6 +151,8 @@ public class BlogPost : Entity
 
         var rating = new BlogVote(userId, value);
         _votes.Add(rating);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public void RemoveRating(int userId)

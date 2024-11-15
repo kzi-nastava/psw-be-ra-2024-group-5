@@ -160,7 +160,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.Get(blogId);
+                blogPost = _blogPostRepositoy.GetBlogPost((int) blogId);
             }
             catch (Exception e)
             {
@@ -498,7 +498,7 @@ namespace Explorer.Blog.Core.UseCases
             int downvotes = blogPost.GetDownvoteCount();
             int commentCount = GetCommentCount(blogPost.Id);
 
-            blogPost.UpdateStatusBasedOnVotesAndComments(upvotes, downvotes, commentCount, userId);
+            blogPost.UpdateStatusBasedOnVotesAndComments(upvotes, downvotes, commentCount);
 
             try
             {

@@ -89,9 +89,15 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpPost("publish/{tourId:long}")]
-        public ActionResult PublishTour(int tourId)
+        public ActionResult PublishTour(int tourId, [FromBody] MoneyDto money)
         {
-            var result = _tourService.PublishTour(tourId);
+            // Proveriti da li su prosleđeni podaci validni
+            if (money == null || money.Amount <= 0 || money.Currency == null)
+            {
+                return BadRequest("Invalid price or currency.");
+            }
+
+            var result = _tourService.PublishTour(tourId, money.Amount, money.Currency);
             return CreateResponse(result);
         }
 

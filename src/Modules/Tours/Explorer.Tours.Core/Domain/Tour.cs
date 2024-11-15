@@ -109,21 +109,24 @@ public class Tour : Entity {
         return KeyPoints;
     }
 
-    public bool Publish()
+    public bool Publish(double priceAmount, Currency currency)
     {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description)
             || KeyPoints == null || KeyPoints.Count < 2
             || TransportDurations == null || !TransportDurations.Any()
-            || Status == TourStatus.Published 
-            || string.IsNullOrWhiteSpace(Tags) || Level == null)
+            || Status == TourStatus.Published
+            || string.IsNullOrWhiteSpace(Tags) || Level == null
+            || priceAmount <= 0 || currency == null)
         {
             return false;
         }
 
+        Price = new Money(priceAmount, currency);
         Status = TourStatus.Published;
         PublishedTime = DateTime.UtcNow;
         return true;
     }
+
 
     public bool Archive()
     {

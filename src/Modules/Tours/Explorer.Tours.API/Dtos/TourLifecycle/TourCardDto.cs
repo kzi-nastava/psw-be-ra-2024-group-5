@@ -19,9 +19,10 @@ namespace Explorer.Tours.API.Dtos.TourLifecycle
         public long AuthorId { get; set; }
         public KeyPointDto FirstKeypoint { get; set; }
         public DateTime PublishedTime { get; set; }
+        public double? AverageRating { get; set; }
         public TourCardDto() { }
         public TourCardDto(long id, string? name, string? tags, TourLevel? level, TourStatus status, MoneyDto price,
-            long authorId, double? length, DateTime publishedTime, KeyPointDto firstKeypoint)
+            long authorId, double? length, DateTime publishedTime, KeyPointDto firstKeypoint, double? averageRating)
         {
             Id = id;
             Name = name;
@@ -33,6 +34,19 @@ namespace Explorer.Tours.API.Dtos.TourLifecycle
             AuthorId = authorId;
             FirstKeypoint = firstKeypoint;
             PublishedTime = publishedTime;
+            AverageRating = averageRating;
+          
+        }
+
+        public static double? CalculateAverageRating(List<TourReviewDto> reviews)
+        {
+            if (reviews == null || reviews.Count == 0)
+            {
+                return null;  
+            }
+
+            double totalRating = reviews.Sum(r => r.Rating);  
+            return totalRating / reviews.Count;  
         }
     }
 }

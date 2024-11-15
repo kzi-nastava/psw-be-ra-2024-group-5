@@ -26,8 +26,6 @@ namespace Explorer.Tours.API.Dtos.TourLifecycle
             TourId = tourId;
             TouristId = touristId;
             CompletionPercentage = completionPercentage;
-
         }
-
     }
 }

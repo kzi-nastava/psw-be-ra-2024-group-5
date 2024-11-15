@@ -22,8 +22,9 @@ public class TourService : ITourService {
     private readonly IUserRepository _userRepository;
     private readonly IShoppingCartRepository _shoppingCartRepository;
     private readonly ITourExecutionRepository _tourExecutionRepository;
+    private readonly ITourReviewRepository _tourReviewRepository;
 
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository)
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository)
     {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
@@ -32,6 +33,7 @@ public class TourService : ITourService {
         _shoppingCartRepository = shoppingCartRepository;
         _tourExecutionRepository = tourExecutionRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
+        _tourReviewRepository = tourReviewRepository;
     }
 
     public Result<TourDto> GetById(int id) {
@@ -119,9 +121,27 @@ public class TourService : ITourService {
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
                 var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
                 firstKeypointDto.Image = imgString;
+                var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
+                double? averageRating = null;
 
-                resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
-                
+                if (reviews.IsSuccess && reviews.Value.Any())
+                {
+                    
+                    averageRating = reviews.Value.Average(r => r.Rating);
+                }
+                resultDtos.Add(new TourCardDto(
+                                tour.Id,
+                                tour.Name,
+                                tour.Tags,
+                                tour.Level,
+                                tour.Status,
+                                price,
+                                tour.AuthorId,
+                                tour.Length,
+                                tour.PublishedTime,
+                                firstKeypointDto,
+                                averageRating 
+                            ));
             }
 
             return Result.Ok(resultDtos);
@@ -151,9 +171,29 @@ public class TourService : ITourService {
                 var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
                 firstKeypointDto.Image = imgString;
 
-                resultDtos.Add(new TourCardDto(tour.Id, tour.Name, tour.Tags, tour.Level, tour.Status, price, tour.AuthorId, tour.Length, tour.PublishedTime, firstKeypointDto));
+                var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
+                double? averageRating = null;
 
-            }
+                if (reviews.IsSuccess && reviews.Value.Any())
+                {
+                   
+                    averageRating = reviews.Value.Average(r => r.Rating);
+                }
+                resultDtos.Add(new TourCardDto(
+                                tour.Id,
+                                tour.Name,
+                                tour.Tags,
+                                tour.Level,
+                                tour.Status,
+                                price,
+                                tour.AuthorId,
+                                tour.Length,
+                                tour.PublishedTime,
+                                firstKeypointDto,
+                                averageRating
+                            ));
+            
+        }
 
             return Result.Ok(resultDtos);
         }
@@ -282,7 +322,7 @@ public class TourService : ITourService {
         }
     }
 
-    public Result PublishTour(int tourId)
+    public Result PublishTour(int tourId, double priceAmount, Currency currency)
     {
         var tour = _tourRepository.GetById(tourId);
         if (tour == null)
@@ -290,14 +330,17 @@ public class TourService : ITourService {
             return Result.Fail(FailureCode.NotFound).WithError("Tour not found.");
         }
 
-        if (!tour.Publish())
+        
+        if (!tour.Publish(priceAmount, currency))
         {
             return Result.Fail("Tour cannot be published. Ensure all requirements are met.");
         }
 
         _tourRepository.Update(tour);
+
         return Result.Ok();
     }
+
 
     public Result ArchiveTour(int tourId)
     {
