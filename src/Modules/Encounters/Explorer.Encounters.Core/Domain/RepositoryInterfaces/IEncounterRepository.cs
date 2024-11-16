@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace Explorer.Encounters.Core.Domain.RepositoryInterfaces;
 public interface IEncounterRepository : ICrudRepository<Encounter>
 {
-
+    List<Encounter> GetAllActive();
 }

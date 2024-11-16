@@ -1,4 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Encounters.API.Enum;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
 using System;
@@ -10,5 +11,11 @@ using System.Threading.Tasks;
 namespace Explorer.Encounters.Infrastructure.Database.Repositories;
 public class EncounterRepository : CrudDatabaseRepository<Encounter, EncountersContext>, IEncounterRepository
 {
+
+
     public EncounterRepository(EncountersContext dbContext) : base(dbContext) { }
+
+    public List<Encounter> GetAllActive() {
+        return DbContext.Encounters.Where(e => e.Status == EncounterStatus.Active).ToList();
+    }
 }
