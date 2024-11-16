@@ -35,7 +35,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         _tourReviewRepository = tourReviewRepository;
     }
 
-    public Result<TourDto> GetById(int id) {
+    public Result<TourDto> GetById(long id) {
         try {
             var tour = _tourRepository.GetById(id);
             var tourDto = MapTourToDto(tour);
@@ -303,7 +303,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 return Result.Fail(FailureCode.Forbidden);
             }
 
-            var tour = _tourRepository.GetById((int)tourId);
+            var tour = _tourRepository.GetById(tourId);
 
             if (tour == null || tour.Status != API.Enum.TourStatus.Published)
             {
@@ -373,7 +373,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     {
         try
         {
-            var tour = _tourRepository.GetById((int)reviewDto.TourId);
+            var tour = _tourRepository.GetById(reviewDto.TourId);
             if (tour == null) return Result.Fail("Tour not found");
 
             var tourExecutions = _tourExecutionRepository.GetRecentByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
@@ -410,7 +410,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-    public Result PublishTour(int tourId, double priceAmount, Currency currency)
+    public Result PublishTour(long tourId, double priceAmount, Currency currency)
     {
         var tour = _tourRepository.GetById(tourId);
         if (tour == null)
@@ -430,7 +430,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     }
 
 
-    public Result ArchiveTour(int tourId)
+    public Result ArchiveTour(long tourId)
     {
         var tour = _tourRepository.GetById(tourId);
         if (tour == null)

@@ -88,7 +88,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpPost("publish/{tourId:long}")]
-        public ActionResult PublishTour(int tourId, [FromBody] MoneyDto money)
+        public ActionResult PublishTour(long tourId, [FromBody] MoneyDto money)
         {
             // Proveriti da li su prosleđeni podaci validni
             if (money == null || money.Amount <= 0 || money.Currency == null)
@@ -102,7 +102,7 @@ namespace Explorer.API.Controllers.Author {
 
         [HttpPost("archive/{tourId:long}")]
 
-        public ActionResult ArchiveTour(int tourId)
+        public ActionResult ArchiveTour(long tourId)
         {
             var result = _tourService.ArchiveTour(tourId);
             return CreateResponse(result);
