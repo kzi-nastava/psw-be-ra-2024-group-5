@@ -23,9 +23,6 @@ namespace Explorer.Blog.Infrastructure {
             services.AddScoped<IBlogPostService, BlogPostService>();
             services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 
-            services.AddScoped<IBlogCommentService, BlogCommentService>();
-            services.AddScoped<IBlogCommentRepository, BlogCommentRepository>();
-
         }
 
         private static void SetupInfrastructure(IServiceCollection services) {

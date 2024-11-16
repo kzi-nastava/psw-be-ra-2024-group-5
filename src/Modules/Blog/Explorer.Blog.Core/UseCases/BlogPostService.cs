@@ -140,7 +140,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.GetBlogPost((int)id);
+                blogPost = _blogPostRepositoy.Get(id);
             }
             catch (Exception e)
             {
@@ -160,7 +160,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.GetBlogPost((int) blogId);
+                blogPost = _blogPostRepositoy.Get(blogId);
             }
             catch (Exception e)
             {
@@ -176,7 +176,10 @@ namespace Explorer.Blog.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
 
-            var commentToAdd = blogPost.Comments.FirstOrDefault(c => c.UserId == userId && c.BlogId == blogId);
+            var commentToAdd = blogPost.Comments
+                .Where(c => c.UserId == userId && c.BlogId == blogId)
+                .OrderByDescending(c => c.CreationTime)
+                .FirstOrDefault();
             if (commentToAdd == null)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError("Comment not found.");
@@ -193,7 +196,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.GetBlogPost((int)blogId);
+                blogPost = _blogPostRepositoy.Get(blogId);
             }
             catch (Exception e)
             {
@@ -227,7 +230,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.GetBlogPost((int)blogId);
+                blogPost = _blogPostRepositoy.Get(blogId);
             }
             catch (Exception e)
             {
@@ -260,7 +263,7 @@ namespace Explorer.Blog.Core.UseCases
             BlogPost blogPost;
             try
             {
-                blogPost = _blogPostRepositoy.GetBlogPost((int)blogId);
+                blogPost = _blogPostRepositoy.Get(blogId);
             }
             catch (Exception e)
             {
@@ -474,51 +477,6 @@ namespace Explorer.Blog.Core.UseCases
             }
             return Result.Ok();
         }
-
-        public Result UpdateBlogStatusBasedOnVotesAndComments(long blogId, int userId)
-        {
-            BlogPost blogPost;
-            try
-            {
-                blogPost = _blogPostRepositoy.Get(blogId);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error fetching the blog post: " + e.Message);
-                return Result.Fail(FailureCode.InvalidArgument).WithError("Error fetching the blog post: " + e.Message);
-            }
-
-            if (blogPost == null)
-            {
-                Console.WriteLine("Blog post not found.");
-                return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
-            }
-
-            int upvotes = blogPost.GetUpvoteCount();
-            int downvotes = blogPost.GetDownvoteCount();
-            int commentCount = GetCommentCount(blogPost.Id);
-
-            blogPost.UpdateStatusBasedOnVotesAndComments(upvotes, downvotes, commentCount);
-
-            try
-            {
-                _blogPostRepositoy.Update(blogPost);
-                Console.WriteLine("Blog Status updated successfully in the database.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error saving the blog post Status to the database: " + ex.Message);
-                return Result.Fail("Database error").WithError("Error saving the blog post Status: " + ex.Message);
-            }
-
-            return Result.Ok();
-        }
-
-        public int GetCommentCount(long blogId)
-        {
-            return _blogPostRepositoy.GetCommentCountForBlog(blogId);
-        }
-
 
     }
 }

@@ -10,7 +10,7 @@ namespace Explorer.Blog.Infrastructure.Database.Repositories
     {
         public BlogPostRepository(BlogContext dbContext) : base(dbContext) { }
 
-        public new BlogPost GetBlogPost(int id)
+        public new BlogPost Get(long id)
         {
             return DbContext.Set<BlogPost>()
                 .Include(b => b.Comments)

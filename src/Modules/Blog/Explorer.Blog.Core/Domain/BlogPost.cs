@@ -40,6 +40,9 @@ public class BlogPost : Entity
 
     public void UpdateBlog(string title, string description, int userId)
     {
+        if (Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Updating isn't allowed.");
+
         if (this.UserId != userId)
             throw new UnauthorizedAccessException("Only the blog creator can update the blog post.");
 
@@ -55,6 +58,9 @@ public class BlogPost : Entity
 
     public void UpdateStatus(BlogStatus newStatus, int currentUserId)
     {
+        if (Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Update status ins't allowed.");
+
         if (UserId != currentUserId)
         {
             throw new UnauthorizedAccessException("Only the blog creator can change the Status.");
@@ -103,10 +109,11 @@ public class BlogPost : Entity
         }
     }
 
-
-
     public void AddComment(long id, string text, int userId)
     {
+        if (Status == BlogStatus.Draft || Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Commenting is allowed only for published blogs.");
+
         var comment = new BlogComment(id, userId, text);
         _comments.Add(comment);
 
@@ -120,6 +127,9 @@ public class BlogPost : Entity
 
     public void EditComment(long commentId, string newCommentText, int userId)
     {
+        if (Status == BlogStatus.Draft || Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Commenting is allowed only for published blogs.");
+
         var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
         if (comment == null)
             throw new UnauthorizedAccessException("Comment not found or unauthorized.");
@@ -128,19 +138,21 @@ public class BlogPost : Entity
 
     public void RemoveComment(long commentId, int userId)
     {
+        if (Status == BlogStatus.Draft || Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Can't remomve comments on blog that is closed.");
+
         var comment = _comments.FirstOrDefault(c => c.Id == commentId && c.UserId == userId);
         if (comment == null)
             throw new UnauthorizedAccessException("Comment not found or unauthorized.");
         _comments.Remove(comment);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public void AddOrUpdateRating(VoteType value, int userId)
     {
-        if (Status == BlogStatus.Draft)
+        if (Status == BlogStatus.Draft || Status == BlogStatus.Closed)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
-
-        //if (this.UserId != UserId)
-        //    throw new InvalidOperationException("User cant vote.");
 
         var existingRating = _votes.FirstOrDefault(r => r.UserId == userId);
 
@@ -157,13 +169,15 @@ public class BlogPost : Entity
 
     public void RemoveRating(int userId)
     {
-        if (Status != BlogStatus.Published)
+        if (Status == BlogStatus.Closed && Status == BlogStatus.Draft)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
         var existingRating = _votes.FirstOrDefault(r => r.UserId == userId);
 
         if (existingRating != null)
             _votes.Remove(existingRating);
+
+        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
     }
 
     public int GetUpvoteCount()
@@ -187,6 +201,9 @@ public class BlogPost : Entity
 
     public void RemoveImage(byte[] imageData, string contentType)
     {
+        if (Status == BlogStatus.Closed)
+            throw new InvalidOperationException("Adding Images is allowed only for blogs that are not closed.");
+
         var image = _images.FirstOrDefault(img => img.Base64Data.SequenceEqual(imageData) && img.ContentType == contentType);
 
         if (image == null)

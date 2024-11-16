@@ -148,13 +148,5 @@ namespace Explorer.API.Controllers.Author
             return CreateResponse(result);
         }
 
-        [HttpPut("{BlogId}/update-Status")]
-        public ActionResult<BlogPostDto> UpdateBlogStatusBasedOnVotesAndComments(long blogId, [FromQuery] int userId)
-        {
-            var result = _blogPostService.UpdateBlogStatusBasedOnVotesAndComments(blogId, userId);
-            return CreateResponse(result);
-        }
-
-
     }
 }
