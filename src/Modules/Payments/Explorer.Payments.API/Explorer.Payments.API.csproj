@@ -5,14 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\Explorer.Payments.API\Explorer.Payments.API.csproj" />
+    <Folder Include="Dtos\" />
+    <Folder Include="Internal\" />
+    <Folder Include="Public\" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <Folder Include="Domain\" />
-    <Folder Include="UseCases\" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Explorer.BuildingBlocks.Core\Explorer.BuildingBlocks.Core.csproj" />
   </ItemGroup>
 
 </Project>
