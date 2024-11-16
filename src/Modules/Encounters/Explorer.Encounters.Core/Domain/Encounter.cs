@@ -18,6 +18,8 @@ public class Encounter : Entity
     public EncounterType Type { get; set; }
     public long CreatorId { get; set; }
 
+    public Encounter() { }
+
     public Encounter(string name, string description, Position location, int xp, EncounterStatus status, EncounterType type, long creatorId) 
     {
         Name = name;

@@ -13,9 +13,16 @@ public class EncountersContext : DbContext
 
     public EncountersContext(DbContextOptions<EncountersContext> options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
         modelBuilder.HasDefaultSchema("encounters");
 
-        modelBuilder.Entity<Encounter>().HasKey(e => e.Id);
+        modelBuilder
+            .Entity<Encounter>()
+            .HasKey(e => e.Id);
+
+        modelBuilder.Entity<Encounter>()
+            .Property(e => e.Location)
+            .HasColumnType("jsonb");
     }
 }
