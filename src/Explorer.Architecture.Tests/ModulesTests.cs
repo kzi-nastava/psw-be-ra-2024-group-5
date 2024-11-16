@@ -99,6 +99,10 @@ public class ModulesTests : BaseArchitecturalTests
         //},
         new object[]
         {
+            "Payments"
+        },
+        new object[]
+        {
             "Encounters"
         }
     };

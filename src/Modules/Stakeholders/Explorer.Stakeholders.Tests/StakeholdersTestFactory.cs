@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Explorer.Tours.Infrastructure.Database;
 using Explorer.Blog.Infrastructure.Database;
+using Explorer.Payments.Infrastructure.Database;
 
 namespace Explorer.Stakeholders.Tests;
 
@@ -21,13 +22,13 @@ public class StakeholdersTestFactory : BaseTestFactory
             var stakeholdersDb = scopedServices.GetRequiredService<StakeholdersContext>();
             var blogsDb = scopedServices.GetRequiredService<BlogContext>();
             var toursDb = scopedServices.GetRequiredService<ToursContext>();
+            var paymentsDb = scopedServices.GetRequiredService<PaymentsContext>();
 
             var logger = scopedServices.GetRequiredService<ILogger<BaseTestFactory>>();
 
             var path = Path.Combine(".", "..", "..", "..", "TestData");
 
-            //RunSetupScripts(stakeholdersDb, path, logger);
-            InitializeDatabases(new List<DbContext> { stakeholdersDb, blogsDb, toursDb }, path, logger);
+            InitializeDatabases(new List<DbContext> { stakeholdersDb, blogsDb, toursDb, paymentsDb }, path, logger);
         });
     }
 
@@ -36,14 +37,18 @@ public class StakeholdersTestFactory : BaseTestFactory
         var stakeholderDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<StakeholdersContext>));
         var blogDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<BlogContext>));
         var toursDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ToursContext>));
+        var paymentsDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<PaymentsContext>));
+
 
         services.Remove(stakeholderDescriptor!);
         services.Remove(blogDescriptor!);
         services.Remove(toursDescriptor!);
+        services.Remove(paymentsDescriptor!);
 
         services.AddDbContext<StakeholdersContext>(SetupTestContext());
         services.AddDbContext<BlogContext>(SetupTestContext());
         services.AddDbContext<ToursContext>(SetupTestContext());
+        services.AddDbContext<PaymentsContext>(SetupTestContext());
 
         return services;
     }
