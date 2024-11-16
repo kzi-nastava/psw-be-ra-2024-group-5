@@ -11,7 +11,9 @@ namespace Explorer.Encounters.Core.Mappers;
 
 public class EncountersProfile : Profile
 {
-    public EncountersProfile() {
-        CreateMap<Encounter, EncounterDto>();
+    public EncountersProfile()
+    {
+        CreateMap<LocationDto, Location>();
+        CreateMap<EncounterDto, Encounter>();
     }
 }

@@ -7,15 +7,15 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Explorer.Encounters.Core.Domain;
-public class Position : ValueObject
+public class Location : ValueObject
 {
     public double Latitude { get; init; }
     public double Longitude { get; init; }
 
-    private Position() { }
+    private Location() { }
 
     [JsonConstructor]
-    public Position(double latitude, double longitude) {
+    public Location(double latitude, double longitude) {
         Latitude = latitude;
         Longitude = longitude;
     }

@@ -11,6 +11,6 @@ public interface IEncounterService
 {
     public Result<EncounterDto> Create(EncounterDto encounterDto);
     public Result<EncounterDto> Update(EncounterDto encounterDto);
-    public Result<bool> Delete(EncounterDto encounterDto);
+    public Result<bool> Delete(long id);
     public Result<List<EncounterDto>> GetAllActive(long userId);
 }

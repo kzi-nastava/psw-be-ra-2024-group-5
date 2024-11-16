@@ -17,6 +17,11 @@ public class EncounterService : IEncounterService {
     private readonly IEncounterRepository _encounterRepository;
     private readonly IMapper _mapper;
 
+    public EncounterService(IEncounterRepository encounterRepository, IMapper mapper) {
+        _encounterRepository = encounterRepository;
+        _mapper = mapper;
+    }
+
     public Result<EncounterDto> Create(EncounterDto encounterDto)
     {
         var encounter = _mapper.Map<Encounter>(encounterDto);
@@ -25,9 +30,9 @@ public class EncounterService : IEncounterService {
         return Result.Ok(encounterDto);
     }
 
-    public Result<bool> Delete(EncounterDto encounterDto)
+    public Result<bool> Delete(long id)
     {
-        _encounterRepository.Delete(encounterDto.Id);
+        _encounterRepository.Delete(id);
         return true;
     }
 
