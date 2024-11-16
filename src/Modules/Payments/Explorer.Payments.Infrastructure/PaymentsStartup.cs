@@ -1,4 +1,7 @@
-﻿using Explorer.Payments.Core.Mappers;
+﻿using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Payments.Core.Mappers;
+using Explorer.Payments.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,9 @@ namespace Explorer.Payments.Infrastructure
 
         private static void SetupInfrastructure(IServiceCollection services)
         {
-
+            services.AddDbContext<PaymentsContext>(opt =>
+            opt.UseNpgsql(DbConnectionStringBuilder.Build("payments"),
+                x => x.MigrationsHistoryTable("__EFMigrationsHistory", "payments")));
         }
-        }
+    }
 }
