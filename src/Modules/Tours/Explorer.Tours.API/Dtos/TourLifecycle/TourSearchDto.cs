@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.API.Dtos
+namespace Explorer.Tours.API.Dtos.TourLifecycle
 {
     public class TourSearchDto
     {

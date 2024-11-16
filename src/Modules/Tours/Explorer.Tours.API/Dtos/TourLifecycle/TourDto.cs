@@ -1,12 +1,13 @@
 ﻿using Explorer.Tours.API.Enum;
 
-namespace Explorer.Tours.API.Dtos;
+namespace Explorer.Tours.API.Dtos.TourLifecycle;
 
-public class TourDto {
+public class TourDto
+{
     public long Id { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
-    public string? Tags { get; set; }   
+    public string? Tags { get; set; }
     public TourLevel? Level { get; set; }
     public TourStatus Status { get; set; }
     public MoneyDto Price { get; set; }
@@ -14,7 +15,7 @@ public class TourDto {
     public List<KeyPointDto> KeyPoints { get; set; }
     public List<TourReviewDto> Reviews { get; set; }
     public double? Length { get; set; }
-    public List<TransportDurationDto> TransportDurationDtos { get; set; }
+    public List<TransportDurationDto> TransportDurations { get; set; }
     public DateTime PublishedTime { get; set; }
     public DateTime ArchivedTime { get; set; }
 
@@ -22,8 +23,9 @@ public class TourDto {
     public TourDto(long id, string? name, string? description,
         string? tags, TourLevel? level, TourStatus status, MoneyDto price,
         long authorId, List<KeyPointDto> keyPoints, List<TourReviewDto> reviews,
-        double? length, List<TransportDurationDto> transportDurationDtos,
-        DateTime publishedTime, DateTime archivedTime) {
+        double? length, List<TransportDurationDto> transportDurations,
+        DateTime publishedTime, DateTime archivedTime)
+    {
         Id = id;
         Name = name;
         Description = description;
@@ -35,7 +37,7 @@ public class TourDto {
         KeyPoints = keyPoints;
         Reviews = reviews;
         Length = length;
-        TransportDurationDtos = transportDurationDtos; 
+        TransportDurations = transportDurations;
         PublishedTime = publishedTime;
         ArchivedTime = archivedTime;
     }

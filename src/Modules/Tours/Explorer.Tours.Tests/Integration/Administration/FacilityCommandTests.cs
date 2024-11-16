@@ -1,5 +1,6 @@
 ﻿using Explorer.API.Controllers.Author;
 using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Public.Author;
 using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;

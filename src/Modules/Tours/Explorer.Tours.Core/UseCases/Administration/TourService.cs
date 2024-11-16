@@ -11,10 +11,11 @@ using FluentResults;
 using System.Collections.Generic;
 using System.Linq;
 using Explorer.Tours.API.Enum;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
-public class TourService : BaseService<TourDto, Tour>, ITourService {
+public class TourService : ITourService {
     private readonly ITourRepository _tourRepository;
     private readonly IMapper equipmentMapper;
     protected readonly IMapper _mapper;
@@ -23,7 +24,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     private readonly ITourExecutionRepository _tourExecutionRepository;
     private readonly ITourReviewRepository _tourReviewRepository;
 
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository) : base(mapper)
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository)
     {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
@@ -35,10 +36,10 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         _tourReviewRepository = tourReviewRepository;
     }
 
-    public Result<TourDto> GetById(int id) {
+    public Result<TourDto> GetById(long id) {
         try {
             var tour = _tourRepository.GetById(id);
-            var tourDto = MapTourToDto(tour);
+            var tourDto = _mapper.Map<TourDto>(tour);
             return Result.Ok(tourDto);
         }
         catch (Exception e) {
@@ -46,12 +47,10 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-
-
     public Result<List<TourDto>> GetByAuthorId(int id) {
         try {
             var tours = _tourRepository.GetByAuthorId(id);
-            var tourDtos = MapToursToDtos(tours);
+            var tourDtos = _mapper.Map<List<TourDto>>(tours);
             return Result.Ok(tourDtos);
         }
         catch (Exception e) {
@@ -61,9 +60,9 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
 
     public Result<TourDto> Create(TourCreationDto tourDto) {
         try {
-            var tour = MapTourCreationDtoToEntity(tourDto);
+            var tour = _mapper.Map<Tour>(tourDto);
             var returnedTour = _tourRepository.Create(tour);
-            var result = MapTourToDto(returnedTour);
+            var result = _mapper.Map<TourDto>(tour);
             return Result.Ok(result);
         }
         catch (Exception e) {
@@ -74,9 +73,9 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     public Result<TourDto> Update(TourDto tourDto, long id) {
         try {
             tourDto.Id = id;
-            var tour = MapTourUpdateDtoToEntity(tourDto);
+            var tour = _mapper.Map<Tour>(tourDto);
             var returnedTour = _tourRepository.Update(tour);
-            var result = MapTourToDto(returnedTour);
+            var result = _mapper.Map<TourDto>(tour);
             return Result.Ok(result);
         }
         catch (Exception e) {
@@ -120,7 +119,8 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 if (kp == null)
                     throw new Exception("Keypoints list is empty!");
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
-                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
+                firstKeypointDto.Image = imgString;
                 var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
                 double? averageRating = null;
 
@@ -168,7 +168,8 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 if (kp == null)
                     throw new Exception("Keypoints list is empty!");
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
-                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, imgString, kp.TourId);
+                var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
+                firstKeypointDto.Image = imgString;
 
                 var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
                 double? averageRating = null;
@@ -202,95 +203,6 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-    private TourDto MapTourToDto(Tour tour) {
-        var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
-        var transportDurationDtos = new List<TransportDurationDto>();
-        var keyPoints = new List<KeyPointDto>();
-        var reviews = new List<TourReviewDto>();
-
-        foreach (var tr in tour.TransportDurations ?? Enumerable.Empty<TransportDuration>()) {  //This code: "?? Enumerable.Empty<Something>" Makes foreach skip when list is null and doesn't drop exception
-            var trDto = new TransportDurationDto(tr.Duration, tr.Transport);
-            transportDurationDtos.Add(trDto);
-        }
-
-        foreach (var kp in tour.KeyPoints ?? Enumerable.Empty<KeyPoint>()) {
-            var img = Base64Converter.ConvertFromByteArray(kp.Image);
-            var k = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, img, kp.TourId);
-            keyPoints.Add(k);
-        }
-
-        foreach (var re in tour.Reviews ?? Enumerable.Empty<TourReview>()) {
-            var img = Base64Converter.ConvertFromByteArray(re.Image);
-            var r = new TourReviewDto(re.Id, re.Rating, re.Comment, re.VisitDate, re.ReviewDate, img, re.TourId, re.TouristId, re.CompletionPercentage);
-            reviews.Add(r);
-        }
-
-        var result = new TourDto(tour.Id, tour.Name, tour.Description, tour.Tags, tour.Level,
-            tour.Status, price, tour.AuthorId, keyPoints, reviews, tour.Length,
-            transportDurationDtos, tour.PublishedTime, tour.ArchivedTime);
-
-        return result;
-    }
-
-    private Tour MapTourUpdateDtoToEntity(TourDto tDto) {
-        var price = new Money(tDto.Price.Amount, tDto.Price.Currency);
-        var transportDurations = new List<TransportDuration>();
-        var keyPoints = new List<KeyPoint>();
-        var reviews = new List<TourReview>();
-
-        foreach (var trDto in tDto.TransportDurationDtos ?? Enumerable.Empty<TransportDurationDto>()) {
-            var tr = new TransportDuration(trDto.Duration, trDto.Transport);
-            transportDurations.Add(tr);
-        }
-
-        foreach (var kp in tDto.KeyPoints ?? Enumerable.Empty<KeyPointDto>()) {
-            var img = Base64Converter.ConvertToByteArray(kp.Image);
-            var k = new KeyPoint(kp.Id ,kp.Name, kp.Description, kp.Latitude, kp.Longitude, img, kp.TourId);
-            keyPoints.Add(k);
-        }
-
-        foreach (var re in tDto.Reviews ?? Enumerable.Empty<TourReviewDto>()) {
-            var img = Base64Converter.ConvertToByteArray(re.Image);
-            var r = new TourReview(re.Rating, re.Comment, re.VisitDate, re.ReviewDate, re.TourId, re.TouristId, img, re.CompletionPercentage);
-            reviews.Add(r);
-        }
-
-        var result = new Tour(tDto.Id, tDto.Name, tDto.Description, tDto.Tags,
-            tDto.Level, tDto.Status, price, tDto.AuthorId, keyPoints, reviews, tDto.Length,
-            transportDurations, tDto.PublishedTime, tDto.ArchivedTime);
-
-        return result;
-    }
-
-    public Tour MapTourCreationDtoToEntity(TourCreationDto tDto) {
-        var transportDurations = new List<TransportDuration>();
-        var keyPoints = new List<KeyPoint>();
-
-        foreach (var trDto in tDto.TransportDurationDtos ?? Enumerable.Empty<TransportDurationDto>()) {
-            var tr = new TransportDuration(trDto.Duration, trDto.Transport);
-            transportDurations.Add(tr);
-        }
-
-        foreach (var kp in tDto.KeyPoints ?? Enumerable.Empty<KeyPointDto>()) {
-            var img = Base64Converter.ConvertToByteArray(kp.Image);
-            var k = new KeyPoint(kp.Name, kp.Description, kp.Latitude, kp.Longitude, img, kp.TourId);
-            keyPoints.Add(k);
-        }
-
-        var result = new Tour(tDto.Name, tDto.Description, tDto.Level, tDto.Tags,
-            tDto.AuthorId, keyPoints, tDto.Length, transportDurations);
-
-        return result;
-    }
-
-    private List<TourDto> MapToursToDtos(List<Tour> tours) {
-        List<TourDto> tourDtos = new List<TourDto>();
-        foreach (var t in tours) {
-            tourDtos.Add(MapTourToDto(t));
-        }
-        return tourDtos;
-
-    }
 
     public Result<TourTouristDto> GetForTouristById(long tourId, long touristId)
     {
@@ -303,14 +215,14 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 return Result.Fail(FailureCode.Forbidden);
             }
 
-            var tour = _tourRepository.GetById((int)tourId);
+            var tour = _tourRepository.GetById(tourId);
 
             if (tour == null || tour.Status != API.Enum.TourStatus.Published)
             {
                 return Result.Fail(FailureCode.InvalidArgument);
             }
 
-            var tourDto = MapTourToDto(tour);
+            var tourDto = _mapper.Map<TourDto>(tour);
             var tourTouristDto = new TourTouristDto(tourDto);
 
             var activeTour = _tourExecutionRepository.GetActive(touristId);
@@ -373,7 +285,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     {
         try
         {
-            var tour = _tourRepository.GetById((int)reviewDto.TourId);
+            var tour = _tourRepository.GetById(reviewDto.TourId);
             if (tour == null) return Result.Fail("Tour not found");
 
             var tourExecutions = _tourExecutionRepository.GetRecentByTourAndUser((int)reviewDto.TourId, (int)reviewDto.TouristId);
@@ -393,9 +305,9 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
                 reviewDto.Comment,
                 reviewDto.VisitDate,
                 reviewDate,
+                Base64Converter.ConvertToByteArray(reviewDto.Image),
                 reviewDto.TourId,
-                reviewDto.TouristId,
-                Base64Converter.ConvertToByteArray(reviewDto.Image)
+                reviewDto.TouristId
             );
             review.CompletionPercentage = maxCompletion;
 
@@ -410,7 +322,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
         }
     }
 
-    public Result PublishTour(int tourId, double priceAmount, Currency currency)
+    public Result PublishTour(long tourId, double priceAmount, Currency currency)
     {
         var tour = _tourRepository.GetById(tourId);
         if (tour == null)
@@ -430,7 +342,7 @@ public class TourService : BaseService<TourDto, Tour>, ITourService {
     }
 
 
-    public Result ArchiveTour(int tourId)
+    public Result ArchiveTour(long tourId)
     {
         var tour = _tourRepository.GetById(tourId);
         if (tour == null)

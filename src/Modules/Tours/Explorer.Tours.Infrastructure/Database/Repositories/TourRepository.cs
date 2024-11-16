@@ -16,7 +16,7 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         _dbContext = dbContext;
     }
 
-    public Tour? GetById(int id) {
+    public Tour? GetById(long id) {
         return DbContext.Tours.Where(t => t.Id == id)
             .Include(t => t.KeyPoints)
             .Include(t => t.Reviews)
