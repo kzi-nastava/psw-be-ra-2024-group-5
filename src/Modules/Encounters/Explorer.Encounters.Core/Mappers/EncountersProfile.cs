@@ -13,7 +13,7 @@ public class EncountersProfile : Profile
 {
     public EncountersProfile()
     {
-        CreateMap<LocationDto, Location>();
-        CreateMap<EncounterDto, Encounter>();
+        CreateMap<LocationDto, Location>().ReverseMap();
+        CreateMap<EncounterDto, Encounter>().ReverseMap();
     }
 }

@@ -17,6 +17,13 @@ public class EncounterController : BaseApiController
         _encounterService = encounterService;
     }
 
+    [HttpGet("creator/{creatorId:long}")]
+    public ActionResult<List<EncounterDto>> GetByCreatorId(long creatorId)
+    {
+        var result = _encounterService.GetByCreatorId(creatorId);
+        return CreateResponse(result);
+    }
+
     [HttpPost]
     public ActionResult<EncounterDto> Create([FromBody] EncounterDto encounter)
     {

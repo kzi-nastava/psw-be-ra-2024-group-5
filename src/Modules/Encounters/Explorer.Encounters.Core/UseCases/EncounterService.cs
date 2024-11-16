@@ -54,4 +54,10 @@ public class EncounterService : IEncounterService {
         }
         return Result.Ok(encounterDto);
     }
+
+    public Result<List<EncounterDto>> GetByCreatorId(long creatorId) {
+        var encounters = _encounterRepository.GetByCreatorId(creatorId);
+        var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
+        return Result.Ok(encounterDtos);
+    }
 }

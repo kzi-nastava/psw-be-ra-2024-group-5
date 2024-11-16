@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 namespace Explorer.Encounters.Infrastructure.Database.Repositories;
 public class EncounterRepository : CrudDatabaseRepository<Encounter, EncountersContext>, IEncounterRepository
 {
-
-
     public EncounterRepository(EncountersContext dbContext) : base(dbContext) { }
 
     public List<Encounter> GetAllActive() {
         return DbContext.Encounters.Where(e => e.Status == EncounterStatus.Active).ToList();
+    }
+
+    public List<Encounter> GetByCreatorId(long creatorId) {
+        return DbContext.Encounters.Where(e => e.CreatorId == creatorId).ToList();
     }
 }
