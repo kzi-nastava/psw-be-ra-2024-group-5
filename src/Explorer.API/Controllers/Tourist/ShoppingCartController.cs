@@ -1,6 +1,5 @@
-﻿using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Author;
-using Explorer.Tours.API.Public.Tourist;
+﻿using Explorer.Payments.API.Dtos;
+using Explorer.Payments.API.Public.Tourist;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +16,7 @@ namespace Explorer.API.Controllers.Tourist
         }
 
         [HttpGet("create/{touristId:long}")]
-        public ActionResult<FacilityDto> Create(long touristId)
+        public ActionResult<ShoppingCartDto> Create(long touristId)
         {
             var result = this._shoppingCartService.Create(touristId);
             if (!result.IsSuccess)

@@ -1,28 +1,29 @@
 ﻿using Explorer.Stakeholders.API.Internal;
-using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Tourist;
-using Explorer.Tours.Core.Domain;
-using Explorer.Tours.Core.Domain.RepositoryInterfaces;
-using Explorer.Tours.Core.Domain.ShoppingCarts;
+using Explorer.Payments.API.Dtos;
+using Explorer.Payments.API.Public.Tourist;
+using Explorer.Payments.Core.Domain;
+using Explorer.Payments.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Explorer.Tours.API.Internal;
+using Explorer.Payments.API.Internal;
 
 namespace Explorer.Tours.Core.UseCases.Tourist
 {
     public class ShoppingCartService: IShoppingCartService
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
-        private readonly ITourRepository _tourRepository;
+        private readonly IInternalTourService _tourService;
         private readonly IUserService _userService;
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, ITourRepository tourRepository)
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, IInternalTourService tourService)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _userService = userService;
-            _tourRepository = tourRepository;
+            _tourService = tourService;
         }
 
         public Result<ShoppingCartDto> Create(long touristId)
@@ -58,7 +59,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 if (shoppingCart == null)
                    return Result.Fail("Shopping cart doesnt exist!");
 
-                var tour = _tourRepository.Get(orderItemDto.TourId);
+                var tour = _tourService.GetById(orderItemDto.TourId);
 
                 if (tour == null)
                     return Result.Fail("Tour doesnt exist!");
@@ -120,13 +121,13 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
         private ShoppingCartDto MapShoppingCartToDto(ShoppingCart shoppingCart)
         {
-            var totalPrice = new MoneyDto(shoppingCart.TotalPrice.Amount, shoppingCart.TotalPrice.Currency);
+            var totalPrice = new ShoppingMoneyDto(shoppingCart.TotalPrice.Amount, shoppingCart.TotalPrice.Currency);
 
             var orderItems = new List<OrderItemDto>();
 
             foreach (var order in shoppingCart.Items)
             {
-                var price = new MoneyDto(order.Price.Amount, order.Price.Currency);
+                var price = new ShoppingMoneyDto(order.Price.Amount, order.Price.Currency);
                 orderItems.Add(new OrderItemDto(order.Id, order.TourId, order.TourName, price));
 
             }
@@ -164,5 +165,5 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
 			return Result.Ok();
 		}
-	}
+    }
 }

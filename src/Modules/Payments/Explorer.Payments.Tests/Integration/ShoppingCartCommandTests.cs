@@ -1,19 +1,19 @@
 ﻿using Explorer.API.Controllers.Tourist;
-using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Tourist;
-using Explorer.Tours.Infrastructure.Database;
+using Explorer.Payments.API.Dtos;
+using Explorer.Payments.API.Public.Tourist;
+using Explorer.Payments.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
-namespace Explorer.Tours.Tests.Integration.Tourist
+namespace Explorer.Payments.Tests.Integration
 {
-    [Collection("Tours")]
-    public class ShoppingCartCommandTests : IClassFixture<ToursFixture>
+    [Collection("Payments")]
+    public class ShoppingCartCommandTests : IClassFixture<PaymentsFixture>
     {
-        private ToursFixture fixture;
+        private PaymentsFixture fixture;
 
-        public ShoppingCartCommandTests(ToursFixture fixture)
+        public ShoppingCartCommandTests(PaymentsFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -26,7 +26,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             // Arrange 
             using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<PaymentsContext>();
             long touristId = -22;
 
             // Act
@@ -50,8 +50,8 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             // Arrange
             using var scope = fixture.Factory.Services.CreateScope();
             var controller = CreateController(scope);
-            var dbContext = scope.ServiceProvider.GetRequiredService<ToursContext>();
-            var orderItem = new OrderItemDto(-22, -2, "Tura2", new MoneyDto(20.0, 0));
+            var dbContext = scope.ServiceProvider.GetRequiredService<PaymentsContext>();
+            var orderItem = new OrderItemDto(-22, -2, "Tura2", new ShoppingMoneyDto(20.0, 0));
 
             // Act
             var result = ((ObjectResult)controller.AddItemToCart(orderItem, -21).Result)?.Value as ShoppingCartDto;
@@ -72,7 +72,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
         {
             return new ShoppingCartController(scope.ServiceProvider.GetRequiredService<IShoppingCartService>())
             {
-                ControllerContext = ToursFixture.BuildContext("-1")
+                ControllerContext = PaymentsFixture.BuildContext("-1")
             };
         }
     }
