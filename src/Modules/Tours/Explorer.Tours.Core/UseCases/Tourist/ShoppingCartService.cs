@@ -58,7 +58,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 if (shoppingCart == null)
                    return Result.Fail("Shopping cart doesnt exist!");
 
-                var tour = _tourRepository.GetById(orderItemDto.TourId);
+                var tour = _tourRepository.Get(orderItemDto.TourId);
 
                 if (tour == null)
                     return Result.Fail("Tour doesnt exist!");
