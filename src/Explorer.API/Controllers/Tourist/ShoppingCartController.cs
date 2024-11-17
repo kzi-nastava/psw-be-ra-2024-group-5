@@ -15,18 +15,6 @@ namespace Explorer.API.Controllers.Tourist
             _shoppingCartService = shoppingCartService;
         }
 
-        [HttpGet("create/{touristId:long}")]
-        public ActionResult<ShoppingCartDto> Create(long touristId)
-        {
-            var result = this._shoppingCartService.Create(touristId);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Errors.FirstOrDefault()?.Message);
-            }
-
-            return Ok(result.Value);
-        }
-
         [Authorize(Policy = "touristPolicy")]
         [HttpPost("addItem/{touristId:long}")]
         public ActionResult<ShoppingCartDto> AddItemToCart(OrderItemDto orderItemDto, long touristId)

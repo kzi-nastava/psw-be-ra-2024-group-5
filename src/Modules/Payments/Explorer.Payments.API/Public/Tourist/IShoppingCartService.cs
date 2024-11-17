@@ -10,7 +10,6 @@ namespace Explorer.Payments.API.Public.Tourist
 {
     public interface IShoppingCartService
     {
-        Result<ShoppingCartDto> Create(long userId);
         Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> RemoveFromCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> GetByUserId(long touristId);

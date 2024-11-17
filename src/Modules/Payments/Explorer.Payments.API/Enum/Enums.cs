@@ -1,2 +1,2 @@
 ﻿namespace Explorer.Payments.API.Enum;
-public enum ShoppingCurrency { Rsd, Eur, Dol}
+public enum ShoppingCurrency { AC, Eur, Dol, Rsd}

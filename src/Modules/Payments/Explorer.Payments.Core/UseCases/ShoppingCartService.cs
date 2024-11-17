@@ -26,30 +26,6 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             _tourService = tourService;
         }
 
-        public Result<ShoppingCartDto> Create(long touristId)
-        {
-            try
-            {
-                if (!_userService.CheckTouristExists(touristId))
-                    return Result.Fail("Tourist doesnt exist!");
-
-                var existingCart = _shoppingCartRepository.GetByUserId(touristId);
-
-                if (existingCart != null)
-                    return Result.Fail("Shopping cart already exists for that tourist!");
-
-                var shoppingCart = new ShoppingCart(touristId);
-
-                shoppingCart = _shoppingCartRepository.Create(shoppingCart);
-
-                return MapShoppingCartToDto(shoppingCart);
-            }
-            catch (Exception ex)
-            {
-                return Result.Fail(ex.Message);
-            }
-        }
-
         public Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId)
         {
             try
