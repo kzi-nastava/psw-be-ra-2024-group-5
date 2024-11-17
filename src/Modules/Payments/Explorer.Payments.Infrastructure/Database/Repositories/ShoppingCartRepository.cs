@@ -1,6 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Infrastructure.Database;
-using Explorer.Tours.Core.Domain.RepositoryInterfaces;
-using Explorer.Tours.Core.Domain.ShoppingCarts;
+using Explorer.Payments.Core.Domain.RepositoryInterfaces;
+using Explorer.Payments.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.Infrastructure.Database.Repositories
+namespace Explorer.Payments.Infrastructure.Database.Repositories
 {
-    public class ShoppingCartRepository : CrudDatabaseRepository<ShoppingCart, ToursContext>, IShoppingCartRepository
+    public class ShoppingCartRepository : CrudDatabaseRepository<ShoppingCart, PaymentsContext>, IShoppingCartRepository
     {
-        public ShoppingCartRepository(ToursContext dbContext) : base(dbContext) { }
+        public ShoppingCartRepository(PaymentsContext dbContext) : base(dbContext) { }
         public new ShoppingCart Update(ShoppingCart shoppingCart)
         {
             DbContext.Entry(shoppingCart).State = EntityState.Modified;
