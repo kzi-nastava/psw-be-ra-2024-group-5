@@ -30,8 +30,8 @@ namespace Explorer.Payments.Core.Domain
 
         public Money Add(Money money)
         {
-            //if (!IsSameCurrency(money))
-            //    throw new ArgumentException();
+            if (!IsSameCurrency(money))
+                throw new ArgumentException();
 
             return new Money(money.Amount + Amount, Currency);
         }
