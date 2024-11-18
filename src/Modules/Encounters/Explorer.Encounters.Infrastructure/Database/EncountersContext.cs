@@ -1,4 +1,5 @@
-﻿using Explorer.Encounters.Core.Domain;
+﻿using Explorer.Encounters.API.Enum;
+using Explorer.Encounters.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Explorer.Encounters.Infrastructure.Database;
 public class EncountersContext : DbContext 
 {
     public DbSet<Encounter> Encounters { get; set; }
+    public DbSet<SocialEncounter> SocialEncounters { get; set; }
+    public DbSet<EncounterExecution> EncountersExecution { get; set; }
 
     public EncountersContext(DbContextOptions<EncountersContext> options) : base(options) { }
 
@@ -23,6 +26,13 @@ public class EncountersContext : DbContext
 
         modelBuilder.Entity<Encounter>()
             .Property(e => e.Location)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<SocialEncounter>()
+            .ToTable("SocialEncounters");
+
+        modelBuilder.Entity<SocialEncounter>()
+            .Property(se => se.UserIds)
             .HasColumnType("jsonb");
     }
 }

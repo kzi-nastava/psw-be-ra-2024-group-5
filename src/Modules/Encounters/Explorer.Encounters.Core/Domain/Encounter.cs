@@ -14,14 +14,13 @@ public class Encounter : Entity
     public string Description { get; set; }
     public Location Location { get; set; }
     public int XP { get; set; }
-    public EncounterStatus Status { get; set; }
+    public EncounterStatus Status { get; private set; }
     public EncounterType Type { get; set; }
     public long CreatorId { get; set; }
 
     public Encounter() { }
 
-    public Encounter(long id, string name, string description, Location location, int xp, EncounterStatus status, EncounterType type, long creatorId) 
-    {
+    public Encounter(long id, string name, string description, Location location, int xp, EncounterStatus status, EncounterType type, long creatorId) {
         Id = id;
         Name = name;
         Description = description;
@@ -30,5 +29,9 @@ public class Encounter : Entity
         Status = status;
         Type = type;
         CreatorId = creatorId;
+    }
+
+    public void UpdateStatus(EncounterStatus status) {
+        Status = status;
     }
 }
