@@ -3,12 +3,13 @@
 namespace Explorer.Tours.Core.Domain;
 
 public class KeyPoint : Entity {
-    public double Latitude { get; init; }
-    public double Longitude { get; init; }
-    public string Name { get; init; }
-    public string? Description { get; init; }
-    public byte[] Image { get; init; }
-    public long TourId { get; init; }
+    public double Latitude { get; private set; }
+    public double Longitude { get; private set; }
+    public string Name { get; private set; }
+    public string? Description { get; private set; }
+    public byte[] Image { get; private set; }
+    public long TourId { get; private set; }
+    public KeyPoint() { }
 
     public KeyPoint(string name, string? description, double latitude, double longitude, byte[] image, long tourId) {
         if (string.IsNullOrWhiteSpace(name)) 
@@ -22,6 +23,8 @@ public class KeyPoint : Entity {
     }
 
     public KeyPoint(long id, string name, string? description, double latitude, double longitude, byte[] image, long tourId) {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Invalid Name.");
         Id = id;
         Latitude = latitude;
         Longitude = longitude;

@@ -7,7 +7,7 @@ namespace Explorer.Tours.Core.Domain.RepositoryInterfaces;
 public interface ITourRepository : ICrudRepository<Tour> {
     Result UpdateTourEquipment(long tourId, List<long> equipmentIds);
     Result<PagedResult<Equipment>> GetTourEquipment(long tourId);
-    Tour? GetById(int id);
+    Tour? GetById(long id);
     List<Tour>? GetByAuthorId(int authorId);
     List<Tour> GetPublishedPaged(int page, int pageSize);
 

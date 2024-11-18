@@ -1,10 +1,12 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Explorer.API.Controllers.Author {
+namespace Explorer.API.Controllers.Author
+{
     [Authorize(Policy = "authorPolicy")]
     [Route("api/tour")]
     public class TourController : BaseApiController {
@@ -88,7 +90,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpPost("publish/{tourId:long}")]
-        public ActionResult PublishTour(int tourId, [FromBody] MoneyDto money)
+        public ActionResult PublishTour(long tourId, [FromBody] MoneyDto money)
         {
             // Proveriti da li su prosleđeni podaci validni
             if (money == null || money.Amount <= 0 || money.Currency == null)
@@ -102,7 +104,7 @@ namespace Explorer.API.Controllers.Author {
 
         [HttpPost("archive/{tourId:long}")]
 
-        public ActionResult ArchiveTour(int tourId)
+        public ActionResult ArchiveTour(long tourId)
         {
             var result = _tourService.ArchiveTour(tourId);
             return CreateResponse(result);

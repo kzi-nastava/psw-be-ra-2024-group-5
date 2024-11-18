@@ -67,7 +67,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                     return Result.Fail(FailureCode.InvalidArgument).WithError("Tour execution not found");
                 }
 
-                var tour = _tourRepository.GetById((int) currentSession.TourId);
+                var tour = _tourRepository.GetById( currentSession.TourId);
 
                 var completedKeyPoint = currentSession.Progress(newPosition, tour.KeyPoints);
 
