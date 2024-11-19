@@ -41,7 +41,7 @@ public class EncounterController : BaseApiController
     [HttpDelete("{id:long}")]
     public ActionResult Delete(long id)
     {
-        var result = _encounterService.Delete(id);
+        var result = _encounterService.Delete((int) id);
         return CreateResponse(result);
     }
 }

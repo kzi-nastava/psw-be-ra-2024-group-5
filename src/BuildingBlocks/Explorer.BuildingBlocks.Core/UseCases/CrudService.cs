@@ -11,7 +11,7 @@ namespace Explorer.BuildingBlocks.Core.UseCases;
 /// <typeparam name="TDomain">Type of domain object that maps to TDto</typeparam>
 public abstract class CrudService<TDto, TDomain> : 
     BaseService<TDto, TDomain>, 
-    ICrudService<TDto, TDomain> 
+    ICrudService<TDto>
     where TDomain : Entity
 {
     protected readonly ICrudRepository<TDomain> CrudRepository;

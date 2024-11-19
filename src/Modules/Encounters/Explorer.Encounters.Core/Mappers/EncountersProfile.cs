@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.Encounters.API.Dtos;
 using Explorer.Encounters.Core.Domain;
 using System;

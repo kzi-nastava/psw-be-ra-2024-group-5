@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Explorer.BuildingBlocks.Core.UseCases;
-public interface ICrudService<TDto, TDomain> where TDomain : Entity {
+public interface ICrudService<TDto> {
     public Result<PagedResult<TDto>> GetPaged(int page, int pageSize);
     public Result<TDto> Get(int id);
     public Result<TDto> Create(TDto entity);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Encounters.API.Dtos;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
@@ -12,52 +13,27 @@ using System.Threading.Tasks;
 
 namespace Explorer.Encounters.Core.UseCases;
 
-public class EncounterService : IEncounterService {
+public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounterService {
      
     private readonly IEncounterRepository _encounterRepository;
     private readonly IMapper _mapper;
 
-    public EncounterService(IEncounterRepository encounterRepository, IMapper mapper) {
+    public EncounterService(IEncounterRepository encounterRepository, IMapper mapper) 
+        : base(encounterRepository, mapper) {
+
         _encounterRepository = encounterRepository;
         _mapper = mapper;
     }
 
-    public Result<EncounterDto> Create(EncounterDto encounterDto)
-    {
-        var encounter = _mapper.Map<Encounter>(encounterDto);
-        _encounterRepository.Create(encounter);
-
-        return Result.Ok(encounterDto);
-    }
-
-    public Result<bool> Delete(long id)
-    {
-        _encounterRepository.Delete(id);
-        return true;
-    }
-
-    public Result<List<EncounterDto>> GetAllActive(long userId)
-    {
+    public Result<List<EncounterDto>> GetAllActive(long userId) {
         var encounters = _encounterRepository.GetAllActive();
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
     }
 
-    public Result<EncounterDto> Update(EncounterDto encounterDto)
-    {
-        var encounter = _mapper.Map<Encounter>(encounterDto);
-        try {
-            _encounterRepository.Update(encounter);
-        }
-        catch (Exception e) {
-            return Result.Fail(e.Message);
-        }
-        return Result.Ok(encounterDto);
-    }
-
     public Result<List<EncounterDto>> GetByCreatorId(long creatorId) {
         var encounters = _encounterRepository.GetByCreatorId(creatorId);
-        var encounterDtos = encounters.Select(_mapper.Map<EncounterDto>).ToList();
+        var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
     }
 }
