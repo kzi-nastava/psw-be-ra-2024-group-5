@@ -57,7 +57,7 @@ public class EncounterService : IEncounterService {
 
     public Result<List<EncounterDto>> GetByCreatorId(long creatorId) {
         var encounters = _encounterRepository.GetByCreatorId(creatorId);
-        var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
+        var encounterDtos = encounters.Select(_mapper.Map<EncounterDto>).ToList();
         return Result.Ok(encounterDtos);
     }
 }

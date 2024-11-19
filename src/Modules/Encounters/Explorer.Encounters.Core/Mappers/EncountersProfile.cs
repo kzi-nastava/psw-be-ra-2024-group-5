@@ -14,6 +14,9 @@ public class EncountersProfile : Profile
     public EncountersProfile()
     {
         CreateMap<LocationDto, Location>().ReverseMap();
-        CreateMap<EncounterDto, Encounter>().ReverseMap();
+        CreateMap<SocialEncounterDto, SocialEncounter>().ReverseMap();
+
+        CreateMap<EncounterDto, Encounter>()
+            .Include<SocialEncounterDto, SocialEncounter>().ReverseMap();
     }
 }

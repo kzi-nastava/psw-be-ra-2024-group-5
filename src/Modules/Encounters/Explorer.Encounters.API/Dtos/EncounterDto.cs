@@ -3,10 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Explorer.Encounters.API.Dtos;
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+[JsonDerivedType(typeof(EncounterDto), typeDiscriminator: (int)EncounterType.Misc)]
+[JsonDerivedType(typeof(SocialEncounterDto), typeDiscriminator: (int)EncounterType.Social)]
 public class EncounterDto
 {
     public long Id { get; set; }
@@ -15,8 +19,6 @@ public class EncounterDto
     public LocationDto Location { get; set; }
     public int XP { get; set; }
     public EncounterStatus Status { get; set; }
-    public EncounterType Type { get; set; }
+    //public EncounterType Type { get; set; }
     public long CreatorId { get; set; }
-
-    // Dodati DTO za Social i Hidden encounter
 }
