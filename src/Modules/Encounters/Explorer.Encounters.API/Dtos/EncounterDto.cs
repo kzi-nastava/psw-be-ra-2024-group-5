@@ -13,12 +13,13 @@ namespace Explorer.Encounters.API.Dtos;
 [JsonDerivedType(typeof(SocialEncounterDto), typeDiscriminator: (int)EncounterType.Social)]
 public class EncounterDto
 {
+    [JsonPropertyName("type")]
+    public EncounterType Type { get; set; }
     public long Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public LocationDto Location { get; set; }
     public int XP { get; set; }
     public EncounterStatus Status { get; set; }
-    //public EncounterType Type { get; set; }
     public long CreatorId { get; set; }
 }
