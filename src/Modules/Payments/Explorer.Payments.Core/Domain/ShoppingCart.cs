@@ -1,12 +1,12 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
-using Explorer.Tours.API.Enum;
+using Explorer.Payments.API.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.Tours.Core.Domain.ShoppingCarts
+namespace Explorer.Payments.Core.Domain
 {
     public class ShoppingCart: Entity
     {
@@ -18,7 +18,7 @@ namespace Explorer.Tours.Core.Domain.ShoppingCarts
         {
             TouristId = userId;
             Items = new List<OrderItem>();
-            TotalPrice = new Money(0, Currency.Rsd);
+            TotalPrice = new Money(0, ShoppingCurrency.Rsd);
         }
 
         public void AddItemToCart(OrderItem orderItem)

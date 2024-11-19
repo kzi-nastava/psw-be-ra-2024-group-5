@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Dtos.TourLifecycle;
+using Explorer.Tours.API.Internal;
+using Explorer.Payments.API.Internal;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
@@ -20,17 +22,17 @@ public class TourService : ITourService {
     private readonly IMapper equipmentMapper;
     protected readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
-    private readonly IShoppingCartRepository _shoppingCartRepository;
+    private readonly IInternalShoppingCartService _shoppingService;
     private readonly ITourExecutionRepository _tourExecutionRepository;
     private readonly ITourReviewRepository _tourReviewRepository;
 
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IShoppingCartRepository shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository)
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IInternalShoppingCartService shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository)
     {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
         _userRepository = userRepository;
         _mapper = mapper;
-        _shoppingCartRepository = shoppingCartRepository;
+        _shoppingService = shoppingCartRepository;
         _tourExecutionRepository = tourExecutionRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
         _tourReviewRepository = tourReviewRepository;
@@ -226,8 +228,8 @@ public class TourService : ITourService {
             var tourTouristDto = new TourTouristDto(tourDto);
 
             var activeTour = _tourExecutionRepository.GetActive(touristId);
-            bool isTourInCart = _shoppingCartRepository.IsTourInCart(touristId, tourId);
-            bool isTourBought = _shoppingCartRepository.IsTourBought(touristId, tourId);
+            bool isTourInCart = _shoppingService.IsTourInCart(touristId, tourId);
+            bool isTourBought = _shoppingService.IsTourBought(touristId, tourId);
 
             //dok ne kupi ne moze da vidi sve keypointove
             if (!isTourBought)
