@@ -47,8 +47,9 @@ namespace Explorer.Payments.Core.UseCases
                 }
 
                 var money = _mapper.Map<Money>(moneyDto);
+                var moneyAC = money.ConvertToAC(money);
 
-                wallet.AddFunds(money);
+                wallet.AddFunds(moneyAC);
                 wallet = _walletRepository.Update(wallet);
 
                 var walletDto = _mapper.Map<WalletDto>(wallet);
@@ -114,7 +115,7 @@ namespace Explorer.Payments.Core.UseCases
 
                 var money = _mapper.Map<Money>(moneyDto);
 
-                wallet.RemoveFunds(money);
+                wallet.RemoveFunds(money.ConvertToAC(money));
                 wallet = _walletRepository.Update(wallet);
 
                 var walletDto = _mapper.Map<WalletDto>(wallet);

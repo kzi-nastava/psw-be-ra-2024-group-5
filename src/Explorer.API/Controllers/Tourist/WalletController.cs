@@ -54,7 +54,7 @@ namespace Explorer.API.Controllers.Tourist
         [AllowAnonymous]
         [Authorize(Policy = "administratorPolicy")]
         [HttpPost("addFunds/{touristId:long}")]
-        public ActionResult<WalletDto> AddItemToCart(ShoppingMoneyDto moneyDto, long touristId)
+        public ActionResult<WalletDto> AddFundsToTourist(ShoppingMoneyDto moneyDto, long touristId)
         {
             var result = this._walletService.AddFunds(moneyDto, touristId);
             if (!result.IsSuccess)

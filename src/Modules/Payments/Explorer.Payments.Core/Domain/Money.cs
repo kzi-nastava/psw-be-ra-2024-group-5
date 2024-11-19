@@ -55,5 +55,23 @@ namespace Explorer.Payments.Core.Domain
             }
             return true;
         }
+
+        public Money ConvertToAC(Money money)
+        {
+            if (money.Currency == ShoppingCurrency.Rsd)
+            {
+                return new Money(money.Amount * 3, ShoppingCurrency.AC);
+            }
+            if (money.Currency == ShoppingCurrency.Eur)
+            {
+                return new Money(money.Amount * 3 * 116, ShoppingCurrency.AC);
+            }
+            if (money.Currency == ShoppingCurrency.Dol)
+            {
+                return new Money(money.Amount * 3 * 110, ShoppingCurrency.AC);
+            }
+
+            return money;
+        }
     }
 }
