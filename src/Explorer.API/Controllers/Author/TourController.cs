@@ -18,7 +18,7 @@ namespace Explorer.API.Controllers.Author
         }
 
         [HttpGet("author/{authorId:long}")]
-        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
+        public ActionResult<List<TourCardDto>> GetByAuthor(int authorId) {
             var result = _tourService.GetByAuthorId(authorId);
             return CreateResponse(result);
         }

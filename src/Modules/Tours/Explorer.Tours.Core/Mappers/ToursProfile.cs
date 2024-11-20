@@ -38,6 +38,8 @@ public class ToursProfile : Profile
 
         CreateMap<TourCreationDto, Tour>();                // Nije potreban ReverseMap() jer se koristi dto samo za kreiranje - TourCreationDto ==> Tour
 
+        CreateMap<Tour, TourCardDto>();
+
         CreateMap<TourDto, Tour>().ReverseMap();
 
         // Ako sve radi izbrisati dole kod

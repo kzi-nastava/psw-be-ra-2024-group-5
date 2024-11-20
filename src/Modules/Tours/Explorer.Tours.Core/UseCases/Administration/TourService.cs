@@ -49,10 +49,10 @@ public class TourService : ITourService {
         }
     }
 
-    public Result<List<TourDto>> GetByAuthorId(int id) {
+    public Result<List<TourCardDto>> GetByAuthorId(int id) {
         try {
             var tours = _tourRepository.GetByAuthorId(id);
-            var tourDtos = _mapper.Map<List<TourDto>>(tours);
+            var tourDtos = _mapper.Map<List<TourCardDto>>(tours);
             return Result.Ok(tourDtos);
         }
         catch (Exception e) {
