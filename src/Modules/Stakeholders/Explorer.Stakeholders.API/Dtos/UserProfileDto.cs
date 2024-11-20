@@ -11,12 +11,12 @@ public class UserProfileDto
     public string? ProfileImage { get; set; }
     public string? Biography { get; set; }
     public string? Motto { get; set; }
-    public List<MessageDto> Messages { get; set; }
+    public List<MessageDto>? Messages { get; set; }
 
     public UserProfileDto() { }
 
     public UserProfileDto(long id, long userId, string name, string surname,
-        string? profileImage, string? biography, string? motto, List<MessageDto> messages)
+        string? profileImage, string? biography, string? motto, List<MessageDto>? messages)
     {
         Id = id;
         UserId = userId;

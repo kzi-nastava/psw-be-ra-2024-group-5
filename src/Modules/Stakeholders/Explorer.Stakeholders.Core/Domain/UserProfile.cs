@@ -60,4 +60,5 @@ public class UserProfile : Entity
     public void setUserId(long userId) { this.UserId = userId; }
     public void setBiography(string biography) { this.Biography = biography; }
     public void setMotto(string motto) { this.Motto = motto; }
+    public void setProfileImage(byte[] profileImage) { this.ProfileImage = profileImage; }
 }

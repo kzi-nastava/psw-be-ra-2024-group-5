@@ -1,11 +1,9 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Dtos.Messages;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
-using Explorer.Stakeholders.Core.Domain.Messages;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 
@@ -38,21 +36,25 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
         UserProfile existingProfile = GetUserProfileByUserId(userId);
 
-        if (existingProfile != null) 
+        if (existingProfile != null)
         {
-            existingProfile.setProfilePictureUrl(userProfileDto.ProfilePictureUrl);
             existingProfile.setBiography(userProfileDto.Biography);
             existingProfile.setMotto(userProfileDto.Motto);
+            existingProfile.setProfileImage(Convert.FromBase64String(RemoveBase64Prefix(userProfileDto.ProfileImage ?? "")));
 
             _userProfileRepository.Update(existingProfile);
             UpdatePerson(userId, userProfileDto);
+
             return _mapper.Map<UserProfileDto>((existingProfile, person));
-        } else 
+        }
+        else
         {
             var userProfileToCreate = _mapper.Map<UserProfile>(userProfileDto);
+
             userProfileToCreate.setUserId(userId);
             _userProfileRepository.Create(userProfileToCreate);
             UpdatePerson(userId, userProfileDto);
+
             return _mapper.Map<UserProfileDto>((userProfileToCreate, person));
         }
     }
@@ -77,7 +79,7 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
                 return Result.Ok(userProfileDto);
             }
-                
+
 
             var emptyProfile = new UserProfile(person!.UserId);
             return Result.Ok(_mapper.Map<UserProfileDto>((emptyProfile, person)));
@@ -92,6 +94,12 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
         }
     }
 
+    private string RemoveBase64Prefix(string base64)
+    {
+        var prefixIndex = base64.IndexOf(";base64,");
+        return prefixIndex >= 0 ? base64.Substring(prefixIndex + 8) : base64;
+    }
+
     private UserProfile GetUserProfileByUserId(long userId)
     {
         var pagedProfiles = _userProfileRepository.GetPaged(1, int.MaxValue);
@@ -103,7 +111,7 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
     {
         var pagedPersons = _personRepository.GetPaged(1, int.MaxValue);
 
-        return pagedPersons.Results.FirstOrDefault(person => person.UserId == userId); 
+        return pagedPersons.Results.FirstOrDefault(person => person.UserId == userId);
     }
 
     private void UpdatePerson(long userId, UserProfileDto userProfileDto)
@@ -119,7 +127,7 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
 
         person.setName(userProfileDto.Name);
         person.setSurname(userProfileDto.Surname);
-        _personRepository.Update(person);  
+        _personRepository.Update(person);
     }
 
     private string? GetProfileDisplayName(long profileId)
