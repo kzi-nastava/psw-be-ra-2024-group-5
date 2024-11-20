@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 
 namespace Explorer.Encounters.API.Public;
 public interface IEncounterService : ICrudService<EncounterDto> {
-    public Result<List<EncounterDto>> GetAllActive(long userId);
+    public Result<List<EncounterDto>> GetAllActive();
     public Result<List<EncounterDto>> GetByCreatorId(long creatorId);
 }

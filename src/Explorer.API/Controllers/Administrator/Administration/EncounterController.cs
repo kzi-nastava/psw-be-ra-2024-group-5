@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Explorer.API.Controllers.Administrator.Administration;
 
 [Authorize(Policy = "administratorPolicy")]
-[Route("api/encounter")]
+[Route("api/administration/encounter")]
 public class EncounterController : BaseApiController
 {
     private readonly IEncounterService _encounterService;

@@ -25,7 +25,7 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
         _mapper = mapper;
     }
 
-    public Result<List<EncounterDto>> GetAllActive(long userId) {
+    public Result<List<EncounterDto>> GetAllActive() {
         var encounters = _encounterRepository.GetAllActive();
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
