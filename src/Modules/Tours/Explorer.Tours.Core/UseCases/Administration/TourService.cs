@@ -49,9 +49,9 @@ public class TourService : ITourService {
         }
     }
 
-    public Result<List<TourCardDto>> GetByAuthorId(int id) {
+    public Result<List<TourCardDto>> GetByAuthorPaged(int authorId, int page, int pageSize) { 
         try {
-            var tours = _tourRepository.GetByAuthorId(id);
+            var tours = _tourRepository.GetByAuthorPaged(authorId, page, pageSize);
             var tourDtos = _mapper.Map<List<TourCardDto>>(tours);
             return Result.Ok(tourDtos);
         }

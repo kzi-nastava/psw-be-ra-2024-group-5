@@ -8,7 +8,7 @@ public interface ITourRepository : ICrudRepository<Tour> {
     Result UpdateTourEquipment(long tourId, List<long> equipmentIds);
     Result<PagedResult<Equipment>> GetTourEquipment(long tourId);
     Tour? GetById(long id);
-    List<Tour>? GetByAuthorId(int authorId);
+    List<Tour>? GetByAuthorPaged(int authorId, int page, int pageSize);
     List<Tour> GetPublishedPaged(int page, int pageSize);
 
     public List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);

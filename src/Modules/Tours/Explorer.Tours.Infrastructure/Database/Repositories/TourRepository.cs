@@ -23,9 +23,16 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .FirstOrDefault();
     }
 
-    public List<Tour>? GetByAuthorId(int authorId) {
+    public List<Tour>? GetByAuthorPaged(int authorId, int page, int pageSize) {
+        if (page < 1 || pageSize < 1) {
+            return new List<Tour>();
+        }
+
         return DbContext.Tours.Where(t => t.AuthorId == authorId)
             .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
     }
 
