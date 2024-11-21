@@ -107,6 +107,40 @@ public class UserProfileService : BaseService<UserProfileDto, UserProfile>, IUse
         return pagedProfiles.Results.FirstOrDefault(profile => profile.UserId == userId);
     }
 
+    public Result<List<UserProfileBasicDto>> GetBasicProfiles(List<long> userIds)
+    {
+        try
+        {
+            var profiles = new List<UserProfileBasicDto>();
+
+            foreach (var userId in userIds)
+            {
+                var person = GetPersonByUserId(userId);
+                var userProfile = GetUserProfileByUserId(userId);
+
+                if (person != null)
+                {
+                    var profileImage = userProfile?.ProfileImage != null
+                        ? Convert.ToBase64String(userProfile.ProfileImage)
+                        : null;
+
+                    profiles.Add(new UserProfileBasicDto(
+                        userId,
+                        person.Name,
+                        person.Surname,
+                        profileImage
+                    ));
+                }
+            }
+
+            return Result.Ok(profiles);
+        }
+        catch (Exception e)
+        {
+            return Result.Fail(FailureCode.Internal).WithError(e.Message);
+        }
+    }
+
     private Person GetPersonByUserId(long userId)
     {
         var pagedPersons = _personRepository.GetPaged(1, int.MaxValue);
