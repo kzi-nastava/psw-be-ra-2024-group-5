@@ -27,7 +27,8 @@ public class CrudDatabaseRepository<TEntity, TDbContext> : ICrudRepository<TEnti
     public TEntity Get(long id)
     {
         var entity = _dbSet.Find(id);
-        if (entity == null) throw new KeyNotFoundException("Not found: " + id);
+        if (entity == null)
+            throw new KeyNotFoundException("Not found: " + id);
         return entity;
     }
 
@@ -61,8 +62,13 @@ public class CrudDatabaseRepository<TEntity, TDbContext> : ICrudRepository<TEnti
 
     public void Delete(long id)
     {
-        var entity = Get(id);
-        _dbSet.Remove(entity);
-        DbContext.SaveChanges();
+        try {
+            var entity = Get(id);
+            _dbSet.Remove(entity);
+            DbContext.SaveChanges();
+        }
+        catch (KeyNotFoundException e) {
+            throw new KeyNotFoundException(e.Message);
+        }
     }
 }

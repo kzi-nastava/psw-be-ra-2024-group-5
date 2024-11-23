@@ -9,7 +9,10 @@ namespace Explorer.BuildingBlocks.Core.UseCases;
 /// </summary>
 /// <typeparam name="TDto">Type of output data transfer object.</typeparam>
 /// <typeparam name="TDomain">Type of domain object that maps to TDto</typeparam>
-public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> where TDomain : Entity
+public abstract class CrudService<TDto, TDomain> : 
+    BaseService<TDto, TDomain>, 
+    ICrudService<TDto>
+    where TDomain : Entity
 {
     protected readonly ICrudRepository<TDomain> CrudRepository;
 

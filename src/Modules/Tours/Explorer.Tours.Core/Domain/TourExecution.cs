@@ -1,7 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Tours.API.Enum;
-using Explorer.Tours.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,15 +39,15 @@ namespace Explorer.Tours.Core.Domain {
             return Status == TourExecutionStatus.Completed;
         }
 
-        public KeyPointProgress? Progress(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
+        public KeyPointProgress? Progress(Location newPosition, IEnumerable<KeyPoint> keyPoints) {
             LastActivity = DateTime.UtcNow;
 
             return CheckKeyPointReached(newPosition, keyPoints);
         }
 
-        private KeyPointProgress? CheckKeyPointReached(Position newPosition, IEnumerable<KeyPoint> keyPoints) {
+        private KeyPointProgress? CheckKeyPointReached(Location newPosition, IEnumerable<KeyPoint> keyPoints) {
             foreach (var keyPoint in GetNonCompleted(keyPoints)) {
-                if (GeoCalculator.IsClose(newPosition, new Position(keyPoint.Latitude, keyPoint.Longitude), 15)) {
+                if (GeoCalculator.IsClose(newPosition, new Location(keyPoint.Latitude, keyPoint.Longitude), 15)) {
                     var newProgress = new KeyPointProgress(keyPoint);
                     KeyPointProgresses.Add(newProgress);
 
