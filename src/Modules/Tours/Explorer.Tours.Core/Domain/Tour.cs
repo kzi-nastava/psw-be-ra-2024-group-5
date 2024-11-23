@@ -140,6 +140,14 @@ public class Tour : Entity {
         return true;
     }
 
+    public KeyPoint GetFirstKeypoint() {
+        return KeyPoints[0];
+    }
 
+    public double GetAverageRating() {
+        if(Reviews.Count > 0) 
+            return Reviews.Average(x => x.Rating);
+        return 0;
+    }
 
 }

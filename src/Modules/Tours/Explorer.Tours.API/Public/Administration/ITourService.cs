@@ -7,7 +7,8 @@ using FluentResults;
 namespace Explorer.Tours.API.Public.Administration;
 
 public interface ITourService {
-    Result<List<TourDto>> GetByAuthorId(int id);
+    Result<List<TourCardDto>> GetByAuthorPaged(int authorId, int page, int pageSize);
+    Result<List<TourCardDto>> GetAuthorPagedToursFiltered(int authorId, int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
     Result<TourDto> GetById(long id);
     Result<TourDto> Create(TourCreationDto tour);
     Result<TourDto> Update(TourDto tour, long id);
