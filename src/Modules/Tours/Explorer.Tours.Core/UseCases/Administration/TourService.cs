@@ -59,6 +59,17 @@ public class TourService : ITourService {
             return Result.Fail(FailureCode.NotFound).WithError(e.Message);
         }
     }
+    public Result<List<TourCardDto>> GetAuthorPagedToursFiltered(int authorId, int page, int pageSize, double startLong, double endLong, double startLat, double endLat) {
+        try {
+            var filteredTours = _tourRepository.GetAuthorPagedToursFiltered(authorId, page, pageSize, startLong, endLong, startLat, endLat);
+            var tourDtos = _mapper.Map<List<TourCardDto>>(filteredTours);
+            return Result.Ok(tourDtos);
+        }
+        catch (Exception e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
+    }
+
 
     public Result<TourDto> Create(TourCreationDto tourDto) {
         try {

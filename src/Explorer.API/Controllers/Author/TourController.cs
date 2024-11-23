@@ -24,6 +24,20 @@ namespace Explorer.API.Controllers.Author
             return CreateResponse(result);
         }
 
+        [HttpPost("author/filtered/{authorId:int}")]
+        public ActionResult<List<TourCardDto>> GetAuthorPagedToursFiltered(int authorId, [FromBody] TourSearchDto searchDto) {
+            var result = _tourService.GetAuthorPagedToursFiltered(
+                authorId,
+                searchDto.Page,
+                searchDto.PageSize,
+                searchDto.StartLong,
+                searchDto.EndLong,
+                searchDto.StartLat,
+                searchDto.EndLat
+            );
+            return CreateResponse(result);
+        }
+
         [HttpGet("{id:int}")]
         public ActionResult<TourDto> GetById(int id) {
             var result = _tourService.GetById(id);
