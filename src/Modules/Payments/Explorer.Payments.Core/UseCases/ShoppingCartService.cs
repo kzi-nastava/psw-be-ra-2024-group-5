@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Explorer.Tours.API.Internal;
 using Explorer.Payments.API.Internal;
+using Explorer.Tours.API.Dtos;
 
 namespace Explorer.Tours.Core.UseCases.Tourist
 {
@@ -19,11 +20,13 @@ namespace Explorer.Tours.Core.UseCases.Tourist
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IInternalTourService _tourService;
         private readonly IUserService _userService;
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, IInternalTourService tourService)
+        private readonly IWalletService _walletService;
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, IInternalTourService tourService, IWalletService walletService)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _userService = userService;
             _tourService = tourService;
+            _walletService = walletService;
         }
 
         public Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId)
@@ -121,7 +124,23 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 				return Result.Fail("Shopping cart is empty.");
 			}
 
-			var tokens = new List<TourPurchaseToken>();
+            var totalPrice = new ShoppingMoneyDto(shoppingCart.TotalPrice.Amount, shoppingCart.TotalPrice.Currency);
+
+            var result = _walletService.AreEnoughFundsInWallet(totalPrice, touristId);
+
+            if (!result.IsSuccess || !result.Value)
+            {
+                return Result.Fail("Not enough funds in wallet.");
+            }
+
+            var removeFundsResult = _walletService.RemoveFunds(totalPrice, touristId);
+
+            if (!result.IsSuccess)
+            {
+                return Result.Fail(result.Errors);
+            }
+
+            var tokens = new List<TourPurchaseToken>();
 
 			foreach (var item in shoppingCart.Items)
 			{

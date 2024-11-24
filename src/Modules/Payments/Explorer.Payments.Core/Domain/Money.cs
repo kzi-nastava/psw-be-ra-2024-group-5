@@ -30,8 +30,8 @@ namespace Explorer.Payments.Core.Domain
 
         public Money Add(Money money)
         {
-            //if (!IsSameCurrency(money))
-            //    throw new ArgumentException();
+            if (!IsSameCurrency(money))
+                throw new ArgumentException();
 
             return new Money(money.Amount + Amount, Currency);
         }
@@ -54,6 +54,24 @@ namespace Explorer.Payments.Core.Domain
                 return false;
             }
             return true;
+        }
+
+        public Money ConvertToAC(Money money)
+        {
+            if (money.Currency == ShoppingCurrency.Rsd)
+            {
+                return new Money(money.Amount * 3, ShoppingCurrency.AC);
+            }
+            if (money.Currency == ShoppingCurrency.Eur)
+            {
+                return new Money(money.Amount * 3 * 116, ShoppingCurrency.AC);
+            }
+            if (money.Currency == ShoppingCurrency.Dol)
+            {
+                return new Money(money.Amount * 3 * 110, ShoppingCurrency.AC);
+            }
+
+            return money;
         }
     }
 }
