@@ -29,3 +29,43 @@ VALUES
     (-21, -21, '', 'First Tourist Biography', 'Travel far, learn more'),
     (-22, -22, '', 'Second Tourist Biography', 'Adventure awaits'),
     (-23, -23, '', 'Third Tourist Biography', 'Journey of a lifetime');
+
+INSERT INTO tours."Tours" ("Id", "Name", "Description", "Tags", "Level", "Status", "Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+VALUES 
+    (-1, 'Tura1', 'Opis prve ture', 'tag1, tag2', 0, 1, 
+        jsonb_build_object('Amount', 20, 'Currency', 0), 
+        -11, 
+        150.21, 
+        jsonb_build_array(
+            jsonb_build_object('Transport', 1, 'Duration', 50.5)
+        ), 
+        '2024-08-22 09:15:00+02', 
+        '2024-12-22 09:15:00+02'),
+
+    (-2, 'Tura2', 'Opis druge ture', 'tag1', 1, 1, 
+        jsonb_build_object('Amount', 400, 'Currency', 1), 
+        -12, 
+        1321.21, 
+        jsonb_build_array(
+            jsonb_build_object('Transport', 1, 'Duration', 230.5)
+        ), 
+        '2024-06-12 11:22:00+02', 
+        '2024-12-23 08:32:00+02'),
+
+    (-3, 'Tura3', 'Opis treće ture', 'tag1, tag2, tag3', 0, 0,
+        jsonb_build_object('Amount', 0, 'Currency', 0), 
+        -12, 
+        32.321,
+        jsonb_build_array(
+            jsonb_build_object('Duration', 50.5, 'Transport', 1),
+            jsonb_build_object('Duration', 70.0, 'Transport', 2)
+        ), 
+        '2023-02-12 08:21:00+02', 
+        '2024-03-23 08:32:00+02');
+
+INSERT INTO payments."Bundles" ("Id", "Name", "Price", "AuthorId", "Status", "BundleItems")
+VALUES 
+    (-1, 'Adventure Bundle', jsonb_build_object('Amount', 99.99, 'Currency', 0), -11, 0, jsonb_build_array(-1, -2)),
+    (-2, 'Relaxation Bundle', jsonb_build_object('Amount', 129.99, 'Currency', 0), -11, 1, jsonb_build_array(-2, -3)),
+    (-3, 'Extreme Sports Bundle', jsonb_build_object('Amount', 199.99, 'Currency', 0), -12, 2, jsonb_build_array(-1, -3)),
+    (-4, 'Family Fun Bundle', jsonb_build_object('Amount', 79.99, 'Currency', 0), -13, 0, jsonb_build_array(-1, -2, -3));

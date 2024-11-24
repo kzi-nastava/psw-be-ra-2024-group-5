@@ -36,5 +36,19 @@ namespace Explorer.Tours.Core.UseCases.Administration
                 return Result.Fail(FailureCode.NotFound).WithError(e.Message);
             }
         }
+
+        public Result<List<TourDto>> GetByAuthorId(long id)
+        {
+            try
+            {
+                var toursByAuthor = _tourRepository.GetByAuthorId((int) id);
+                var tourDto = _mapper.Map<List<TourDto>>(toursByAuthor);
+                return Result.Ok(tourDto);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+        }
     }
 }
