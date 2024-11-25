@@ -15,6 +15,7 @@ public class Notification: Entity
     public long? ClubId { get; private set; } // if the notification is related to a club activity
     public string? Message { get; private set; }
     public Attachment? Attachment { get; private set; }
+    public long? EncounterId { get; private set; }
     public List<NotificationReadStatus> UserReadStatuses { get; set; }
 }
 

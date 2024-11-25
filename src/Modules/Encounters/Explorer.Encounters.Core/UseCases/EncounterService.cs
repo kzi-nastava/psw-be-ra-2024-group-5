@@ -19,6 +19,7 @@ using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Dtos.Messages;
 using Explorer.Stakeholders.Core.Domain.Messages;
+using Explorer.Encounters.API.Enum;
 
 namespace Explorer.Encounters.Core.UseCases;
 
@@ -62,7 +63,7 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
 
             if (user != null && user.Role == UserRole.Tourist)
             {
-                sendNotification();
+                SendNotificationForNewEncounter(encounterToCreate.Id);
             }
 
             return MapToDto(encounterToCreate);
@@ -73,7 +74,64 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
         }
     }
 
-    private void sendNotification()
+    public Result<List<EncounterDto>> GetAllDraft()
+    {
+        var encounters = _encounterRepository.GetAllDraft();
+        var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
+        return Result.Ok(encounterDtos);
+    }
+
+    public Result AcceptEncounter(long encounterId)
+    {
+        try
+        {
+            var encounter = _encounterRepository.Get(encounterId);
+
+            if (encounter == null)
+                return Result.Fail("Encounter not found.");
+
+            if (encounter.Status != EncounterStatus.Draft)
+                return Result.Fail("Only draft encounters can be accepted.");
+
+            encounter.UpdateStatus(EncounterStatus.Active);
+            _encounterRepository.Update(encounter);
+
+            SendNotificationForAcceptingEncounter(encounter.CreatorId, encounter.Id);
+
+            return Result.Ok();
+        }
+        catch(Exception ex)
+        {
+            return Result.Fail($"Error accepting encounter: {ex.Message}");
+        }
+    }
+
+    public Result RejectEncounter(long encounterId)
+    {
+        try
+        {
+            var encounter = _encounterRepository.Get(encounterId);
+
+            if (encounter == null)
+                return Result.Fail("Encounter not found.");
+
+            if (encounter.Status != EncounterStatus.Draft)
+                return Result.Fail("Only draft encounters can be rejected.");
+
+            encounter.UpdateStatus(EncounterStatus.Archived);
+            _encounterRepository.Update(encounter);
+
+            SendNotificationForRejectingEncounter(encounter.CreatorId, encounter.Id);
+
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"Error rejecting encounter: {ex.Message}");
+        }
+    }
+
+    private void SendNotificationForNewEncounter(long encounterId)
     {
         var adminIds = _userRepository.GetAll()
                                   .Where(u => u.Role == UserRole.Administrator)
@@ -87,12 +145,59 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
             CreatedAt = DateTime.UtcNow,
             UserIds = adminIds,
             Type = 3,
+            EncounterId = encounterId,
             UserReadStatuses = adminIds.Select(adminId => new NotificationReadStatusDto
             {
                 UserId = adminId,
                 NotificationId = 0,
                 IsRead = false
             }).ToList()
+        };
+
+        _notificationService.SendNotification(notificationDto);
+    }
+
+    private void SendNotificationForAcceptingEncounter(long creatorId, long encounterId)
+    {
+        var notificationDto = new NotificationDto
+        {
+            Content = "Your encounter has been accepted and is now active!",
+            CreatedAt = DateTime.UtcNow,
+            UserIds = new List<long> { creatorId },
+            Type = 4,
+            EncounterId = encounterId,
+            UserReadStatuses = new List<NotificationReadStatusDto>
+            {
+                new NotificationReadStatusDto
+                {
+                    UserId = creatorId,
+                    NotificationId = 0,
+                    IsRead = false
+                }
+            }
+        };
+
+        _notificationService.SendNotification(notificationDto);
+    }
+
+    private void SendNotificationForRejectingEncounter(long creatorId, long encounterId) 
+    {
+        var notificationDto = new NotificationDto
+        {
+            Content = "Unfortunately, your encounter has been rejected. You can try creating a new one.",
+            CreatedAt = DateTime.UtcNow,
+            UserIds = new List<long> { creatorId },
+            Type = 4,
+            EncounterId = encounterId,
+            UserReadStatuses = new List<NotificationReadStatusDto>
+            {
+                new NotificationReadStatusDto
+                {
+                    UserId = creatorId,
+                    NotificationId = 0,
+                    IsRead = false
+                }
+            }
         };
 
         _notificationService.SendNotification(notificationDto);
