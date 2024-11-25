@@ -10,5 +10,6 @@ public interface IUserRepository
     public bool UserExistsById(long userId);
 
     User? Get(long userId);
+    List<User> GetAll();
 
 }

@@ -49,4 +49,9 @@ public class UserDatabaseRepository : IUserRepository
         return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
 
+    public List<User> GetAll()
+    {
+        return _dbContext.Users.ToList();
+    }
+
 }

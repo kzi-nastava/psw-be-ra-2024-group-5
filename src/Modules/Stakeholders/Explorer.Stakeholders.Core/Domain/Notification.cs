@@ -22,7 +22,9 @@ public enum NotificationType
 {
     ProfileMessage = 0,
     ClubMessage,
-    ClubActivity
+    ClubActivity,
+    EncounterCreated,  
+    EncounterApprovalStatus
 }
 
 

@@ -11,4 +11,5 @@ namespace Explorer.Encounters.API.Public;
 public interface IEncounterService : ICrudService<EncounterDto> {
     public Result<List<EncounterDto>> GetAllActive();
     public Result<List<EncounterDto>> GetByCreatorId(long creatorId);
+    public Result<EncounterDto> Create(EncounterDto encounter);
 }
