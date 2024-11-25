@@ -15,4 +15,8 @@ public class EncounterExecution : Entity {
     public DateTime? SessionEnd { get; private set; } = null;
 
     public EncounterExecution() { }
+    public EncounterExecution(long userId, long encounterId) {
+        UserId = userId;
+        EncounterId = encounterId;
+    }
 }

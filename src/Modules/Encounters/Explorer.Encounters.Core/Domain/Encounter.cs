@@ -34,4 +34,8 @@ public class Encounter : Entity
     public void UpdateStatus(EncounterStatus status) {
         Status = status;
     }
+
+    public bool IsClose(Location location) {
+        return GeoCalculator.IsClose(location, Location, 50);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Explorer.Encounters.API.Dtos;
+using Explorer.Encounters.API.Enum;
 using Explorer.Encounters.API.Public;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

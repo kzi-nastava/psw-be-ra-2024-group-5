@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Encounters.API.Dtos;
+using Explorer.Encounters.API.Enum;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
@@ -36,4 +37,6 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
     }
+
+    
 }
