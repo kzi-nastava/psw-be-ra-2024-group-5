@@ -21,7 +21,12 @@ INSERT INTO stakeholders."People"("UserId", "Name", "Surname", "Email") VALUES (
 INSERT INTO stakeholders."People"("UserId", "Name", "Surname", "Email") VALUES (5, 'Zika', 'Zikic', 'zika@gmail.com');
 
 -- Profiles
--- INSERT PROFILES HERE
+INSERT INTO stakeholders."Profiles"("Id", "UserId", "ProfileImage", "Biography", "Motto") VALUES 
+	(1, 1, '', 'Admin Bio', 'Admin Motto'),
+	(2, 2, '', 'Autor Bio', 'Autor Motto'),
+	(3, 3, '', 'Turista Bio', 'Turista Motto'),
+	(4, 4, '', 'Perina Biografija', 'Perin Motto'),
+	(5, 5, '', 'Djurina Biografija', 'Djurin Motto');
 
 INSERT INTO stakeholders."Clubs"("Name", "Description", "ImageDirectory", "OwnerId") VALUES ('Perin klub', 'opis', 'slika', 3);
 

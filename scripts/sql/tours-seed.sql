@@ -31,7 +31,22 @@ values
 insert into tours."KeyPoint"
 	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")
 values
-	(45.24611507027287, 19.851664521045805, 'FTN', 'Ne idite na ovaj faks', '', 2);
+	(45.24611507027287, 19.841764521045805, 'Tamo Daleko', 'Ne ididte u ovu kafanu', '', 1);
+
+insert into tours."KeyPoint"
+	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")
+values
+	(45.24521507027287, 19.831864521045805, 'Becarac', 'U ovu pogotovo', '', 1);
+
+insert into tours."KeyPoint"
+	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")
+values
+	(45.24641507027287, 19.856964521045805, 'Danka', 'U ovu nikako', '', 1);
+
+insert into tours."KeyPoint"
+	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")
+values
+	(45.24511507027287, 19.851664521045805, 'FTN', 'Ne idite na ovaj faks', '', 2);
 
 insert into tours."KeyPoint"
 	("Latitude", "Longitude", "Name", "Description", "Image", "TourId")

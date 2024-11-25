@@ -15,6 +15,7 @@ namespace Explorer.Payments.Infrastructure.Database
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<TourPurchaseToken> TourPurchaseTokens { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,7 @@ namespace Explorer.Payments.Infrastructure.Database
 
             ConfigureShoppingCarts(modelBuilder);
             ConfigureTourPurchaseToken(modelBuilder);
+            ConfigureWallet(modelBuilder);
         }
 
         private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
@@ -52,6 +54,15 @@ namespace Explorer.Payments.Infrastructure.Database
         private static void ConfigureTourPurchaseToken(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TourPurchaseToken>().HasKey(te => te.Id);
+        }
+
+        private static void ConfigureWallet(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Wallet>().HasKey(te => te.Id);
+
+            modelBuilder.Entity<Wallet>()
+                .Property(oi => oi.Balance)
+                .HasColumnType("jsonb");
         }
     }
 }
