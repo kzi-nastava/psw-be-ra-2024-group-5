@@ -9,5 +9,5 @@ namespace Explorer.Encounters.Core.Domain.RepositoryInterfaces;
 
 public interface IParticipantRepository : ICrudRepository<Participant>
 {
-    
+    Participant GetByUserId(long userId);
 }
