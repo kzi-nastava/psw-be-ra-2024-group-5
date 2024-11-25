@@ -65,5 +65,20 @@ namespace Explorer.API.Controllers.Tourist
 			}
 			return Ok(new { message = "Purchase completed successfully. Tokens created for each item." });
 		}
+		[Authorize(Policy = "touristPolicy")]
+		[HttpGet("items-count/{userId}")]
+		public ActionResult<int> GetItemsCount(long userId)
+		{
+			try
+			{
+				var count = _shoppingCartService.GetItemsCount(userId);
+				return Ok(count);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
 	}
 }

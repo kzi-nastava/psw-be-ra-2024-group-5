@@ -149,5 +149,19 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
 			return Result.Ok();
 		}
-    }
+
+		public int GetItemsCount(long userId)
+		{
+			try
+			{
+				var shoppingCart = _shoppingCartRepository.GetByUserId(userId);
+				return shoppingCart?.Items?.Count ?? 0;  // Ako nema korpe ili stavki, vraća 0
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error retrieving items count", ex);
+			}
+		}
+
+	}
 }
