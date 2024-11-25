@@ -29,12 +29,14 @@ public static class EncountersStartup {
     {
         services.AddScoped<IEncounterService, EncounterService>();
         services.AddScoped<IEncounterExecutionService, EncounterExecutionService>();
+        services.AddScoped<IParticipantService, ParticipantService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
     {
         services.AddScoped<IEncounterRepository, EncounterRepository>();
         services.AddScoped<IEncounterExecutionRepository, EncounterExecutionRepository>();
+        services.AddScoped<IParticipantRepository, ParticipantRepository>();
 
         services.AddDbContext<EncountersContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("encounters"),

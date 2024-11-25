@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Explorer.Encounters.Core;
+using Explorer.Stakeholders.Core.Domain;
 
 namespace Explorer.Encounters.Infrastructure.Database;
 public class EncountersContext : DbContext 
@@ -13,6 +15,7 @@ public class EncountersContext : DbContext
     public DbSet<Encounter> Encounters { get; set; }
     public DbSet<SocialEncounter> SocialEncounters { get; set; }
     public DbSet<EncounterExecution> EncountersExecution { get; set; }
+    public DbSet<Participant> Participants { get; set; }
 
     public EncountersContext(DbContextOptions<EncountersContext> options) : base(options) { }
 
@@ -34,5 +37,24 @@ public class EncountersContext : DbContext
         modelBuilder.Entity<SocialEncounter>()
             .Property(se => se.UserIds)
             .HasColumnType("jsonb");
+
+        ConfigureParticipant(modelBuilder);
+    }
+
+    private static void ConfigureParticipant(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<Participant>()
+            .HasKey(p => p.Id);
+
+        modelBuilder.Entity<User>()
+           .ToTable("Users", "stakeholders")
+           .Metadata.SetIsTableExcludedFromMigrations(true);
+
+        modelBuilder.Entity<Participant>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

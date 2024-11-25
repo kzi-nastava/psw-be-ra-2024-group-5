@@ -19,5 +19,7 @@ public class EncountersProfile : Profile
 
         CreateMap<EncounterDto, Encounter>()
             .Include<SocialEncounterDto, SocialEncounter>().ReverseMap();
+
+        CreateMap<ParticipantDto, Participant>().ReverseMap();
     }
 }

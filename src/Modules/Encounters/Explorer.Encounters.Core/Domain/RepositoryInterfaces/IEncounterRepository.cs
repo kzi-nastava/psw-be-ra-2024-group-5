@@ -11,4 +11,5 @@ public interface IEncounterRepository : ICrudRepository<Encounter>
 {
     List<Encounter> GetAllActive();
     List<Encounter> GetByCreatorId(long creatorId);
+    List<Encounter> GetAllDraft();
 }
