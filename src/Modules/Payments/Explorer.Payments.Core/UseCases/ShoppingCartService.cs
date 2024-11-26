@@ -107,7 +107,15 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             foreach (var order in shoppingCart.Items)
             {
                 var price = new ShoppingMoneyDto(order.Price.Amount, order.Price.Currency);
-                orderItems.Add(new OrderItemDto(order.Id, order.TourId, order.TourName, price));
+
+				var tour = _tourService.GetById(order.TourId);
+
+				if (tour == null)
+				{
+					throw new Exception($"Tour with ID {order.TourId} not found");
+				}
+
+				orderItems.Add(new OrderItemDto(order.Id, order.TourId, order.TourName, price, tour.Value.Description, tour.Value.Tags,tour.Value.ArchivedTime,tour.Value.PublishedTime));
 
             }
 
@@ -160,5 +168,19 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
 			return Result.Ok();
 		}
-    }
+
+		public int GetItemsCount(long userId)
+		{
+			try
+			{
+				var shoppingCart = _shoppingCartRepository.GetByUserId(userId);
+				return shoppingCart?.Items?.Count ?? 0;  // Ako nema korpe ili stavki, vraća 0
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error retrieving items count", ex);
+			}
+		}
+
+	}
 }
