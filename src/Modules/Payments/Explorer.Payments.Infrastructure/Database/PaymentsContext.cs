@@ -16,8 +16,10 @@ namespace Explorer.Payments.Infrastructure.Database
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<TourPurchaseToken> TourPurchaseTokens { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+		public DbSet<Coupon> Coupons { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("payments");
 
