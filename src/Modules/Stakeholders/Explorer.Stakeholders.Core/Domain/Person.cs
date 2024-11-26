@@ -20,6 +20,7 @@ public class Person : Entity
     }
     public void setName(string name) { Name = name; }
     public void setSurname(string surname) {  Surname = surname; }
+    public string GetDisplayName() => $"{Name} {Surname}";
     private void Validate()
     {
         if (UserId == 0) throw new ArgumentException("Invalid UserId");
