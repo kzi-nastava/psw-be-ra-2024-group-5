@@ -44,4 +44,25 @@ public class EncounterController : BaseApiController
         var result = _encounterService.Delete((int) id);
         return CreateResponse(result);
     }
+
+    [HttpGet("draft")]
+    public ActionResult<List<EncounterDto>> GetAllDraft()
+    {
+        var result = _encounterService.GetAllDraft();
+        return CreateResponse(result);
+    }
+
+    [HttpPut("{id:long}/accept")]
+    public ActionResult Accept(long id)
+    {
+        var result = _encounterService.AcceptEncounter(id);
+        return CreateResponse(result);
+    }
+
+    [HttpPut("{id:long}/reject")]
+    public ActionResult Reject(long id)
+    {
+        var result = _encounterService.RejectEncounter(id);
+        return CreateResponse(result);
+    }
 }

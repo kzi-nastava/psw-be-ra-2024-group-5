@@ -20,4 +20,9 @@ public class EncounterRepository : CrudDatabaseRepository<Encounter, EncountersC
     public List<Encounter> GetByCreatorId(long creatorId) {
         return DbContext.Encounters.Where(e => e.CreatorId == creatorId).ToList();
     }
+
+    public List<Encounter> GetAllDraft()
+    {
+        return DbContext.Encounters.Where(e => e.Status == EncounterStatus.Draft).ToList();
+    }
 }

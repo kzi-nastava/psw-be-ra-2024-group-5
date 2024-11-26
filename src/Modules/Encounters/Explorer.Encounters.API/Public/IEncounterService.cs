@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Encounters.API.Dtos;
+using Explorer.Encounters.API.Enum;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -11,4 +12,7 @@ namespace Explorer.Encounters.API.Public;
 public interface IEncounterService : ICrudService<EncounterDto> {
     public Result<List<EncounterDto>> GetAllActive();
     public Result<List<EncounterDto>> GetByCreatorId(long creatorId);
+    public Result<List<EncounterDto>> GetAllDraft();
+    public Result AcceptEncounter(long encounterId);
+    public Result RejectEncounter(long encounterId);
 }
