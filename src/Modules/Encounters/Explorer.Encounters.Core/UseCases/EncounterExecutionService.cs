@@ -19,11 +19,15 @@ namespace Explorer.Encounters.Core.UseCases {
         private readonly IEncounterExecutionRepository _executionRepository;
         private readonly IEncounterRepository _encounterRepository;
         private readonly IMapper _mapper;
+        private readonly IParticipantService _participantService;
 
-        public EncounterExecutionService(IEncounterExecutionRepository executionRepository, IEncounterRepository encounterRepository, IMapper mapper) {
+        public EncounterExecutionService(IEncounterExecutionRepository executionRepository,
+            IEncounterRepository encounterRepository, IMapper mapper, IParticipantService participantService)
+        {
             _executionRepository = executionRepository;
             _encounterRepository = encounterRepository;
             _mapper = mapper;
+            _participantService = participantService;
         }
 
         public Result IsAvailable(EncounterExecutionRequestDto request) {
@@ -62,6 +66,9 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 if(IsAvailable(request).IsFailed)
                     return Result.Fail(FailureCode.InvalidArgument).WithError("Unavailable!");
+
+                if(!_participantService.Exists(request.UserId))
+                    _participantService.Create(new ParticipantDto(request.UserId, 0, 0));
 
                 _executionRepository.Create(new EncounterExecution(request.UserId, request.EncounterId));
                 return Result.Ok(_mapper.Map<EncounterDto>(encounter));

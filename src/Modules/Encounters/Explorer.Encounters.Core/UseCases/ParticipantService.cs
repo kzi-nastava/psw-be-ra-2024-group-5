@@ -39,5 +39,10 @@ namespace Explorer.Encounters.Core.UseCases
             }
             return Result.Ok(participantDto);
         }
+
+        public bool Exists(long userId)
+        {
+            return _participantRepository.Exists(userId);
+        }
     }
 }
