@@ -39,14 +39,23 @@ namespace Explorer.Stakeholders.Core.UseCases
 
         public override Result<AppRatingDto> Create(AppRatingDto appRatingDto)
         {
-            var existingRating = _appRatingRepository.GetByUser(appRatingDto.UserId);
-            appRatingDto.TimeStamp = DateTime.UtcNow;
-            if (existingRating != null)
+            try
             {
-                appRatingDto.Id = existingRating.Id;
-                base.Delete((int)existingRating.Id);
+                var existingRating = _appRatingRepository.GetByUser(appRatingDto.UserId);
+                appRatingDto.TimeStamp = DateTime.UtcNow;  // Set timestamp
+
+                if (existingRating != null)
+                {
+                    appRatingDto.Id = existingRating.Id;
+                    base.Delete((int)existingRating.Id);
+                }
+
+                return base.Create(appRatingDto);  // Keep using base.Create
             }
-            return base.Create(appRatingDto);
+            catch (Exception e)
+            {
+                return Result.Fail(e.Message);
+            }
         }
     }
 }
