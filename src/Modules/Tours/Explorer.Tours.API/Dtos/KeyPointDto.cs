@@ -7,24 +7,19 @@
     public string? Description { get; set; }
     public string? Image { get; set; } 
     public long TourId { get; set; } // SHUOLD BE REMOVED
+    public string? Secret { get; set; }
+    public string? SecretImage { get; set; }
+    public KeyPointDto() { }
 
-    public KeyPointDto(long id, double latitude, double longitude, string name, string? description, string? image, long tourId) {
+    public KeyPointDto(long id, double latitude, double longitude, string name, string? description, long tourId, string? secret = null)
+    {
         Id = id;
         Latitude = latitude;
         Longitude = longitude;
         Name = name;
         Description = description;
-        Image = image;
         TourId = tourId;
-    }
-    public KeyPointDto(double latitude, double longitude, string name, string? description, string? image, long tourId) {
-        Latitude = latitude;
-        Longitude = longitude;
-        Name = name;
-        Description = description;
-        Image = image;
-        TourId = tourId;
+        Secret = secret;
     }
 
-    public KeyPointDto() { }
 }
