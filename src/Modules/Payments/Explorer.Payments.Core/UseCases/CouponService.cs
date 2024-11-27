@@ -75,6 +75,46 @@ namespace Explorer.Payments.Core.UseCases
 			return new string(Enumerable.Repeat(chars, 8)
 				.Select(s => s[random.Next(s.Length)]).ToArray());
 		}
+
+		public Result Delete(long id)
+		{
+			var coupon = _couponRepository.GetById(id);
+			if (coupon == null)
+			{
+				return Result.Fail("Coupon not found.");
+			}
+
+			_couponRepository.Delete(coupon);
+			_couponRepository.SaveChanges();
+
+			return Result.Ok();
+		}
+		public Result<CouponDto> Update(long id, CouponDto couponDto)
+		{
+			var coupon = _couponRepository.GetById(id);
+			if (coupon == null)
+			{
+				return Result.Fail<CouponDto>("Coupon not found.");
+			}
+
+			coupon.Percentage = couponDto.Percentage;
+			coupon.ExpiredDate = couponDto.ExpiredDate;
+			coupon.TourIds = couponDto.TourIds;
+
+			_couponRepository.Update(coupon);
+			_couponRepository.SaveChanges();
+
+			var updatedCouponDto = new CouponDto
+			{
+				Code = coupon.Code,
+				Percentage = coupon.Percentage,
+				ExpiredDate = coupon.ExpiredDate,
+				TourIds = coupon.TourIds
+			};
+
+			return Result.Ok(updatedCouponDto);
+		}
+
 	}
 
 }

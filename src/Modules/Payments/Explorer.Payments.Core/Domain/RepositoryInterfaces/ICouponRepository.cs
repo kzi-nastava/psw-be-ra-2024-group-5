@@ -12,6 +12,11 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
 		public Coupon GetByCode(string code);
 		public void Add(Coupon coupon);
 		public void SaveChanges();
+		public Coupon GetById(long id);
+		public void Delete(Coupon coupon);
+		public void Update(Coupon coupon);
+
+
 
 
 	}

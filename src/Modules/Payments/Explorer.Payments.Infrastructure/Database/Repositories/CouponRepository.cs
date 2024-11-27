@@ -30,6 +30,18 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
 		{
 			_context.SaveChanges();
 		}
+		public Coupon GetById(long id)
+		{
+			return _context.Coupons.FirstOrDefault(c => c.Id == id);
+		}
+		public void Delete(Coupon coupon)
+		{
+			_context.Coupons.Remove(coupon);
+		}
+		public void Update(Coupon coupon)
+		{
+			_context.Coupons.Update(coupon);
+		}
 
 	}
 }
