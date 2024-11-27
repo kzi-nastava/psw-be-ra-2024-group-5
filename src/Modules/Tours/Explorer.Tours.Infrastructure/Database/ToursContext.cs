@@ -80,8 +80,8 @@ public class ToursContext : DbContext
 
         modelBuilder.Entity<KeyPointProgress>()
             .HasOne(kp => kp.KeyPoint)
-            .WithOne()
-            .HasForeignKey<KeyPointProgress>(kp => kp.KeyPointId)
+            .WithMany()
+            .HasForeignKey(kp => kp.KeyPointId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 

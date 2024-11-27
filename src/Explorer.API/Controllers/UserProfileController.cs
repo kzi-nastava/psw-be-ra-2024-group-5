@@ -84,5 +84,20 @@ namespace Explorer.API.Controllers
 
             return long.Parse(userIdClaim);
         }
+
+        [HttpGet("basic-profiles/{userIds}")]
+        public ActionResult<List<UserProfileBasicDto>> GetBasicProfiles(string userIds)
+        {
+            try
+            {
+                var idList = userIds.Split(',').Select(long.Parse).ToList();
+                var result = _userProfileService.GetBasicProfiles(idList);
+                return CreateResponse(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Internal server error: {e.Message}");
+            }
+        }
     }
 }

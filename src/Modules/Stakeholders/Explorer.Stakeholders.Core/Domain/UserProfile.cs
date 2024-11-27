@@ -6,15 +6,15 @@ namespace Explorer.Stakeholders.Core.Domain;
 public class UserProfile : Entity
 {
     public long UserId { get; private set; } 
-    public string? ProfilePictureUrl { get; private set; } 
+    public byte[]? ProfileImage { get; private set; } 
     public string? Biography { get; private set; } 
     public string? Motto { get; private set; } 
     public List<ProfileMessage> ProfileMessages { get; init; } = new List<ProfileMessage>();
 
-    public UserProfile(long userId, string? profilePictureUrl, string? biography, string? motto)
+    public UserProfile(long userId, byte[]? profileImage, string? biography, string? motto)
     {
         UserId = userId;
-        ProfilePictureUrl = profilePictureUrl;
+        ProfileImage = profileImage;
         Biography = biography;
         Motto = motto;
         Validate();
@@ -23,7 +23,7 @@ public class UserProfile : Entity
     public UserProfile(long userId)
     {
         UserId = userId;
-        ProfilePictureUrl = Biography = Motto = string.Empty;
+        Biography = Motto = string.Empty;
     }
 
     public UserProfile() { }
@@ -58,7 +58,7 @@ public class UserProfile : Entity
     }
 
     public void setUserId(long userId) { this.UserId = userId; }
-    public void setProfilePictureUrl(string profilePictureUrl) { this.ProfilePictureUrl = profilePictureUrl; }
     public void setBiography(string biography) { this.Biography = biography; }
     public void setMotto(string motto) { this.Motto = motto; }
+    public void setProfileImage(byte[] profileImage) { this.ProfileImage = profileImage; }
 }

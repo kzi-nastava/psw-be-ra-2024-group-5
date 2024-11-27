@@ -4,6 +4,7 @@ using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Explorer.API.Controllers.Author
 {
@@ -17,9 +18,23 @@ namespace Explorer.API.Controllers.Author
             _tourService = tourService;
         }
 
-        [HttpGet("author/{authorId:long}")]
-        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
-            var result = _tourService.GetByAuthorId(authorId);
+        [HttpGet("author/{authorId:long}/{page:int}/{pageSize:int}")]
+        public ActionResult<List<TourCardDto>> GetByAuthorPaged(int authorId, int page, int pageSize) {
+            var result = _tourService.GetByAuthorPaged(authorId, page, pageSize);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("author/filtered/{authorId:int}")]
+        public ActionResult<List<TourCardDto>> GetAuthorPagedToursFiltered(int authorId, [FromBody] TourSearchDto searchDto) {
+            var result = _tourService.GetAuthorPagedToursFiltered(
+                authorId,
+                searchDto.Page,
+                searchDto.PageSize,
+                searchDto.StartLong,
+                searchDto.EndLong,
+                searchDto.StartLat,
+                searchDto.EndLat
+            );
             return CreateResponse(result);
         }
 

@@ -11,7 +11,7 @@ namespace Explorer.Tours.API.Internal
     public interface IInternalTourService
     {
         Result<TourDto> GetById(long id);
-        Result<List<TourDto>> GetByAuthorId(long id);
+        Result<List<TourDto>>? GetByAuthorPaged(int authorId, int page, int pageSize);
 
     }
 }

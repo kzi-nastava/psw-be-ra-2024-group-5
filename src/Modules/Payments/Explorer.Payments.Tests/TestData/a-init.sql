@@ -20,7 +20,7 @@ VALUES
     (-23, -23, 'Steva', 'Stević', 'turista3@gmail.com');
 
 
-INSERT INTO stakeholders."Profiles" ("Id", "UserId", "ProfilePictureUrl", "Biography", "Motto")
+INSERT INTO stakeholders."Profiles" ("Id", "UserId", "ProfileImage", "Biography", "Motto")
 VALUES 
     (-1, -1, '', 'Administrator of the system', 'Leading by example'),
     (-11, -11, '', 'First Author Biography', 'Creativity is key'),

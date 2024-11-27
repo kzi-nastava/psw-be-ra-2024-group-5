@@ -15,8 +15,8 @@ namespace Explorer.Tours.API.Dtos.TourLifecycle
         public TourLevel? Level { get; set; }
         public TourStatus Status { get; set; }
         public MoneyDto Price { get; set; }
-        public double? Length { get; set; }
         public long AuthorId { get; set; }
+        public double? Length { get; set; }
         public KeyPointDto FirstKeypoint { get; set; }
         public DateTime PublishedTime { get; set; }
         public double? AverageRating { get; set; }

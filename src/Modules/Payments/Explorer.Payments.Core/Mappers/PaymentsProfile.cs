@@ -15,6 +15,10 @@ namespace Explorer.Payments.Core.Mappers
     {
         public PaymentsProfile()
         {
+            CreateMap<ShoppingMoneyDto, Money>().ReverseMap();
+
+            CreateMap<WalletDto, Wallet>().ReverseMap();
+
             CreateMap<CreateBundleDto, Bundle>()
                 .ForCtorParam("price", opt => opt.MapFrom(dto => new Money(dto.Price.Amount, dto.Price.Currency)))
                 .ForCtorParam("bundleItems", opt => opt.MapFrom(dto => dto.BundleItems));

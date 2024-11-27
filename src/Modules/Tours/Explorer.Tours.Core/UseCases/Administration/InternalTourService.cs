@@ -4,6 +4,7 @@ using Explorer.Payments.API.Internal;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Internal;
+using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 using System;
@@ -37,11 +38,11 @@ namespace Explorer.Tours.Core.UseCases.Administration
             }
         }
 
-        public Result<List<TourDto>> GetByAuthorId(long id)
+        public Result<List<TourDto>> GetByAuthorPaged(int authorId, int page, int pageSize)
         {
             try
             {
-                var toursByAuthor = _tourRepository.GetByAuthorId((int) id);
+                var toursByAuthor = _tourRepository.GetByAuthorPaged(authorId, page, pageSize);
                 var tourDto = _mapper.Map<List<TourDto>>(toursByAuthor);
                 return Result.Ok(tourDto);
             }
