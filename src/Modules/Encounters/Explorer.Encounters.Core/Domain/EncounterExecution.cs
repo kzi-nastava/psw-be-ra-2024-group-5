@@ -19,4 +19,14 @@ public class EncounterExecution : Entity {
         UserId = userId;
         EncounterId = encounterId;
     }
+
+    public void Complete() {
+        Status = EncounterExecutionStatus.Completed;
+        SessionEnd = DateTime.UtcNow;
+    }
+
+    public void Abandon() {
+        Status = EncounterExecutionStatus.Abandoned;
+        SessionEnd = DateTime.UtcNow;
+    }
 }

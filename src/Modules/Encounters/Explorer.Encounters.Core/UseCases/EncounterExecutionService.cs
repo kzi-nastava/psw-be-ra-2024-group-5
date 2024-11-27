@@ -85,6 +85,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 switch (encounter.Type) {
                     case EncounterType.Social:
+                        ProgressSocialEncounter(request, (SocialEncounter)encounter);
                         break;
                     case EncounterType.Locaion:
                         break;
@@ -96,6 +97,43 @@ namespace Explorer.Encounters.Core.UseCases {
             } catch {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
+        }
+        
+        public void ProgressSocialEncounter(EncounterExecutionRequestDto request, SocialEncounter encounter) {
+            if(encounter.CheckUserNearby(request.Location)) {
+                encounter.AddUser(request.UserId);
+            }
+            else {
+                encounter.RemoveUser(request.UserId);
+            }
+
+            _encounterRepository.Update(encounter);
+
+            if (!encounter.CanBeCompletedByUser(request.UserId))
+                return; // Here we return something
+
+            foreach (var userId in encounter.UserIds) {
+                var execution = _executionRepository.GetActive(userId);
+                if (execution == null)
+                    continue;
+
+                execution.Complete();
+                _executionRepository.Update(execution);
+            }
+
+            encounter.Complete();
+            _encounterRepository.Update(encounter);
+        }
+
+        public Result Abandon(long userId) {
+            var encounterExecution = _executionRepository.GetActive(userId);
+            if (encounterExecution == null)
+                return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
+
+            encounterExecution.Abandon();
+            _executionRepository.Update(encounterExecution);
+
+            return Result.Ok();
         }
     }
 }

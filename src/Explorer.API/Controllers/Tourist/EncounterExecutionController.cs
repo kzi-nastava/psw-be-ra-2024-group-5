@@ -38,5 +38,11 @@ public class EncounterExecutionController : BaseApiController {
         var result = _encounterExecutionService.Progress(request);
         return CreateResponse(result);
     }
+
+    [HttpDelete("{userId:long}")]
+    public ActionResult Abandon(long userId) {
+        var result = _encounterExecutionService.Abandon(userId);
+        return CreateResponse(result);
+    }
 }
 
