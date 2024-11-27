@@ -31,6 +31,7 @@ namespace Explorer.Payments.Infrastructure
         {
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IInternalShoppingCartService, InternalShoppingCartService>();
+            services.AddScoped<IBundleService, BundleService>();
 
             services.AddScoped<IInternalWalletService, WalletService>();
             services.AddScoped<IWalletService, WalletService>();
@@ -39,6 +40,7 @@ namespace Explorer.Payments.Infrastructure
         private static void SetupInfrastructure(IServiceCollection services)
         {
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddScoped<IBundleRepository, BundleRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
 
             services.AddDbContext<PaymentsContext>(opt =>
