@@ -15,10 +15,13 @@ public class EncountersProfile : Profile
     public EncountersProfile()
     {
         CreateMap<LocationDto, Location>().ReverseMap();
-        CreateMap<SocialEncounterDto, SocialEncounter>().ReverseMap();
+        CreateMap<SocialEncounterDto, SocialEncounter>()
+            .ReverseMap()
+            .ForMember(dest => dest.CurrentPeopleCount, opt => opt.MapFrom(src => src.UserIds.Count));
 
         CreateMap<EncounterDto, Encounter>()
             .Include<SocialEncounterDto, SocialEncounter>().ReverseMap();
+
 
         CreateMap<ParticipantDto, Participant>().ReverseMap();
     }

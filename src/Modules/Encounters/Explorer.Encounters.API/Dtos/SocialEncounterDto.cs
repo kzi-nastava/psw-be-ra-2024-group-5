@@ -9,6 +9,7 @@ namespace Explorer.Encounters.API.Dtos;
 public class SocialEncounterDto : EncounterDto {
     public float Radius { get; set; }
     public int PeopleCount { get; set; }
+    public int CurrentPeopleCount { get; set; }
 
     public SocialEncounterDto() {
         Type = EncounterType.Social;
