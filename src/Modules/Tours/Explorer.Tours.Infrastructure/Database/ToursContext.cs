@@ -1,7 +1,6 @@
 ﻿using Explorer.Tours.Core.Domain;
 using Explorer.Stakeholders.Core.Domain;
 using Microsoft.EntityFrameworkCore;
-using Explorer.Tours.Core.Domain.ShoppingCarts;
 
 
 namespace Explorer.Tours.Infrastructure.Database;
@@ -17,9 +16,6 @@ public class ToursContext : DbContext
     public DbSet<Preference> Preferences { get; set; }
     public DbSet<TourExecution> TourExecutions { get; set; }
 	public DbSet<TouristEquipment> TouristEquipment { get; set; }
-    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<TourPurchaseToken> TourPurchaseTokens { get; set; }
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) {}
 
@@ -43,8 +39,6 @@ public class ToursContext : DbContext
         ConfigureTourEquipment(modelBuilder);
         ConfigureTouristEquipment(modelBuilder);
         ConfigureTourReview(modelBuilder);
-        ConfigureShoppingCarts(modelBuilder);
-        ConfigureTourPurchaseToken(modelBuilder);
     }
 
     private static void ConfigureTour(ModelBuilder modelBuilder) {
@@ -86,8 +80,8 @@ public class ToursContext : DbContext
 
         modelBuilder.Entity<KeyPointProgress>()
             .HasOne(kp => kp.KeyPoint)
-            .WithOne()
-            .HasForeignKey<KeyPointProgress>(kp => kp.KeyPointId)
+            .WithMany()
+            .HasForeignKey(kp => kp.KeyPointId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 
@@ -160,47 +154,4 @@ public class ToursContext : DbContext
             .Property(tr => tr.ReviewDate)
             .IsRequired();
     }
-
-    private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ShoppingCart>()
-            .HasKey(sc => sc.Id);
-
-        modelBuilder.Entity<ShoppingCart>()
-            .HasMany(sc => sc.Items)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        /*
-        modelBuilder.Entity<OrderItem>()
-            .HasOne<Tour>()
-            .WithMany()
-            .HasForeignKey(oi => oi.TourId);*/
-
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.Price)
-            .HasColumnType("jsonb");
-
-        modelBuilder.Entity<ShoppingCart>()
-            .Property(sc => sc.TotalPrice)
-            .HasColumnType("jsonb");
-    }
-
-	private static void ConfigureTourPurchaseToken(ModelBuilder modelBuilder)
-    {
-		modelBuilder.Entity<User>().ToTable("Users", "stakeholders").Metadata.SetIsTableExcludedFromMigrations(true);
-
-		modelBuilder.Entity<TourPurchaseToken>().HasKey(te => te.Id);
-
-		modelBuilder.Entity<TourPurchaseToken>()
-		   .HasOne<User>()
-		   .WithMany()
-		   .HasForeignKey(te => te.UserId);
-
-
-		modelBuilder.Entity<TourPurchaseToken>()
-			.HasOne<Tour>()
-			.WithMany()
-			.HasForeignKey(te => te.TourId);
-	}
 }

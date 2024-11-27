@@ -47,7 +47,6 @@ namespace Explorer.Stakeholders.Tests.Integration
                 Id = profileId,
                 Name = "UpdatedName",
                 Surname = "UpdatedSurname",
-                ProfilePictureUrl = "updated-url.jpg",
                 Biography = "Updated biography",
                 Motto = "Updated motto"
             };
@@ -65,7 +64,7 @@ namespace Explorer.Stakeholders.Tests.Integration
                     var responseValue = objectResult.Value as UserProfileDto;
                     responseValue.ShouldNotBeNull();
                     responseValue.Id.ShouldBe(profileId);
-                    responseValue.ProfilePictureUrl.ShouldBe(updatedProfile.ProfilePictureUrl);
+                    responseValue.ProfileImage.ShouldBe(updatedProfile.ProfileImage);
                     responseValue.Biography.ShouldBe(updatedProfile.Biography);
                     responseValue.Motto.ShouldBe(updatedProfile.Motto);
                     break;

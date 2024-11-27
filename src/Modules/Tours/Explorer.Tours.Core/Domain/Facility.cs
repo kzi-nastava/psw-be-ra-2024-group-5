@@ -1,10 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Enum;
 
 namespace Explorer.Tours.Core.Domain
 {
@@ -16,6 +11,7 @@ namespace Explorer.Tours.Core.Domain
         public byte[]? Image { get; init; }
         public double Longitude { get; init; }
         public double Latitude { get; init; }   
+        public Facility() { }
         public Facility(string name, string? description, double longitude, double latitude, byte[]? image, FacilityType type = FacilityType.Other)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -26,6 +22,17 @@ namespace Explorer.Tours.Core.Domain
             Latitude = latitude;
             Type = type;
             Image = image;
+        }
+        public Facility(long id, string name, string? description, FacilityType type, byte[]? image, double longitude, double latitude) {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Invalid Name.");
+            Id = id;
+            Name = name;
+            Description = description;
+            Type = type;
+            Image = image;
+            Longitude = longitude;
+            Latitude = latitude;
         }
     }
 }

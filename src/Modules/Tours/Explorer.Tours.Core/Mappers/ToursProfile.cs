@@ -32,7 +32,17 @@ public class ToursProfile : Profile
             .ForCtorParam("image", opt => opt.MapFrom(src => Base64Converter.ConvertToByteArray(src.Image)))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
-    
+
+
+        CreateMap<EquipmentDto, Equipment>().ReverseMap();
+
+        CreateMap<PreferenceDto, Preference>().ReverseMap();
+
+        CreateMap<TourCreationDto, Tour>();
+
+        CreateMap<Tour, TourCardDto>();
+
+        CreateMap<TourDto, Tour>().ReverseMap();
     }
 }
 

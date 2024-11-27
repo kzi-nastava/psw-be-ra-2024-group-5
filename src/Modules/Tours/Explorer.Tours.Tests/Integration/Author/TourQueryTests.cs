@@ -1,5 +1,5 @@
 ﻿using Explorer.API.Controllers.Author;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +25,7 @@ public class TourQueryTests : IClassFixture<ToursFixture>
         var controller = CreateController(scope);
 
         // Act
-        var result = ((ObjectResult)controller.GetByAuthor(-12).Result)?.Value as List<TourDto>;
+        var result = ((ObjectResult)controller.GetByAuthorPaged(-12, 1, 8).Result)?.Value as List<TourDto>;
 
         // Assert
         result.ShouldNotBeNull();

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Explorer.BuildingBlocks.Core.Domain;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Tours.API.Dtos.TourExecution;
 using Explorer.Tours.API.Enum;
@@ -59,7 +60,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
         public Result<KeyPointProgressDto> Progress(long tourExecutionId, PositionDto newPositionDto) {
             try {
-                var newPosition = new Position(newPositionDto.Latitude, newPositionDto.Longitude);
+                var newPosition = new Location(newPositionDto.Latitude, newPositionDto.Longitude);
 
                 var currentSession = _tourExecutionRepository.Get(tourExecutionId);
 
@@ -67,7 +68,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                     return Result.Fail(FailureCode.InvalidArgument).WithError("Tour execution not found");
                 }
 
-                var tour = _tourRepository.GetById((int) currentSession.TourId);
+                var tour = _tourRepository.GetById( currentSession.TourId);
 
                 var completedKeyPoint = currentSession.Progress(newPosition, tour.KeyPoints);
 

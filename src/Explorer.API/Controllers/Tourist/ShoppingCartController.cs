@@ -1,6 +1,5 @@
-﻿using Explorer.Tours.API.Dtos;
-using Explorer.Tours.API.Public.Author;
-using Explorer.Tours.API.Public.Tourist;
+﻿using Explorer.Payments.API.Dtos;
+using Explorer.Payments.API.Public.Tourist;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,18 +13,6 @@ namespace Explorer.API.Controllers.Tourist
         public ShoppingCartController(IShoppingCartService shoppingCartService)
         {
             _shoppingCartService = shoppingCartService;
-        }
-
-        [HttpGet("create/{touristId:long}")]
-        public ActionResult<FacilityDto> Create(long touristId)
-        {
-            var result = this._shoppingCartService.Create(touristId);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Errors.FirstOrDefault()?.Message);
-            }
-
-            return Ok(result.Value);
         }
 
         [Authorize(Policy = "touristPolicy")]
@@ -78,5 +65,20 @@ namespace Explorer.API.Controllers.Tourist
 			}
 			return Ok(new { message = "Purchase completed successfully. Tokens created for each item." });
 		}
+		[Authorize(Policy = "touristPolicy")]
+		[HttpGet("items-count/{userId}")]
+		public ActionResult<int> GetItemsCount(long userId)
+		{
+			try
+			{
+				var count = _shoppingCartService.GetItemsCount(userId);
+				return Ok(count);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
 	}
 }
