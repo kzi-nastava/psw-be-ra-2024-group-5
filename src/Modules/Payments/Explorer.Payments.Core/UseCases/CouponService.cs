@@ -4,6 +4,7 @@ using Explorer.Payments.API.Public.Author;
 using Explorer.Payments.Core.Domain;
 using Explorer.Payments.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos.TourLifecycle;
+using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using FluentResults;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,11 @@ namespace Explorer.Payments.Core.UseCases
 	{
 
 		private readonly ICouponRepository _couponRepository;
+		private readonly ITourRepository _tourRepository;
 
-		public CouponService(ICouponRepository couponRepository) {
+		public CouponService(ICouponRepository couponRepository, ITourRepository tourRepository) {
 			_couponRepository = couponRepository;
+			_tourRepository = tourRepository;
 
 		}
 
@@ -106,6 +109,7 @@ namespace Explorer.Payments.Core.UseCases
 
 			var updatedCouponDto = new CouponDto
 			{
+				Id = coupon.Id,
 				Code = coupon.Code,
 				Percentage = coupon.Percentage,
 				ExpiredDate = coupon.ExpiredDate,
@@ -114,6 +118,40 @@ namespace Explorer.Payments.Core.UseCases
 
 			return Result.Ok(updatedCouponDto);
 		}
+		public Result<List<CouponDto>> GetAll()
+		{
+			var coupons = _couponRepository.GetAll();
+
+			if (coupons == null || !coupons.Any())
+			{
+				return Result.Fail<List<CouponDto>>("No coupons found.");
+			}
+
+			var couponDtos = coupons.Select(coupon => new CouponDto
+			{
+				Id = coupon.Id,
+				Code = coupon.Code,
+				Percentage = coupon.Percentage,
+				ExpiredDate = coupon.ExpiredDate,
+				TourIds = coupon.TourIds,
+			}).ToList();
+
+			return Result.Ok(couponDtos); // Vraća listu DTO objekata
+		}
+
+		public async Task<List<TourDto>> GetToursByIds(List<long> tourIds)
+		{
+			var tours = await _tourRepository.GetToursByIds(tourIds);
+
+			// Pretvaramo Tour objekte u TourDto (ako koristite DTOs za slanje podataka)
+			return tours.Select(t => new TourDto
+			{
+				Id = t.Id,
+				Name = t.Name,
+				Description = t.Description
+			}).ToList();
+		}
+
 
 	}
 

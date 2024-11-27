@@ -9,6 +9,7 @@ namespace Explorer.Payments.API.Dtos
 {
 	public class CouponDto
 	{
+		public long Id { get; set; }
 		public string Code { get;  set; }
 		public long Percentage { get;  set; }
 		public DateTime ExpiredDate { get; set; }

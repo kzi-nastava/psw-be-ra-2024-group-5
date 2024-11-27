@@ -2,6 +2,8 @@
 using Explorer.Payments.API.Public.Author;
 using Explorer.Payments.Core.Domain;
 using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourLifecycle;
+using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Author;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +15,12 @@ namespace Explorer.API.Controllers.Author
 	public class CouponController : BaseApiController
 	{
 		private readonly ICouponService _couponService;
+		private readonly ITourService _tourService;
 
-		public CouponController(ICouponService couponService)
+		public CouponController(ICouponService couponService,ITourService tourService)
 		{
 			_couponService = couponService;
+			_tourService = tourService;
 		}
 
 		[HttpPost("create")]
@@ -50,7 +54,7 @@ namespace Explorer.API.Controllers.Author
 		}
 
 		[HttpPut("update/{id:long}")]
-		public IActionResult Update(long id, [FromBody] CouponDto couponDto)
+		public ActionResult Update(long id, [FromBody] CouponDto couponDto)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -64,7 +68,38 @@ namespace Explorer.API.Controllers.Author
 
 			return Ok(result.Value); // Vraća ažurirani kupon
 		}
+		[HttpGet("getAll")]
+		public ActionResult GetAll()
+		{
+			var result = _couponService.GetAll();
 
+			if (!result.IsSuccess)
+			{
+				return NotFound(result.Errors.FirstOrDefault()?.Message);
+			}
 
+			return Ok(result.Value); // Vraća listu kupona
+		}
+
+		
+
+		[HttpGet("tours")]
+		public async Task<ActionResult<List<TourDto>>> GetToursByIds([FromQuery] List<long> tourIds)
+		{
+			if (tourIds == null || !tourIds.Any())
+			{
+				return BadRequest("No tour IDs provided.");
+			}
+
+			var tours = await _tourService.GetToursByIds(tourIds);
+
+			if (tours == null || !tours.Any())
+			{
+				return NotFound("No tours found for the provided IDs.");
+			}
+
+			return Ok(tours);
+		}
 	}
+
 }

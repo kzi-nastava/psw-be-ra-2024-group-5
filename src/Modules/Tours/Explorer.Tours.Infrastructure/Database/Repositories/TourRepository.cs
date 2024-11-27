@@ -131,4 +131,11 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .ToList();
     }
 
+	public async Task<List<Tour>> GetToursByIds(List<long> tourIds)
+	{
+		// Pretražuje bazu podataka i vra?a ture koje odgovaraju ID-evima
+		return await _dbContext.Tours
+			.Where(t => tourIds.Contains(t.Id))
+			.ToListAsync();
+	}
 }

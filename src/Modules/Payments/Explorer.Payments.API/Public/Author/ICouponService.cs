@@ -13,6 +13,8 @@ namespace Explorer.Payments.API.Public.Author
 		public Result<CouponDto> Create(CouponDto couponDto);
 		public Result Delete(long id);
 		public Result<CouponDto> Update(long id, CouponDto couponDto);
+		public Result<List<CouponDto>> GetAll();
+
 
 	}
 }

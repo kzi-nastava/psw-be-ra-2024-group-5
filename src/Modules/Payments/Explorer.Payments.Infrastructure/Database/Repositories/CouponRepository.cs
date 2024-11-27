@@ -42,6 +42,10 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
 		{
 			_context.Coupons.Update(coupon);
 		}
+		public List<Coupon> GetAll()
+		{
+			return _context.Coupons.ToList(); 
+		}
 
 	}
 }

@@ -22,5 +22,6 @@ public interface ITourService {
     Result<TourReviewDto> AddReview(TourReviewDto reviewDto);
     Result<TourTouristDto> GetForTouristById(long id, long touristId);
     Result ArchiveTour(long tourId);
+	Task<List<TourDto>> GetToursByIds(List<long> tourIds);
 
 }
