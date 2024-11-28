@@ -22,17 +22,16 @@ public class Participant : Entity
 
     public void AddXP(int xp)
     {
-        XP += xp; 
-        if (XP >= Level * 100)
+        XP += xp;   
+
+        while (XP >= Level * 100)
         {
-            XP -= Level * 100;
-            LevelUp();
+            XP -= Level * 100;  
+            LevelUp();           
         }
     }
 
     public void LevelUp() {
         Level++;
-
-        // logika za koliko levela se levelupuje
     }
 }
