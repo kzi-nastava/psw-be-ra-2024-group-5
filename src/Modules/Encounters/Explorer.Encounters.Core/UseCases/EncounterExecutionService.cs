@@ -34,10 +34,13 @@ namespace Explorer.Encounters.Core.UseCases {
             try {
                 var encounter = _encounterRepository.Get(request.EncounterId);
 
-                if (!encounter.IsClose(request.Location))
+                if (_executionRepository.IsCompleted(request.UserId, request.EncounterId))
+                    return Result.Fail(FailureCode.EncounterAlreadyCompleted);
+                else if (!encounter.IsClose(request.Location))
                     return Result.Fail(FailureCode.InvalidArgument).WithError("You are too far away!");
                 else if (IsAlreadyOnEncounter(request.UserId))
                     return Result.Fail(FailureCode.Conflict).WithError("Finish or abandon your current encounter to start a new one!");
+
                 else
                     return Result.Ok();
             }
