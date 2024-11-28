@@ -128,6 +128,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 execution.Complete();
                 _executionRepository.Update(execution);
+                _participantService.AddXP(request.UserId, encounter.XP);
             }
 
             encounter.Complete();
@@ -171,6 +172,7 @@ namespace Explorer.Encounters.Core.UseCases {
                     if((DateTime.UtcNow - encounterExecution.LastActivity).TotalSeconds >= 30) {
                         encounterExecution.Complete();
                         _executionRepository.Update(encounterExecution);
+                        _participantService.AddXP(request.UserId, encounter.XP);
                         return Result.Ok();
                     }
 
@@ -180,5 +182,33 @@ namespace Explorer.Encounters.Core.UseCases {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
+
+        public Result CompleteMiscEncounter(int encounterId, int userId)
+        {
+            try
+            {
+                var encounterExecution = _executionRepository.GetActive(userId);
+
+                if (encounterExecution == null)
+                    return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
+
+                var encounter = _encounterRepository.Get(encounterExecution.EncounterId);
+
+                if (encounter.Type != EncounterType.Misc || encounter.Id != encounterId)
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Invalid encounter.");
+
+                encounterExecution.Complete();
+                _executionRepository.Update(encounterExecution);
+
+                _participantService.AddXP(userId, encounter.XP);
+
+                return Result.Ok();
+            }
+            catch
+            {
+                return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
+            }
+        }
+
     }
 }

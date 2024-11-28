@@ -13,5 +13,6 @@ namespace Explorer.Encounters.API.Public
     {
         public Result<ParticipantDto> GetByUserId(long userId);
         public bool Exists(long userId);
+        public void AddXP(long userId, int xp);
     }
 }
