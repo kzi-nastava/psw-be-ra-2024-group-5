@@ -14,6 +14,8 @@ namespace Explorer.Encounters.API.Public {
         public Result IsAvailable(EncounterExecutionRequestDto request);
         public Result<EncounterDto> GetActiveEncounter(long userId);
         public Result<EncounterDto> Start(EncounterExecutionRequestDto request);
-        public Result Progress(EncounterExecutionRequestDto request);
+        public Result Abandon(long userId);
+        public Result<ProgressResponseDto> Progress(EncounterExecutionRequestDto request);
+        public Result CompleteHiddenLocationEncounter(EncounterExecutionRequestDto request);
     }
 }

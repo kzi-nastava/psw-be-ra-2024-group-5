@@ -4,6 +4,7 @@ using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Explorer.API.Controllers.Author
@@ -124,5 +125,34 @@ namespace Explorer.API.Controllers.Author
             var result = _tourService.ArchiveTour(tourId);
             return CreateResponse(result);
         }
-    }
+
+		[AllowAnonymous]
+		[HttpGet("{tourId:long}/image")]
+		public ActionResult GetTourImage(long tourId)
+		{
+			var result = _tourService.GetById(tourId);
+
+			if (!result.IsSuccess || result.Value == null)
+				return CreateResponse(Result.Fail("Tour not found."));
+
+			var tour = result.Value;
+
+			if (tour.KeyPoints == null || !tour.KeyPoints.Any())
+				return CreateResponse(Result.Fail("KeyPoints not found."));
+
+			var firstKeyPoint = tour.KeyPoints.FirstOrDefault();
+			if (firstKeyPoint?.Image == null)
+				return CreateResponse(Result.Fail("Image not available."));
+
+			try
+			{
+				byte[] imageBytes = Convert.FromBase64String(firstKeyPoint.Image);
+				return new FileContentResult(imageBytes, "image/jpeg");
+			}
+			catch (FormatException)
+			{
+				return CreateResponse(Result.Fail("Invalid Base64 string for the image."));
+			}
+		}
+	}
 }

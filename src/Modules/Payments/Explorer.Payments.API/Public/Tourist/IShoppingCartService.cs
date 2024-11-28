@@ -14,5 +14,7 @@ namespace Explorer.Payments.API.Public.Tourist
         Result<ShoppingCartDto> RemoveFromCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> GetByUserId(long touristId);
 		Result Checkout(long touristId);
+        public int GetItemsCount(long userId);
+
 	}
 }
