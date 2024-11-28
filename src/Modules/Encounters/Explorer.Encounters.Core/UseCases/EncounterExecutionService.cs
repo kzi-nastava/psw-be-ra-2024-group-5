@@ -85,8 +85,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 switch (encounter.Type) {
                     case EncounterType.Social:
-                        ProgressSocialEncounter(request, (SocialEncounter)encounter);
-                        break;
+                        return Result.Ok(ProgressSocialEncounter(request, (SocialEncounter)encounter));
                     case EncounterType.Locaion:
                         return Result.Ok(ProgressHidden(request.Location, (HiddenLocationEncounter)encounter, encounterExecution));
                     default:
@@ -99,8 +98,10 @@ namespace Explorer.Encounters.Core.UseCases {
             }
         }
         
-        public void ProgressSocialEncounter(EncounterExecutionRequestDto request, SocialEncounter encounter) {
-            if(encounter.CheckUserNearby(request.Location)) {
+        public ProgressResponseDto ProgressSocialEncounter(EncounterExecutionRequestDto request, SocialEncounter encounter) {
+            bool isNearby = encounter.CheckUserNearby(request.Location);
+
+            if (isNearby) {
                 encounter.AddUser(request.UserId);
             }
             else {
@@ -109,8 +110,9 @@ namespace Explorer.Encounters.Core.UseCases {
 
             _encounterRepository.Update(encounter);
 
-            if (!encounter.CanBeCompletedByUser(request.UserId))
-                return; // Here we return something
+            if (!encounter.CanBeCompletedByUser(request.UserId)) {
+                return new ProgressResponseDto(isNearby);
+            }
 
             foreach (var userId in encounter.UserIds) {
                 var execution = _executionRepository.GetActive(userId);
@@ -123,6 +125,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
             encounter.Complete();
             _encounterRepository.Update(encounter);
+            return new ProgressResponseDto(true, true);
         }
 
         public Result Abandon(long userId) {
@@ -135,6 +138,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
             return Result.Ok();
         }
+        
         private ProgressResponseDto ProgressHidden(Location location, HiddenLocationEncounter encounter, EncounterExecution execution) {
             if (!encounter.IsCloseToImageLocation(location))
                 return new ProgressResponseDto(false);
