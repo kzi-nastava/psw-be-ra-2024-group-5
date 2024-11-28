@@ -34,9 +34,15 @@ public class EncounterExecutionController : BaseApiController {
     }
 
     [HttpPatch]
-    public ActionResult Progress([FromBody] EncounterExecutionRequestDto request) {
+    public ActionResult<ProgressResponseDto> Progress([FromBody] EncounterExecutionRequestDto request) {
         var result = _encounterExecutionService.Progress(request);
         return CreateResponse(result);
     }
+
+    [HttpPatch("complete-hle")]
+    public ActionResult CompleteHiddenLocationEncounter([FromBody] EncounterExecutionRequestDto request) {
+        var result = _encounterExecutionService.CompleteHiddenLocationEncounter(request);
+        return CreateResponse(result);
+    }    
 }
 

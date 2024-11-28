@@ -71,7 +71,7 @@ namespace Explorer.Encounters.Core.UseCases {
             }
         }
 
-        public Result Progress(EncounterExecutionRequestDto request) {
+        public Result<ProgressResponseDto> Progress(EncounterExecutionRequestDto request) {
             try {
                 var encounterExecution = _executionRepository.GetActive(request.UserId);
 
@@ -87,13 +87,48 @@ namespace Explorer.Encounters.Core.UseCases {
                     case EncounterType.Social:
                         break;
                     case EncounterType.Locaion:
-                        break;
+                        return Result.Ok(ProgressHidden(request.Location, (HiddenLocationEncounter)encounter, encounterExecution));
                     default:
                         break;
                 }
 
                 return Result.Ok();
             } catch {
+                return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
+            }
+        }
+
+        private ProgressResponseDto ProgressHidden(Location location, HiddenLocationEncounter encounter, EncounterExecution execution) {
+            if (!encounter.IsCloseToImageLocation(location))
+                return new ProgressResponseDto(false);
+
+            execution.Progress();
+            _executionRepository.Update(execution);
+            return new ProgressResponseDto(true);
+        }
+
+        public Result CompleteHiddenLocationEncounter(EncounterExecutionRequestDto request) {
+            try {
+                var encounterExecution = _executionRepository.GetActive(request.UserId);
+
+                if (encounterExecution == null)
+                    return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
+
+                var encounter = (HiddenLocationEncounter)_encounterRepository.Get(encounterExecution.EncounterId);
+
+                if (encounter.Id != request.EncounterId)
+                    return Result.Fail(FailureCode.InvalidArgument);
+
+                if (encounter.IsCloseToImageLocation(request.Location))
+                    if((DateTime.UtcNow - encounterExecution.LastActivity).TotalSeconds >= 30) {
+                        encounterExecution.Complete();
+                        _executionRepository.Update(encounterExecution);
+                        return Result.Ok();
+                    }
+
+                return Result.Fail(FailureCode.InvalidArgument);
+            }
+            catch {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
