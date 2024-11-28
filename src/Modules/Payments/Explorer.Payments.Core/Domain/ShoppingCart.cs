@@ -23,13 +23,30 @@ namespace Explorer.Payments.Core.Domain
 
         public void AddItemToCart(OrderItem orderItem)
         {
-            if (this.ContainsTour(orderItem.TourId))
+            if (this.ContainsTour(orderItem.ItemId, orderItem.IsBundle))
                 throw new Exception("Items list already contains an item with the same TourId");
 
             TotalPrice = TotalPrice.Add(orderItem.Price);
             Items.Add(orderItem);
         }
-		public void RemoveItemFromCart(OrderItem orderItem)
+        public void AddBundleToCart(OrderItem orderItem, Bundle bundle) { // Ako postoje ture u bundle koje su vec u shopping cart-u onda se zbog povoljnije cene one brisu iz shopinga karta a ostaje ceo bundle
+            if (this.ContainsTour(orderItem.ItemId, orderItem.IsBundle))
+                throw new Exception("Items list already contains an item with the same TourId");
+
+            List<OrderItem> itemsToRemove = new List<OrderItem>();
+
+            foreach (var item in Items) {
+                if(item.IsBundle == false && bundle.BundleItems.Contains(item.ItemId)) {
+                    itemsToRemove.Add(item);
+                }
+            }
+            foreach (var item in itemsToRemove) {
+                RemoveItemFromCart(item);
+            }
+
+            AddItemToCart(orderItem);
+        }
+        public void RemoveItemFromCart(OrderItem orderItem)
 		{
 			if (!Items.Contains(orderItem))
 				throw new Exception("Items list does not contain that item");
@@ -42,12 +59,18 @@ namespace Explorer.Payments.Core.Domain
 			TotalPrice = new Money(0, TotalPrice.Currency); 
 		}
 
-        public bool ContainsTour(long tourId)
+        public bool ContainsTour(long itemId, bool isBundle)
         {
-            if (Items.Any(item => item.TourId == tourId))
+            if (Items.Any(item => item.IsBundle == isBundle && item.ItemId == itemId))
                 return true;
 
             return false;
         }
-	}
+        public bool ContainsBundleTours(Bundle bundle) {
+            if (bundle.BundleItems.Any(x => this.ContainsTour(x, false)))
+                return true;
+
+            return false;
+        }
+    }
 }

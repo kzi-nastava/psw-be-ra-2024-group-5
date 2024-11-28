@@ -12,6 +12,8 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
 {
     public class ShoppingCartRepository : CrudDatabaseRepository<ShoppingCart, PaymentsContext>, IShoppingCartRepository
     {
+        const bool ITS_BUNDLE = true;
+        const bool ITS_TOUR = false;
         public ShoppingCartRepository(PaymentsContext dbContext) : base(dbContext) { }
         public new ShoppingCart Update(ShoppingCart shoppingCart)
         {
@@ -64,7 +66,12 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
         {
             var shoppingCart = this.GetByUserId(touristId);
 
-            return shoppingCart.ContainsTour(tourId);
+            return shoppingCart.ContainsTour(tourId, ITS_TOUR);
+        }
+        public bool IsBundleInCart(long touristId, long bundleId) {
+            var shoppingCart = this.GetByUserId(touristId);
+
+            return shoppingCart.ContainsTour(bundleId, ITS_BUNDLE);
         }
     }
 }
