@@ -39,6 +39,12 @@ public class EncounterExecutionController : BaseApiController {
         return CreateResponse(result);
     }
 
+    [HttpDelete("{userId:long}")]
+    public ActionResult Abandon(long userId) {
+        var result = _encounterExecutionService.Abandon(userId);
+        return CreateResponse(result);
+    }
+
     [HttpPatch("complete-hle")]
     public ActionResult CompleteHiddenLocationEncounter([FromBody] EncounterExecutionRequestDto request) {
         var result = _encounterExecutionService.CompleteHiddenLocationEncounter(request);

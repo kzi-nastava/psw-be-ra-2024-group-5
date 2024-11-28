@@ -15,19 +15,26 @@ public class EncountersProfile : Profile
     public EncountersProfile()
     {
         CreateMap<LocationDto, Location>().ReverseMap();
-        CreateMap<SocialEncounterDto, SocialEncounter>().ReverseMap();
+
+        CreateMap<SocialEncounterDto, SocialEncounter>()
+            .ForMember(dest => dest.UserIds, opt => opt.Ignore())
+            .ReverseMap()
+            .ForMember(dest => dest.CurrentPeopleCount, opt => opt.MapFrom(src => src.UserIds.Count));
+
         CreateMap<HiddenLocationEncounterDto, HiddenLocationEncounter>()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertToByteArray(src.Image)))
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertFromByteArray(src.Image)));
 
         CreateMap<EncounterDto, Encounter>()
-            .Include<SocialEncounterDto, SocialEncounter>().ReverseMap();
+            .Include<SocialEncounterDto, SocialEncounter>()
+            .Include<HiddenLocationEncounterDto, HiddenLocationEncounter>()
+            .ReverseMap()
+            .Include<SocialEncounter, SocialEncounterDto>()
+            .Include<HiddenLocationEncounter, HiddenLocationEncounterDto>();
 
-        CreateMap<EncounterDto, Encounter>()
-            .Include<HiddenLocationEncounterDto, HiddenLocationEncounter>().ReverseMap();
-
-        CreateMap<ParticipantDto, Participant>().ReverseMap();
+        CreateMap<ParticipantDto, Participant>()
+            .ReverseMap();
     }
 
     public static byte[] ConvertToByteArray(string? base64Image) {

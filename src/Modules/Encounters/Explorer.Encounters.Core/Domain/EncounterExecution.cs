@@ -21,12 +21,17 @@ public class EncounterExecution : Entity {
         EncounterId = encounterId;
     }
 
-    public void Progress() {
-        LastActivity = DateTime.UtcNow;
+    public void Complete() {
+        Status = EncounterExecutionStatus.Completed;
+        SessionEnd = DateTime.UtcNow;
     }
 
-    public void Complete() {
+    public void Abandon() {
+        Status = EncounterExecutionStatus.Abandoned;
         SessionEnd = DateTime.UtcNow;
-        Status = EncounterExecutionStatus.Completed;
+    }
+
+    public void Progress() {
+        LastActivity = DateTime.UtcNow;
     }
 }
