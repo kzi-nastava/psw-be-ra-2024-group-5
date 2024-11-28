@@ -11,6 +11,7 @@ namespace Explorer.Encounters.API.Dtos;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(EncounterDto), typeDiscriminator: (int)EncounterType.Misc)]
 [JsonDerivedType(typeof(SocialEncounterDto), typeDiscriminator: (int)EncounterType.Social)]
+[JsonDerivedType(typeof(HiddenLocationEncounterDto), typeDiscriminator: (int)EncounterType.Locaion)]
 public class EncounterDto
 {
     [JsonPropertyName("type")]

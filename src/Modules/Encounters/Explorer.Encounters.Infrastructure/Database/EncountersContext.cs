@@ -14,6 +14,7 @@ public class EncountersContext : DbContext
 {
     public DbSet<Encounter> Encounters { get; set; }
     public DbSet<SocialEncounter> SocialEncounters { get; set; }
+    public DbSet<HiddenLocationEncounter> HiddenLocationEncounters { get; set; }
     public DbSet<EncounterExecution> EncountersExecution { get; set; }
     public DbSet<Participant> Participants { get; set; }
 
@@ -36,6 +37,13 @@ public class EncountersContext : DbContext
 
         modelBuilder.Entity<SocialEncounter>()
             .Property(se => se.UserIds)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<HiddenLocationEncounter>()
+            .ToTable("HiddenLocationEncounters");
+
+        modelBuilder.Entity<HiddenLocationEncounter>()
+            .Property(e => e.ImageLocation)
             .HasColumnType("jsonb");
 
         ConfigureParticipant(modelBuilder);
