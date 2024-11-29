@@ -24,12 +24,17 @@ namespace Explorer.API.Controllers.Author
 		}
 
 		[HttpPost("create")]
-		public ActionResult<CouponDto> Create([FromBody] CouponDto couponDto) 
+		public async Task<ActionResult<CouponDto>> Create([FromBody] CouponDto couponDto) 
 		{
 			if (!ModelState.IsValid) 
 				return BadRequest(ModelState);
 
-			var result = this._couponService.Create(couponDto);
+			if (couponDto.TourIds == null || !couponDto.TourIds.Any())
+			{
+				return BadRequest("At least one tour must be selected.");
+			}
+
+			var result = await this._couponService.Create(couponDto);
 			
 			if (!result.IsSuccess)
 			{

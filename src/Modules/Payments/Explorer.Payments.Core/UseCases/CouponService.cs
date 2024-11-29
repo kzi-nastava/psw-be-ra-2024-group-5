@@ -26,7 +26,7 @@ namespace Explorer.Payments.Core.UseCases
 
 		}
 
-		public Result<CouponDto> Create(CouponDto couponDto)
+		public async Task<Result<CouponDto>> Create(CouponDto couponDto)
 		{
 			try
 			{
@@ -42,6 +42,12 @@ namespace Explorer.Payments.Core.UseCases
 				}
 
 				var code = couponDto.Code ?? Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+
+				var tours = await _tourRepository.GetToursByIds(couponDto.TourIds); 
+				if (tours.Count != couponDto.TourIds.Count)
+				{
+					return Result.Fail<CouponDto>("One or more selected tours do not exist.");
+				}
 
 				var coupon = new Coupon
 				{
