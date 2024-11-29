@@ -28,9 +28,11 @@ namespace Explorer.Payments.Infrastructure.Database
             ConfigureTourPurchaseToken(modelBuilder);
             ConfigureBundle(modelBuilder);
             ConfigureWallet(modelBuilder);
-        }
+			ConfigureCoupon(modelBuilder); 
 
-        private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
+		}
+
+		private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ShoppingCart>()
                 .HasKey(sc => sc.Id);
@@ -78,5 +80,14 @@ namespace Explorer.Payments.Infrastructure.Database
                 .Property(oi => oi.Balance)
                 .HasColumnType("jsonb");
         }
-    }
+		private static void ConfigureCoupon(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<Coupon>()
+				.Property(c => c.ExpiredDate)
+				.HasConversion(
+					v => v.ToUniversalTime(),
+					v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+				);
+		}
+	}
 }

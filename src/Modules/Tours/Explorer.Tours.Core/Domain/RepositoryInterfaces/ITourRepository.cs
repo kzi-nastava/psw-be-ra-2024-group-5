@@ -14,4 +14,6 @@ public interface ITourRepository : ICrudRepository<Tour> {
 
     List<Tour> GetPublishedPaged(int page, int pageSize);
     public List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
+	Task<List<Tour>> GetToursByIds(List<long> tourIds);
+
 }
