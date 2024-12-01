@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 namespace Explorer.Encounters.Core.Domain.RepositoryInterfaces {
     public interface IEncounterExecutionRepository : ICrudRepository<EncounterExecution> {
         public EncounterExecution? GetActive(long userId);
+        public bool IsCompleted(long userId, long encounterId);
     }
 }

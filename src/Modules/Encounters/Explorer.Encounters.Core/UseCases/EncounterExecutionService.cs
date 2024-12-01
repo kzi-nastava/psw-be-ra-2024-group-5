@@ -19,21 +19,28 @@ namespace Explorer.Encounters.Core.UseCases {
         private readonly IEncounterExecutionRepository _executionRepository;
         private readonly IEncounterRepository _encounterRepository;
         private readonly IMapper _mapper;
+        private readonly IParticipantService _participantService;
 
-        public EncounterExecutionService(IEncounterExecutionRepository executionRepository, IEncounterRepository encounterRepository, IMapper mapper) {
+        public EncounterExecutionService(IEncounterExecutionRepository executionRepository,
+            IEncounterRepository encounterRepository, IMapper mapper, IParticipantService participantService)
+        {
             _executionRepository = executionRepository;
             _encounterRepository = encounterRepository;
             _mapper = mapper;
+            _participantService = participantService;
         }
 
         public Result IsAvailable(EncounterExecutionRequestDto request) {
             try {
                 var encounter = _encounterRepository.Get(request.EncounterId);
 
-                if (!encounter.IsClose(request.Location))
+                if (_executionRepository.IsCompleted(request.UserId, request.EncounterId))
+                    return Result.Fail(FailureCode.EncounterAlreadyCompleted);
+                else if (!encounter.IsClose(request.Location))
                     return Result.Fail(FailureCode.InvalidArgument).WithError("You are too far away!");
                 else if (IsAlreadyOnEncounter(request.UserId))
                     return Result.Fail(FailureCode.Conflict).WithError("Finish or abandon your current encounter to start a new one!");
+
                 else
                     return Result.Ok();
             }
@@ -62,6 +69,9 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 if(IsAvailable(request).IsFailed)
                     return Result.Fail(FailureCode.InvalidArgument).WithError("Unavailable!");
+
+                if(!_participantService.Exists(request.UserId))
+                    _participantService.Create(new ParticipantDto(request.UserId, 0, 0));
 
                 _executionRepository.Create(new EncounterExecution(request.UserId, request.EncounterId));
                 return Result.Ok(_mapper.Map<EncounterDto>(encounter));
@@ -121,6 +131,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 execution.Complete();
                 _executionRepository.Update(execution);
+                _participantService.AddXP(request.UserId, encounter.XP);
             }
 
             encounter.Complete();
@@ -164,6 +175,7 @@ namespace Explorer.Encounters.Core.UseCases {
                     if((DateTime.UtcNow - encounterExecution.LastActivity).TotalSeconds >= 30) {
                         encounterExecution.Complete();
                         _executionRepository.Update(encounterExecution);
+                        _participantService.AddXP(request.UserId, encounter.XP);
                         return Result.Ok();
                     }
 
@@ -173,5 +185,33 @@ namespace Explorer.Encounters.Core.UseCases {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
+
+        public Result CompleteMiscEncounter(int encounterId, int userId)
+        {
+            try
+            {
+                var encounterExecution = _executionRepository.GetActive(userId);
+
+                if (encounterExecution == null)
+                    return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
+
+                var encounter = _encounterRepository.Get(encounterExecution.EncounterId);
+
+                if (encounter.Type != EncounterType.Misc || encounter.Id != encounterId)
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Invalid encounter.");
+
+                encounterExecution.Complete();
+                _executionRepository.Update(encounterExecution);
+
+                _participantService.AddXP(userId, encounter.XP);
+
+                return Result.Ok();
+            }
+            catch
+            {
+                return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
+            }
+        }
+
     }
 }

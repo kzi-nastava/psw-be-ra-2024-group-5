@@ -8,6 +8,10 @@ public static class FailureCode
         .WithMetadata("code", 400)
         .WithMetadata("subCode", 1);
 
+    public static readonly IError EncounterAlreadyCompleted = new Error("Encounter has already been completed.")
+     .WithMetadata("code", 400)
+     .WithMetadata("subCode", 2);
+
     public static readonly IError InvalidArgument = new Error("Invalid data supplied.")
         .WithMetadata("code", 400);
     public static readonly IError Forbidden = new Error("Access to resource is restricted.")

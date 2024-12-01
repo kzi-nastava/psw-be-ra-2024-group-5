@@ -49,6 +49,13 @@ public class EncounterExecutionController : BaseApiController {
     public ActionResult CompleteHiddenLocationEncounter([FromBody] EncounterExecutionRequestDto request) {
         var result = _encounterExecutionService.CompleteHiddenLocationEncounter(request);
         return CreateResponse(result);
-    }    
+    }
+
+    [HttpPatch("complete-misc")]
+    public ActionResult CompleteMiscEncounter(int encounterId, int userId)
+    {
+        var result = _encounterExecutionService.CompleteMiscEncounter(encounterId, userId);
+        return CreateResponse(result);
+    }
 }
 
