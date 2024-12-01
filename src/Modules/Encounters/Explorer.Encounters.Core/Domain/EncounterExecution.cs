@@ -13,10 +13,25 @@ public class EncounterExecution : Entity {
     public long EncounterId { get; init; }
     public EncounterExecutionStatus Status { get; private set; } = EncounterExecutionStatus.Active;
     public DateTime? SessionEnd { get; private set; } = null;
+    public DateTime LastActivity { get; private set; } = DateTime.UtcNow;
 
     public EncounterExecution() { }
     public EncounterExecution(long userId, long encounterId) {
         UserId = userId;
         EncounterId = encounterId;
+    }
+
+    public void Complete() {
+        Status = EncounterExecutionStatus.Completed;
+        SessionEnd = DateTime.UtcNow;
+    }
+
+    public void Abandon() {
+        Status = EncounterExecutionStatus.Abandoned;
+        SessionEnd = DateTime.UtcNow;
+    }
+
+    public void Progress() {
+        LastActivity = DateTime.UtcNow;
     }
 }

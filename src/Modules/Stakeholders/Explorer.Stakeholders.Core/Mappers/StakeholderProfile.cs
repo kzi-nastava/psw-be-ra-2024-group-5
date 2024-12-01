@@ -42,7 +42,14 @@ public class StakeholderProfile : Profile
 
             CreateMap<ClubDto, Club>().ReverseMap();
             CreateMap<ClubMembershipDto, ClubMembership>().ReverseMap();
-            CreateMap<AppRatingDto, AppRating>().ReverseMap();
+        CreateMap<AppRatingDto, AppRating>()
+   .ConstructUsing(dto => new AppRating(
+       dto.Grade,
+       dto.TimeStamp,
+       dto.UserId,
+       dto.Comment ?? string.Empty
+   ))
+   .ReverseMap();
 
         CreateMap<Person, UserProfileDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))

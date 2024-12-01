@@ -25,7 +25,21 @@ public class SocialEncounter : Encounter
         return UserIds.Contains(userId) && UserIds.Count == PeopleCount;
     }
 
+    public bool CheckUserNearby(Location userLocation) {
+        return GeoCalculator.IsClose(Location, userLocation, Radius);
+    }
+
     public void AddUser(long userId) {
-        UserIds.Add(userId);
+        if (!UserIds.Contains(userId))
+            UserIds.Add(userId);
+    }
+
+    public void RemoveUser(long userId) {
+        if (UserIds.Contains(userId))
+            UserIds.Remove(userId);
+    }
+
+    public void Complete() {
+        UserIds.Clear();
     }
 }

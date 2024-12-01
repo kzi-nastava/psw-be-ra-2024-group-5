@@ -24,5 +24,6 @@ public interface ITourService {
     Result<TourLeaderboardDto> GetLeaderboard(int tourId, int size = 10);
     Result<TourTouristDto> GetForTouristById(long id, long touristId);
     Result ArchiveTour(long tourId);
+	Task<List<TourDto>> GetToursByIds(List<long> tourIds);
 
 }

@@ -35,7 +35,7 @@ public class Encounter : Entity
         Status = status;
     }
 
-    public bool IsClose(Location location) {
-        return GeoCalculator.IsClose(location, Location, 50);
+    public bool IsClose(Location location, double radius = 50) {
+        return GeoCalculator.IsClose(location, Location, radius);
     }
 }

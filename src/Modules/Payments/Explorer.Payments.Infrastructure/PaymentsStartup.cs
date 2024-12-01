@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Infrastructure.Database;
 using Explorer.Payments.API.Internal;
+using Explorer.Payments.API.Public.Author;
 using Explorer.Payments.API.Public.Tourist;
 using Explorer.Payments.Core.Domain.RepositoryInterfaces;
 using Explorer.Payments.Core.Mappers;
@@ -31,17 +32,22 @@ namespace Explorer.Payments.Infrastructure
         {
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IInternalShoppingCartService, InternalShoppingCartService>();
+            services.AddScoped<IBundleService, BundleService>();
 
             services.AddScoped<IInternalWalletService, WalletService>();
             services.AddScoped<IWalletService, WalletService>();
-        }
+			services.AddScoped<ICouponService, CouponService>(); 
 
-        private static void SetupInfrastructure(IServiceCollection services)
+		}
+
+		private static void SetupInfrastructure(IServiceCollection services)
         {
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddScoped<IBundleRepository, BundleRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
+			services.AddScoped<ICouponRepository,CouponRepository>();
 
-            services.AddDbContext<PaymentsContext>(opt =>
+			services.AddDbContext<PaymentsContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("payments"),
                 x => x.MigrationsHistoryTable("__EFMigrationsHistory", "payments")));
         }

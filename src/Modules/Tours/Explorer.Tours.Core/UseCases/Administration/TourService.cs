@@ -410,5 +410,19 @@ public class TourService : ITourService {
         _tourRepository.Update(tour);
         return Result.Ok();
     }
+
+	public async Task<List<TourDto>> GetToursByIds(List<long> tourIds)
+	{
+		var tours = await _tourRepository.GetToursByIds(tourIds);
+
+		// Pretvaramo Tour objekte u TourDto (ako koristite DTOs za slanje podataka)
+		return tours.Select(t => new TourDto
+		{
+			Id = t.Id,
+			Name = t.Name,
+			Description = t.Description
+		}).ToList();
+	}
+
 }
 

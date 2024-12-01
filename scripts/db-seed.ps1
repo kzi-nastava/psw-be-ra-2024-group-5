@@ -10,6 +10,7 @@ psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME -f "../scripts/sql/stakehol
 psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME -f "../scripts/sql/tours-seed.sql"
 psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME -f "../scripts/sql/blogs-seed.sql"
 psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME -f "../scripts/sql/payments-seed.sql"
+psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME -f "../scripts/sql/encounters-seed.sql"
 
 Remove-Item Env:\PGPASSWORD
 
