@@ -21,6 +21,12 @@ public class UserProfileDatabaseRepository
             .Include(p => p.ProfileMessages).FirstOrDefault();
     }
 
+    public UserProfile? GetByUserId(long userId)
+    {
+        return DbContext.Profiles.Where(p => p.UserId == userId)
+            .Include(p => p.ProfileMessages).FirstOrDefault();
+    }
+
     public new UserProfile Update(UserProfile userProfile)
     {
         DbContext.Entry(userProfile).State = EntityState.Modified;

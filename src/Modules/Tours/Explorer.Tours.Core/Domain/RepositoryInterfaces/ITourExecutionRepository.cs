@@ -9,6 +9,7 @@ namespace Explorer.Tours.Core.Domain.RepositoryInterfaces {
     public interface ITourExecutionRepository : ICrudRepository<TourExecution> {
         public new TourExecution Update(TourExecution entity);
         public new TourExecution Get(long id);
+        public List<TourExecution> GetByTour(long tourId);
         public TourExecution GetActive(long userId);
         public List<TourExecution> GetRecentByTourAndUser(long tourId, long userId);
     }

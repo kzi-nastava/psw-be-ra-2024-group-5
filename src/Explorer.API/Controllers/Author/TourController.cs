@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Explorer.Tours.API.Dtos.TourLeaderboard;
 
 namespace Explorer.API.Controllers.Author
 {
@@ -60,6 +61,15 @@ namespace Explorer.API.Controllers.Author
         public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
         {
             var result = _tourService.AddReview(review);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("{tourId:int}/leaderboard")]
+        public ActionResult<TourLeaderboardDto?> GetLeaderboard(int tourId)
+        {
+            var result = _tourService.GetLeaderboard(tourId);
             return CreateResponse(result);
         }
 
