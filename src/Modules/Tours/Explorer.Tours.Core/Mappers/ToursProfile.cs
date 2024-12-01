@@ -16,8 +16,10 @@ public class ToursProfile : Profile
 
         CreateMap<KeyPointDto, KeyPoint>()
             .ForCtorParam("image", opt => opt.MapFrom(src => Base64Converter.ConvertToByteArray(src.Image)))
+            .ForCtorParam("secretImage", opt => opt.MapFrom(src => Base64Converter.ConvertToByteArray(src.SecretImage))) // Ovo osigurava mapiranje za SecretImage
             .ReverseMap()
-            .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)));
+            .ForMember(dest => dest.Image, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.Image)))
+            .ForMember(dest => dest.SecretImage, opt => opt.MapFrom(src => Base64Converter.ConvertFromByteArray(src.SecretImage))); // Obrnuto mapiranje...
 
 
         CreateMap<TourReviewDto, TourReview>()
