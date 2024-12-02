@@ -21,12 +21,14 @@ namespace Explorer.Tours.Core.UseCases.Tourist
         private readonly IInternalTourService _tourService;
         private readonly IUserService _userService;
         private readonly IWalletService _walletService;
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, IInternalTourService tourService, IWalletService walletService)
+        private readonly ICouponRepository _couponRepository;
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IUserService userService, IInternalTourService tourService, IWalletService walletService,ICouponRepository couponRepository)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _userService = userService;
             _tourService = tourService;
             _walletService = walletService;
+            _couponRepository = couponRepository;
         }
 
         public Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId)
@@ -124,7 +126,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
             return result;
         }
 
-		public Result Checkout(long touristId)
+		public Result Checkout(long touristId, string code)
 		{
 			var shoppingCart = _shoppingCartRepository.GetByUserId(touristId);
 			if (shoppingCart == null || !shoppingCart.Items.Any())
@@ -132,9 +134,45 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 				return Result.Fail("Shopping cart is empty.");
 			}
 
-            var totalPrice = new ShoppingMoneyDto(shoppingCart.TotalPrice.Amount, shoppingCart.TotalPrice.Currency);
+            var coupon = _couponRepository.GetByCode(code);
 
-            var result = _walletService.AreEnoughFundsInWallet(totalPrice, touristId);
+			double discountPercentage = 0;
+
+			if (coupon != null)
+            {
+				discountPercentage = coupon.Percentage/100.0; //od 10% je 0.1
+
+			}
+
+			var originalTotalPrice = shoppingCart.TotalPrice.Amount;
+			double discountedTotalPrice = originalTotalPrice;
+
+			if (coupon != null)
+			{
+				if (coupon.TourIds != null && coupon.TourIds.Any())
+				{
+					foreach (var item in shoppingCart.Items)
+					{
+						if (coupon.TourIds.Contains(item.TourId)) 
+						{
+							discountedTotalPrice -= item.Price.Amount * discountPercentage;
+						}
+					}
+				}
+				else
+				{
+					var mostExpensiveItem = shoppingCart.Items.OrderByDescending(i => i.Price.Amount).FirstOrDefault();
+					if (mostExpensiveItem != null)
+					{
+						discountedTotalPrice -= mostExpensiveItem.Price.Amount * discountPercentage;
+					}
+				}
+			}
+
+			var totalPrice = new ShoppingMoneyDto(discountedTotalPrice, shoppingCart.TotalPrice.Currency);
+
+
+			var result = _walletService.AreEnoughFundsInWallet(totalPrice, touristId);
 
             if (!result.IsSuccess || !result.Value)
             {
@@ -168,6 +206,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
 			return Result.Ok();
 		}
+	
 
 		public int GetItemsCount(long userId)
 		{

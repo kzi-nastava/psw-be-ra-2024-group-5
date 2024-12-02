@@ -13,7 +13,7 @@ namespace Explorer.Payments.API.Public.Tourist
         Result<ShoppingCartDto> AddToCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> RemoveFromCart(OrderItemDto orderItemDto, long touristId);
         Result<ShoppingCartDto> GetByUserId(long touristId);
-		Result Checkout(long touristId);
+		Result Checkout(long touristId,string code);
         public int GetItemsCount(long userId);
 
 	}
