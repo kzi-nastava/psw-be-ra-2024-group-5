@@ -14,17 +14,17 @@ ALTER SEQUENCE payments."TourPurchaseTokens_Id_seq" RESTART WITH 1;
 insert into payments."Wallets"
 	("Balance", "TouristId")
 values
-	('{"Amount":0,"Currency":5000}', 3);
+	('{"Amount":5000,"Currency":0}', 3);
 
 insert into payments."Wallets"
 	("Balance", "TouristId")
 values
-	('{"Amount":0,"Currency":5000}', 4);
+	('{"Amount":5000,"Currency":0}', 4);
 
 insert into payments."Wallets"
 	("Balance", "TouristId")
 values
-	('{"Amount":0,"Currency":5000}', 5);
+	('{"Amount":5000,"Currency":0}', 5);
 
 insert into payments."ShoppingCarts"
 	("TotalPrice", "TouristId")
