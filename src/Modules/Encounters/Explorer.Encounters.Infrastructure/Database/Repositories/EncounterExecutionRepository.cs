@@ -21,5 +21,12 @@ namespace Explorer.Encounters.Infrastructure.Database.Repositories {
             return DbContext.EncountersExecution
                 .Any(e => e.UserId == userId && e.EncounterId == encounterId && e.Status == EncounterExecutionStatus.Completed);
         }
+
+        public List<long> GetCompletedEncounterIds(long userId) {
+            return DbContext.EncountersExecution
+                .Where(e => e.UserId == userId && e.Status == EncounterExecutionStatus.Completed)
+                .Select(e => e.EncounterId)
+                .ToList();
+        }
     }
 }

@@ -131,7 +131,7 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 execution.Complete();
                 _executionRepository.Update(execution);
-                _participantService.AddXP(request.UserId, encounter.XP);
+                _participantService.AddXP(execution.UserId, encounter.XP);
             }
 
             encounter.Complete();

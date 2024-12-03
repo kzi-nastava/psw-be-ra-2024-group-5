@@ -18,10 +18,10 @@ public class EncounterController : BaseApiController
         _encounterService = encounterService;
     }
 
-    [HttpGet("active")]
-    public ActionResult<List<EncounterDto>> GetAllActive()
+    [HttpGet("active/{userId:long}")]
+    public ActionResult<List<EncounterDto>> GetAllActive(long userId)
     {
-        var result = _encounterService.GetAllActive();
+        var result = _encounterService.GetAllActive(userId);
         return CreateResponse(result);
     }
 
