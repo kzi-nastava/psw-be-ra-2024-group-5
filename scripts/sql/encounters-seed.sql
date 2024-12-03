@@ -2,7 +2,9 @@ DELETE FROM encounters."EncountersExecution";
 DELETE FROM encounters."SocialEncounters";
 DELETE FROM encounters."HiddenLocationEncounters";
 DELETE FROM encounters."Encounters";
+ALTER SEQUENCE encounters."Encounters_Id_seq" RESTART WITH 1;
 DELETE FROM encounters."Participants";
+ALTER SEQUENCE encounters."Participants_Id_seq" RESTART WITH 1;
 
 insert into encounters."Encounters"
 	("Name", "Description", "Location", "XP", "Status", "Type", "CreatorId")
