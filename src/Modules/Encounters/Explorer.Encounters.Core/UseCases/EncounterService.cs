@@ -5,8 +5,8 @@ using Explorer.Encounters.API.Enum;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
-using Explorer.Stakeholders.API.Dtos;                           // BREAKS ARCHITECTURE
-using Explorer.Stakeholders.API.Public;                         // BREAKS ARCHITECTURE
+using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;                        // BREAKS ARCHITECTURE
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;   // BREAKS ARCHITECTURE
 using FluentResults;
