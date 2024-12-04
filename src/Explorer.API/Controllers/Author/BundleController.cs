@@ -1,5 +1,4 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Payments.API.Dtos;
 using Explorer.Payments.API.Dtos.BundleDto;
 using Explorer.Payments.API.Enum;
 using Explorer.Payments.API.Public.Tourist;

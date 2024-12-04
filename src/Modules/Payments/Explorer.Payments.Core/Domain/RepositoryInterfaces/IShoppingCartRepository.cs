@@ -12,6 +12,7 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
     {
         ShoppingCart GetByUserId(long touristId);
         void SaveToken(TourPurchaseToken token);
+        void SavePaymentRecord(PaymentRecord paymentRecord);
         TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId);
         bool IsTourBought(long touristId, long tourId);
         bool IsTourInCart(long touristId, long tourId);

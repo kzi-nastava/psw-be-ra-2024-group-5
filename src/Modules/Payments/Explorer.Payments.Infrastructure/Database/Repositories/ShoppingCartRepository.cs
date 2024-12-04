@@ -50,6 +50,11 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
             return DbContext.TourPurchaseTokens.Where(tpt => tpt.TourId == tourId && tpt.UserId == touristId).FirstOrDefault();
         }
 
+        public void SavePaymentRecord(PaymentRecord paymentRecord) {
+            DbContext.PaymentRecords.Add(paymentRecord);
+            DbContext.SaveChanges();
+        }
+
         public bool IsTourBought(long touristId, long tourId)
         {
             var purchaseToken = this.GetPurchaseTokenByTourAndTouristId(touristId, tourId);

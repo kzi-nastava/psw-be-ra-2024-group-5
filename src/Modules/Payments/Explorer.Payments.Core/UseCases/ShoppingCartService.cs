@@ -233,10 +233,10 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 
             //var tokens = new List<TourPurchaseToken>();
 
-			foreach (var item in shoppingCart.Items)
+			foreach (var order in shoppingCart.Items)
 			{
-                if (item.IsBundle) {
-                    var bundle = _bundleRepository.Get(item.ItemId);
+                if (order.IsBundle) {
+                    var bundle = _bundleRepository.Get(order.ItemId);
                     if (bundle == null)
                         return Result.Fail("Error while getting bundles");
 
@@ -253,14 +253,15 @@ namespace Explorer.Tours.Core.UseCases.Tourist
                 else {
                     var token = new TourPurchaseToken
 				    {
-					    TourId = item.ItemId,               
+					    TourId = order.ItemId,               
 					    UserId = touristId,
 					    PurchaseDate = DateTime.UtcNow
 				    };
 				    //tokens.Add(token);
 				    _shoppingCartRepository.SaveToken(token);
                 }
-			}
+                _shoppingCartRepository.SavePaymentRecord(new PaymentRecord(touristId, order.ItemId, order.Price, order.IsBundle));
+            }
 
 			shoppingCart.Items.Clear();
 			shoppingCart.ResetTotalPrice(); 

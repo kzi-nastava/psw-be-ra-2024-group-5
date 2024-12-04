@@ -18,6 +18,7 @@ namespace Explorer.Payments.Infrastructure.Database
         public DbSet<Bundle> Bundles { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
 		public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<PaymentRecord> PaymentRecords { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,9 +29,10 @@ namespace Explorer.Payments.Infrastructure.Database
             ConfigureTourPurchaseToken(modelBuilder);
             ConfigureBundle(modelBuilder);
             ConfigureWallet(modelBuilder);
-			ConfigureCoupon(modelBuilder); 
+			ConfigureCoupon(modelBuilder);
+            ConfigurePaymentRecord(modelBuilder);
 
-		}
+        }
 
 		private static void ConfigureShoppingCarts(ModelBuilder modelBuilder)
         {
@@ -89,5 +91,10 @@ namespace Explorer.Payments.Infrastructure.Database
 					v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
 				);
 		}
+        private static void ConfigurePaymentRecord(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<PaymentRecord>()
+                .Property(pm => pm.Price)
+                .HasColumnType("jsonb");
+        }
 	}
 }
