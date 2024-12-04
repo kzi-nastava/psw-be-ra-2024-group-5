@@ -10,7 +10,7 @@ public class KeyPoint : Entity {
     public byte[] Image { get; private set; }
     public long TourId { get; private set; }
     public string? Secret { get; private set; }
-    public byte[] SecretImage { get; private set; }
+    public byte[]? SecretImage { get; private set; }
     public KeyPoint() { }
 
     public KeyPoint(string name, string? description, double latitude, double longitude, byte[] image, long tourId, string? secret, byte[] secretImage) {
