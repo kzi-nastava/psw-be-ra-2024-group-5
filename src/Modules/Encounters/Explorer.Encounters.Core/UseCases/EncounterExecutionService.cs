@@ -7,15 +7,11 @@ using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
 using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Explorer.Encounters.Core.UseCases {
-    public class EncounterExecutionService : IEncounterExecutionService {
+namespace Explorer.Encounters.Core.UseCases
+{
+    public class EncounterExecutionService : IEncounterExecutionService
+    {
         private readonly IEncounterExecutionRepository _executionRepository;
         private readonly IEncounterRepository _encounterRepository;
         private readonly IMapper _mapper;
@@ -30,8 +26,10 @@ namespace Explorer.Encounters.Core.UseCases {
             _participantService = participantService;
         }
 
-        public Result IsAvailable(EncounterExecutionRequestDto request) {
-            try {
+        public Result IsAvailable(EncounterExecutionRequestDto request)
+        {
+            try
+            {
                 var encounter = _encounterRepository.Get(request.EncounterId);
 
                 if (_executionRepository.IsCompleted(request.UserId, request.EncounterId))
@@ -44,18 +42,21 @@ namespace Explorer.Encounters.Core.UseCases {
                 else
                     return Result.Ok();
             }
-            catch {
+            catch
+            {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
 
-        private bool IsAlreadyOnEncounter(long userId) {
+        private bool IsAlreadyOnEncounter(long userId)
+        {
             return _executionRepository.GetActive(userId) != null;
         }
 
-        public Result<EncounterDto> GetActiveEncounter(long userId) {
+        public Result<EncounterDto> GetActiveEncounter(long userId)
+        {
             var execution = _executionRepository.GetActive(userId);
-            
+
             if (execution == null)
                 return Result.Ok();
 
@@ -63,26 +64,31 @@ namespace Explorer.Encounters.Core.UseCases {
             return Result.Ok(_mapper.Map<EncounterDto>(encounter));
         }
 
-        public Result<EncounterDto> Start(EncounterExecutionRequestDto request) {
-            try {
+        public Result<EncounterDto> Start(EncounterExecutionRequestDto request)
+        {
+            try
+            {
                 var encounter = _encounterRepository.Get(request.EncounterId);
 
-                if(IsAvailable(request).IsFailed)
+                if (IsAvailable(request).IsFailed)
                     return Result.Fail(FailureCode.InvalidArgument).WithError("Unavailable!");
 
-                if(!_participantService.Exists(request.UserId))
+                if (!_participantService.Exists(request.UserId))
                     _participantService.Create(new ParticipantDto(request.UserId, 0, 0));
 
                 _executionRepository.Create(new EncounterExecution(request.UserId, request.EncounterId));
                 return Result.Ok(_mapper.Map<EncounterDto>(encounter));
             }
-            catch {
+            catch
+            {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
 
-        public Result<ProgressResponseDto> Progress(EncounterExecutionRequestDto request) {
-            try {
+        public Result<ProgressResponseDto> Progress(EncounterExecutionRequestDto request)
+        {
+            try
+            {
                 var encounterExecution = _executionRepository.GetActive(request.UserId);
 
                 if (encounterExecution == null)
@@ -93,7 +99,8 @@ namespace Explorer.Encounters.Core.UseCases {
                 if (encounter.Id != request.EncounterId)
                     return Result.Fail(FailureCode.InvalidArgument);
 
-                switch (encounter.Type) {
+                switch (encounter.Type)
+                {
                     case EncounterType.Social:
                         return Result.Ok(ProgressSocialEncounter(request, (SocialEncounter)encounter));
                     case EncounterType.Locaion:
@@ -103,28 +110,35 @@ namespace Explorer.Encounters.Core.UseCases {
                 }
 
                 return Result.Ok();
-            } catch {
+            }
+            catch
+            {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }
-        
-        public ProgressResponseDto ProgressSocialEncounter(EncounterExecutionRequestDto request, SocialEncounter encounter) {
+
+        public ProgressResponseDto ProgressSocialEncounter(EncounterExecutionRequestDto request, SocialEncounter encounter)
+        {
             bool isNearby = encounter.CheckUserNearby(request.Location);
 
-            if (isNearby) {
+            if (isNearby)
+            {
                 encounter.AddUser(request.UserId);
             }
-            else {
+            else
+            {
                 encounter.RemoveUser(request.UserId);
             }
 
             _encounterRepository.Update(encounter);
 
-            if (!encounter.CanBeCompletedByUser(request.UserId)) {
+            if (!encounter.CanBeCompletedByUser(request.UserId))
+            {
                 return new ProgressResponseDto(isNearby);
             }
 
-            foreach (var userId in encounter.UserIds) {
+            foreach (var userId in encounter.UserIds)
+            {
                 var execution = _executionRepository.GetActive(userId);
                 if (execution == null)
                     continue;
@@ -139,7 +153,8 @@ namespace Explorer.Encounters.Core.UseCases {
             return new ProgressResponseDto(true, true);
         }
 
-        public Result Abandon(long userId) {
+        public Result Abandon(long userId)
+        {
             var encounterExecution = _executionRepository.GetActive(userId);
             if (encounterExecution == null)
                 return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
@@ -149,8 +164,9 @@ namespace Explorer.Encounters.Core.UseCases {
 
             return Result.Ok();
         }
-        
-        private ProgressResponseDto ProgressHidden(Location location, HiddenLocationEncounter encounter, EncounterExecution execution) {
+
+        private ProgressResponseDto ProgressHidden(Location location, HiddenLocationEncounter encounter, EncounterExecution execution)
+        {
             if (!encounter.IsCloseToImageLocation(location))
                 return new ProgressResponseDto(false);
 
@@ -159,8 +175,10 @@ namespace Explorer.Encounters.Core.UseCases {
             return new ProgressResponseDto(true);
         }
 
-        public Result CompleteHiddenLocationEncounter(EncounterExecutionRequestDto request) {
-            try {
+        public Result CompleteHiddenLocationEncounter(EncounterExecutionRequestDto request)
+        {
+            try
+            {
                 var encounterExecution = _executionRepository.GetActive(request.UserId);
 
                 if (encounterExecution == null)
@@ -172,7 +190,8 @@ namespace Explorer.Encounters.Core.UseCases {
                     return Result.Fail(FailureCode.InvalidArgument);
 
                 if (encounter.IsCloseToImageLocation(request.Location))
-                    if((DateTime.UtcNow - encounterExecution.LastActivity).TotalSeconds >= 30) {
+                    if ((DateTime.UtcNow - encounterExecution.LastActivity).TotalSeconds >= 30)
+                    {
                         encounterExecution.Complete();
                         _executionRepository.Update(encounterExecution);
                         _participantService.AddXP(request.UserId, encounter.XP);
@@ -181,7 +200,8 @@ namespace Explorer.Encounters.Core.UseCases {
 
                 return Result.Fail(FailureCode.InvalidArgument);
             }
-            catch {
+            catch
+            {
                 return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
             }
         }

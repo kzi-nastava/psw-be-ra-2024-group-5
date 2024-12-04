@@ -5,35 +5,26 @@ using Explorer.Encounters.API.Enum;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
+using Explorer.Stakeholders.API.Dtos;                           // BREAKS ARCHITECTURE
+using Explorer.Stakeholders.API.Public;                         // BREAKS ARCHITECTURE
+using Explorer.Stakeholders.Core.Domain;                        // BREAKS ARCHITECTURE
+using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;   // BREAKS ARCHITECTURE
 using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Explorer.Stakeholders.Core;
-using Explorer.Stakeholders.API.Internal;
-using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
-using Explorer.Stakeholders.Core.Domain;
-using Explorer.BuildingBlocks.Core.Domain;
-using Explorer.Stakeholders.API.Public;
-using Explorer.Stakeholders.API.Dtos;
-using Explorer.Stakeholders.API.Dtos.Messages;
-using Explorer.Stakeholders.Core.Domain.Messages;
-using Explorer.Encounters.API.Enum;
 
 namespace Explorer.Encounters.Core.UseCases;
 
-public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounterService {
-     
+public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounterService
+{
+
     private readonly IEncounterRepository _encounterRepository;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
 
     public EncounterService(IEncounterRepository encounterRepository, IMapper mapper, IUserRepository userRepository,
-        INotificationService notificationService) 
-        : base(encounterRepository, mapper) {
+        INotificationService notificationService)
+        : base(encounterRepository, mapper)
+    {
 
         _encounterRepository = encounterRepository;
         _mapper = mapper;
@@ -42,13 +33,15 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
 
     }
 
-    public Result<List<EncounterDto>> GetAllActive() {
+    public Result<List<EncounterDto>> GetAllActive()
+    {
         var encounters = _encounterRepository.GetAllActive();
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
     }
 
-    public Result<List<EncounterDto>> GetByCreatorId(long creatorId) {
+    public Result<List<EncounterDto>> GetByCreatorId(long creatorId)
+    {
         var encounters = _encounterRepository.GetByCreatorId(creatorId);
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
@@ -101,7 +94,7 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
 
             return Result.Ok();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return Result.Fail($"Error accepting encounter: {ex.Message}");
         }
@@ -181,7 +174,7 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
         _notificationService.SendNotification(notificationDto);
     }
 
-    private void SendNotificationForRejectingEncounter(long creatorId, long encounterId) 
+    private void SendNotificationForRejectingEncounter(long creatorId, long encounterId)
     {
         var notificationDto = new NotificationDto
         {
