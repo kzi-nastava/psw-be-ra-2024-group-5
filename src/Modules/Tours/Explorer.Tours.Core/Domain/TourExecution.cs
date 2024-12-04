@@ -12,6 +12,7 @@ namespace Explorer.Tours.Core.Domain {
 
         public long UserId { get; init; }
         public TourExecutionStatus Status { get; private set; }
+        public DateTime? SessionStart { get; private set; } = null;
         public DateTime? SessionEnd { get; private set; } = null;
         public DateTime? LastActivity { get; private set; } = null;
         public long TourId { get; init; }
@@ -23,6 +24,7 @@ namespace Explorer.Tours.Core.Domain {
             UserId = userId;
             Status = TourExecutionStatus.Active;
             TourId = tourId;
+            SessionStart = DateTime.UtcNow;
         }
 
         private void Complete() {
@@ -37,6 +39,14 @@ namespace Explorer.Tours.Core.Domain {
 
         public bool IsCompleted() {
             return Status == TourExecutionStatus.Completed;
+        }
+
+        public TimeSpan? GetCompletionDuration()
+        {
+            if (SessionEnd == null || SessionStart == null || Status != TourExecutionStatus.Completed)
+                return null;
+
+            return SessionEnd.Value - SessionStart.Value;
         }
 
         public KeyPointProgress? Progress(Location newPosition, IEnumerable<KeyPoint> keyPoints) {

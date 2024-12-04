@@ -39,5 +39,17 @@ namespace Explorer.Encounters.Core.UseCases
             }
             return Result.Ok(participantDto);
         }
+
+        public bool Exists(long userId)
+        {
+            return _participantRepository.Exists(userId);
+        }
+
+        public void AddXP(long userId, int xp)
+        {
+            var participant = _participantRepository.GetByUserId(userId);
+            participant.AddXP(xp);
+            _participantRepository.Update(participant);
+        }
     }
 }

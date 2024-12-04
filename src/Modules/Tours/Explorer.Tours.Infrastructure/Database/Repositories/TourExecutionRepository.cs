@@ -30,6 +30,14 @@ namespace Explorer.Tours.Infrastructure.Database.Repositories {
             return tourExecution;
         }
 
+        public List<TourExecution> GetByTour(long tourId)
+        {
+            var tourExecution = DbContext.TourExecutions.Where(te => te.TourId == tourId)
+                                                        .Include(te => te.KeyPointProgresses)
+                                                        .ToList();
+            return tourExecution;
+        }
+
         public TourExecution GetActive(long userId) {
             var tourExecution = DbContext.TourExecutions.Where(te => te.UserId == userId && te.Status == TourExecutionStatus.Active)
                                                         .Include(te => te.KeyPointProgresses)

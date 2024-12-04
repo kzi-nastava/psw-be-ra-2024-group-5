@@ -17,4 +17,9 @@ public class ParticipantRepository : CrudDatabaseRepository<Participant, Encount
     {
         return DbContext.Set<Participant>().FirstOrDefault(p=> p.UserId == userId);
     }
+
+    public bool Exists(long userId)
+    {
+        return DbContext.Participants.Any(p => p.UserId == userId);
+    }
 }

@@ -10,9 +10,11 @@ namespace Explorer.Payments.API.Public.Author
 {
 	public interface ICouponService
 	{
-		public Result<CouponDto> Create(CouponDto couponDto);
+		Task<Result<CouponDto>> Create(CouponDto couponDto);
 		public Result Delete(long id);
 		public Result<CouponDto> Update(long id, CouponDto couponDto);
+		public Result<List<CouponDto>> GetAll();
+
 
 	}
 }

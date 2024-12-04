@@ -14,6 +14,8 @@ using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Internal;
 using Explorer.Payments.API.Internal;
+using Explorer.Tours.API.Dtos.TourLeaderboard;
+using Explorer.Stakeholders.API.Internal;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
@@ -25,8 +27,11 @@ public class TourService : ITourService {
     private readonly IInternalShoppingCartService _shoppingService;
     private readonly ITourExecutionRepository _tourExecutionRepository;
     private readonly ITourReviewRepository _tourReviewRepository;
+    private readonly IUserProfileServiceInternal _userProfileService;
 
-    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper, IInternalShoppingCartService shoppingCartRepository, ITourExecutionRepository tourExecutionRepository, ITourReviewRepository tourReviewRepository)
+    public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper,
+        IInternalShoppingCartService shoppingCartRepository, ITourExecutionRepository tourExecutionRepository,
+        ITourReviewRepository tourReviewRepository, IUserProfileServiceInternal userProfileService)
     {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
@@ -36,6 +41,7 @@ public class TourService : ITourService {
         _tourExecutionRepository = tourExecutionRepository;
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
         _tourReviewRepository = tourReviewRepository;
+        _userProfileService = userProfileService;
     }
 
     public Result<TourDto> GetById(long id) {
@@ -335,6 +341,40 @@ public class TourService : ITourService {
         }
     }
 
+    public Result<TourLeaderboardDto> GetLeaderboard(int tourId, int size = 10)
+    {
+        try
+        {
+            var tour = _tourRepository.GetById(tourId);
+
+            if (tour == null) 
+                return Result.Fail(FailureCode.NotFound).WithError($"Tour not with id:{tourId} found");
+
+            var completedExecutions = _tourExecutionRepository.GetByTour(tourId).Where(te => te.IsCompleted());
+
+            var sortedExecutions = completedExecutions.GroupBy(te => te.UserId)
+                .Select(group => group.OrderBy(te => te.GetCompletionDuration()).First())
+                .OrderBy(te => te.GetCompletionDuration()).Take(size).ToList();
+
+            var leaderboardEntries = sortedExecutions.Select(
+                (te, i) => new LeaderboardEntryDto
+                {
+                    Position = i + 1,
+                    UserId = te.UserId,
+                    ProfileImage = Convert.ToBase64String(_userProfileService.GetProfileImageByUserId(te.UserId).Value!),
+                    UserName = _userProfileService.GetDisplayNameByUserId(te.UserId).Value,
+                    Time = te.GetCompletionDuration()!.Value
+                }).ToList();
+
+            return Result.Ok(new TourLeaderboardDto(tourId, leaderboardEntries));
+
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(ex.Message);
+        }
+    }
+
     public Result PublishTour(long tourId, double priceAmount, Currency currency)
     {
         var tour = _tourRepository.GetById(tourId);
@@ -370,5 +410,19 @@ public class TourService : ITourService {
         _tourRepository.Update(tour);
         return Result.Ok();
     }
+
+	public async Task<List<TourDto>> GetToursByIds(List<long> tourIds)
+	{
+		var tours = await _tourRepository.GetToursByIds(tourIds);
+
+		// Pretvaramo Tour objekte u TourDto (ako koristite DTOs za slanje podataka)
+		return tours.Select(t => new TourDto
+		{
+			Id = t.Id,
+			Name = t.Name,
+			Description = t.Description
+		}).ToList();
+	}
+
 }
 
