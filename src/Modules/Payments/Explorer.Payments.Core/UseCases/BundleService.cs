@@ -224,7 +224,7 @@ namespace Explorer.Payments.Core.UseCases
             {
                 var tourResult = _internalTourService.GetById(tourId);
 
-                if (tourResult != null && tourResult.IsSuccess)
+                if (tourResult != null && tourResult.IsSuccess && tourResult.Value != null)
                     tours.Add(tourResult.Value);
             }
 

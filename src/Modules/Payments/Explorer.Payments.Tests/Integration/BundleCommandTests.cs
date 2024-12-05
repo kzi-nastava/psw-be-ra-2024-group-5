@@ -84,7 +84,27 @@ namespace Explorer.Payments.Tests.Integration
         }
 
         [Theory]
-        [InlineData(-1, -11, 103, 200)]   // Add new item
+        [InlineData(-2, -11, BundleStatus.Draft, 200)]       // Success for non-published status
+        [InlineData(-3, -12, BundleStatus.Archive, 200)]
+        [InlineData(-1, 999, BundleStatus.Published, 400)]   // Invalid author
+        [InlineData(-2, -11, BundleStatus.Published, 400)]   // Not enough published tours
+        [InlineData(999, -11, BundleStatus.Published, 400)] // Bundle not found
+        public async Task ChangeStatus(long bundleId, long authorId, BundleStatus newStatus, int expectedResponseCode)
+        {
+            // Arrange
+            using var scope = fixture.Factory.Services.CreateScope();
+            var controller = CreateController(scope);
+
+            // Act
+            var result = (ObjectResult)controller.ChangeStatus(bundleId, authorId, newStatus).Result;
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.StatusCode.ShouldBe(expectedResponseCode);
+        }
+
+        [Theory]
+        [InlineData(-1, -11, 103, 200)]
         [InlineData(-4, -13, -1, 200)]   // Remove existing item
         [InlineData(-1, 999, 101, 400)]    // Invalid author
         [InlineData(-3, -12, -1, 400)]   // Less than two items in the bundle
@@ -103,27 +123,6 @@ namespace Explorer.Payments.Tests.Integration
             };
 
             var result = (ObjectResult)controller.AddOrRemoveBundleItem(addOrRemoveItemDto).Result;
-
-            // Assert
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(expectedResponseCode);
-        }
-
-        [Theory]
-        [InlineData(-1, -11, BundleStatus.Published, 200)]   // Success with enough published tours
-        [InlineData(-2, -11, BundleStatus.Draft, 200)]       // Success for non-published status
-        [InlineData(-3, -12, BundleStatus.Archive, 200)]
-        [InlineData(-1, 999, BundleStatus.Published, 400)]   // Invalid author
-        [InlineData(-2, -11, BundleStatus.Published, 400)]   // Not enough published tours
-        [InlineData(999, -11, BundleStatus.Published, 400)] // Bundle not found
-        public async Task ChangeStatus(long bundleId, long authorId, BundleStatus newStatus, int expectedResponseCode)
-        {
-            // Arrange
-            using var scope = fixture.Factory.Services.CreateScope();
-            var controller = CreateController(scope);
-
-            // Act
-            var result = (ObjectResult)controller.ChangeStatus(bundleId, authorId, newStatus).Result;
 
             // Assert
             result.ShouldNotBeNull();

@@ -140,7 +140,9 @@ public class Tour : Entity {
         return true;
     }
 
-    public KeyPoint GetFirstKeypoint() {
+    public KeyPoint? GetFirstKeypoint() {
+        if (KeyPoints.Count == 0)
+            return null;
         return KeyPoints[0];
     }
 

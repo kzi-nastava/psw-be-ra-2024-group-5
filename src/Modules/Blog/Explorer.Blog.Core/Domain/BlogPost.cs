@@ -1,5 +1,6 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
 using Markdig;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Explorer.Blog.Core.Domain;
@@ -26,8 +27,14 @@ public class BlogPost : Entity
 
     public BlogPost(string title, string description, int userId)
     {
-        this.Title = title ?? throw new ArgumentNullException(nameof(title));
-        this.Description = description ?? throw new ArgumentNullException(nameof(description));
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Name cannot be empty or whitespace.", nameof(title));
+        this.Title = title;
+
+        if (string.IsNullOrWhiteSpace(description))
+            throw new ArgumentException("Name cannot be empty or whitespace.", nameof(description));
+        this.Description = description;
+
         if (!Enum.IsDefined(typeof(BlogStatus), Status))
         {
             throw new ArgumentException("Invalid Status value.", nameof(Status));
