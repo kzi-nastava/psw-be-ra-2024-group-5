@@ -1,5 +1,4 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Payments.API.Dtos;
 using Explorer.Payments.API.Dtos.BundleDto;
 using Explorer.Payments.API.Enum;
 using Explorer.Payments.API.Public.Tourist;
@@ -16,6 +15,13 @@ namespace Explorer.API.Controllers.Author
         {
             _bundleService = bundleService;
         }
+
+        [HttpGet("get/{id:long}")]
+        public ActionResult<BundleDetailsDto> GetById(long id) {
+            var result = _bundleService.GetById(id);
+            return CreateResponse(result);
+        }
+
 
         [HttpPost("create")]
         public ActionResult<BundleDetailsDto> CreateBlog([FromBody] CreateBundleDto dto)

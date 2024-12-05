@@ -138,4 +138,11 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
 			.Where(t => tourIds.Contains(t.Id))
 			.ToListAsync();
 	}
+	public List<Tour> GetToursFromIds(List<long> tourIds) {
+        return DbContext.Tours
+            .Where(t => tourIds.Contains(t.Id))
+            .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .ToList();
+    }
 }

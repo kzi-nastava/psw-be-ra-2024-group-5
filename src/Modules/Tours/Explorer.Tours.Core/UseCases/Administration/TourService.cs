@@ -2,17 +2,13 @@ using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.API.Dtos;
-
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using Explorer.Tours.Core.Utilities;
 using FluentResults;
-using System.Collections.Generic;
-using System.Linq;
 using Explorer.Tours.API.Enum;
 using Explorer.Tours.API.Dtos.TourLifecycle;
-using Explorer.Tours.API.Internal;
 using Explorer.Payments.API.Internal;
 using Explorer.Tours.API.Dtos.TourLeaderboard;
 using Explorer.Stakeholders.API.Internal;
@@ -79,7 +75,16 @@ public class TourService : ITourService {
             return Result.Fail(FailureCode.NotFound).WithError(e.Message);
         }
     }
-
+    public Result<List<TourCardDto>> GetTourCardsByIds(List<long> tourIds) {
+        try {
+            var tours = _tourRepository.GetToursFromIds(tourIds);
+            var tourDtos = _mapper.Map<List<TourCardDto>>(tours);
+            return Result.Ok(tourDtos);
+        }
+        catch (Exception e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
+    }
 
     public Result<TourDto> Create(TourCreationDto tourDto) {
         try {

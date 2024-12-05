@@ -17,7 +17,6 @@ public interface ITourService {
     Result UpdateTourEquipment(long tourId, List<long> equipmentId);
     Result<PagedResult<EquipmentDto>> GetTourEquipment(long tourId);
     Result PublishTour(long tourId, double priceAmount, Currency currency);
-
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
     Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
     Result<TourReviewDto> AddReview(TourReviewDto reviewDto);
@@ -25,6 +24,7 @@ public interface ITourService {
     Result<TourTouristDto> GetForTouristById(long id, long touristId);
     Result ArchiveTour(long tourId);
 	Task<List<TourDto>> GetToursByIds(List<long> tourIds);
+    Result<List<TourCardDto>> GetTourCardsByIds(List<long> tourIds);
     Result<PagedResult<TourCardDto>> GetToursByActivePreferencePaged(long touristId, int page, int pageSize);
 
 }

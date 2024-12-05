@@ -74,6 +74,14 @@ namespace Explorer.API.Controllers.Author
         }
 
         [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpPost("bundle")] //treba biti get ali zbog fronta je post ima komentar tamo
+        public ActionResult<List<TourCardDto>> GetBundleTours([FromBody] List<long> tourIds) {
+            var result = _tourService.GetTourCardsByIds(tourIds);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
         [HttpGet("published/{page:int}/{pageSize:int}")]
         public ActionResult<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize /*bool flag, int startLOng endLong, int startlat endLat*/)
         {

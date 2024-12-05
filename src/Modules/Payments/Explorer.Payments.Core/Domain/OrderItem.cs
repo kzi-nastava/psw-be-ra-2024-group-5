@@ -9,15 +9,17 @@ namespace Explorer.Payments.Core.Domain
 {
     public class OrderItem: Entity
     {
-        public long TourId { get; private set; }
-        public string TourName { get; private set; }
+        public long ItemId { get; private set; }
+        public string ItemName { get; private set; }
         public Money Price { get; private set; }
+        public bool IsBundle { get; private set; }
         public OrderItem() { }
-        public OrderItem(long tourId, string tourName, Money price)
+        public OrderItem(long itemId, string itemName, Money price, bool isBundle)
         {
-            TourId = tourId;
-            TourName = tourName;
+            ItemId = itemId;
+            ItemName = itemName;
             Price = price;
+            IsBundle = isBundle;
         }
     }
 }

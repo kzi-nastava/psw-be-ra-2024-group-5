@@ -31,6 +31,7 @@ namespace Explorer.Payments.Core.UseCases
             return _shoppingCartRepository.IsTourInCart(touristId, tourId);
         }
 
+
         public Result Create(long touristId)
         {
             try

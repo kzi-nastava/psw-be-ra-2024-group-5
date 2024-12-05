@@ -1,21 +1,14 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
-using Explorer.Payments.API.Dtos;
 using Explorer.Payments.API.Dtos.BundleDto;
 using Explorer.Payments.API.Enum;
 using Explorer.Payments.API.Public.Tourist;
 using Explorer.Payments.Core.Domain;
 using Explorer.Payments.Core.Domain.RepositoryInterfaces;
 using Explorer.Stakeholders.API.Internal;
-using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Internal;
 using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Explorer.Payments.Core.UseCases
 {
@@ -32,6 +25,20 @@ namespace Explorer.Payments.Core.UseCases
             _mapper = mapper;
             _internalUserService = internalUserService;
             _internalTourService = internalTourService;
+        }
+
+        public Result<BundleDetailsDto> GetById(long bundleId) {
+            var bundle = new Bundle();
+            try {
+                bundle = _bundleRepository.Get(bundleId);
+            }
+            catch (Exception ex) {
+                return Result.Fail(FailureCode.InvalidArgument).WithError($"Bundle doesn't exists: {ex.Message}");
+            }
+
+            var resultDto = _mapper.Map<BundleDetailsDto>(bundle);
+
+            return Result.Ok(resultDto);
         }
 
         public Result<BundleDetailsDto> AddOrRemoveBundleItem(AddOrRemoveBundleItemDto item)
@@ -147,6 +154,14 @@ namespace Explorer.Payments.Core.UseCases
             var pagedResult = new PagedResult<BundleSummaryDto>(resultDto, pageResult.TotalCount);
 
             return Result.Ok(pagedResult);
+        }
+
+        public Result<List<BundleDetailsDto>> GetAllPublishedBundles(int page, int pageSize) {
+            var bundles = _bundleRepository.GetBundlesPublished(page, pageSize);
+
+            var bundleDtos = _mapper.Map<List<BundleDetailsDto>>(bundles);
+
+            return Result.Ok(bundleDtos);
         }
 
         public Result<BundleDetailsDto> UpdateBundle(UpdateBundleDto dto)
