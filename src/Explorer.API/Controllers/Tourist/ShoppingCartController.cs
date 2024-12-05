@@ -56,7 +56,7 @@ namespace Explorer.API.Controllers.Tourist
 
 		[Authorize(Policy = "touristPolicy")]
 		[HttpPost("checkout/{touristId:long}")]
-		public ActionResult Checkout(long touristId,string code)
+		public ActionResult Checkout(long touristId,string code=null)
 		{
 			var result = _shoppingCartService.Checkout(touristId,code);
 			if (!result.IsSuccess)
