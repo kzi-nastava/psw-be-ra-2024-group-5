@@ -24,8 +24,12 @@ namespace Explorer.Tours.API.Public
 
         Task<Result<PagedResult<PreferenceDto>>> GetPagedByUserId(long userId, int pageIndex, int pageSize);
 
+        Result ActivatePreference(long preferenceId);
 
-        //Task<Result<PagedResult<PreferenceDto>>> GetPagedByUserId(long userId, int pageIndex, int pageSize);
+        Result DeactivatePreference(long preferenceId);
+
+        Result DeletePreference(long preferenceId);
+        Result<List<PreferenceDto>> GetAllByTouristId(long touristId);
 
 
 
