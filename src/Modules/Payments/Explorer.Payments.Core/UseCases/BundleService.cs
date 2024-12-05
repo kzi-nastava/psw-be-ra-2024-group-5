@@ -156,12 +156,12 @@ namespace Explorer.Payments.Core.UseCases
             return Result.Ok(pagedResult);
         }
 
-        public Result<List<BundleDetailsDto>> GetAllDetailedBundles(int page, int pageSize) {
-            var pageResult = _bundleRepository.GetPaged(page, pageSize);
+        public Result<List<BundleDetailsDto>> GetAllPublishedBundles(int page, int pageSize) {
+            var bundles = _bundleRepository.GetBundlesPublished(page, pageSize);
 
-            var result = pageResult.Results.Select(bundle => _mapper.Map<BundleDetailsDto>(bundle)).ToList();
+            var bundleDtos = _mapper.Map<List<BundleDetailsDto>>(bundles);
 
-            return Result.Ok(result);
+            return Result.Ok(bundleDtos);
         }
 
         public Result<BundleDetailsDto> UpdateBundle(UpdateBundleDto dto)

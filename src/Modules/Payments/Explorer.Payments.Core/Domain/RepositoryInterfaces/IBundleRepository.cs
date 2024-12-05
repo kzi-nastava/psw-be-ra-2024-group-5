@@ -10,5 +10,6 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
     public interface IBundleRepository : ICrudRepository<Bundle>
     {
         Bundle Update(Bundle aggregateRoot);
+        List<Bundle> GetBundlesPublished(int page, int pageSize);
     }
 }

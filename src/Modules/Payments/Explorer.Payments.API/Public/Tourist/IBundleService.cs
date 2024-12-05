@@ -19,7 +19,7 @@ namespace Explorer.Payments.API.Public.Tourist
         Result<BundleDetailsDto> AddOrRemoveBundleItem(AddOrRemoveBundleItemDto item);
         public Result<BundleDetailsDto> GetBundleById(long bundleId, long authorId);
         Result<PagedResult<BundleSummaryDto>> GetAllBundles(int page, int pageSize);
-        Result<List<BundleDetailsDto>> GetAllDetailedBundles(int page, int pageSize);
+        Result<List<BundleDetailsDto>> GetAllPublishedBundles(int page, int pageSize);
         Result<BundleDetailsDto> DeleteBundle(long bundleId, long authorId);
         Result<BundleDetailsDto> ChangeStatus(long bundleId, long authorId, BundleStatus newStatus);
 
