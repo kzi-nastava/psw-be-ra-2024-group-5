@@ -13,7 +13,7 @@ namespace Explorer.Encounters.Core.Domain {
         public HiddenLocationEncounter() { }
 
         public bool IsCloseToImageLocation(Location location) {
-            return GeoCalculator.IsClose(location, ImageLocation, 5);
+            return GeoCalculator.IsClose(location, ImageLocation, 20);
         }
     }
 }

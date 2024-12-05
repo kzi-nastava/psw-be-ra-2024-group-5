@@ -16,7 +16,17 @@ insert into encounters."Encounters"
 values
 	('Open gym', 'Complete 200 push-ups', '{"Latitude": 45.2484176507088, "Longitude": 19.816437156969418}', 50, 1, 0, 1);
 
+insert into encounters."Encounters"
+	("Name", "Description", "Location", "XP", "Status", "Type", "CreatorId")
+values
+	('Sremski Karlovci most famous building', 'Find the place from which this photo was taken.', '{"Latitude": 45.207545, "Longitude": 19.930066}', 50, 1, 2, 1);
+
 insert into encounters."SocialEncounters"
 	("Id", "Radius", "PeopleCount", "UserIds")
 values
 	(1, 15, 2, '[]');
+
+insert into encounters."HiddenLocationEncounters"
+	("Id", "ImageLocation", "Image")
+values
+	(3, '{"Latitude": 45.202264, "Longitude": 19.934194}', '');
