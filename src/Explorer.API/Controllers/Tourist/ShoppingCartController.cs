@@ -44,7 +44,7 @@ namespace Explorer.API.Controllers.Tourist
 
         [Authorize(Policy = "touristPolicy")]
         [HttpPost("addBundle/{touristId:long}")]
-        public ActionResult<ShoppingCartDto> AddBundleToCart(long bundleId, long touristId) {
+        public ActionResult<ShoppingCartDto> AddBundleToCart(long touristId, [FromBody] long bundleId) {
             var result = this._shoppingCartService.AddBundleToCart(bundleId, touristId);
             if (!result.IsSuccess) {
                 return BadRequest(result.Errors.FirstOrDefault()?.Message);

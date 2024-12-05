@@ -13,6 +13,7 @@ namespace Explorer.Payments.API.Public.Tourist
 {
     public interface IBundleService
     {
+        Result<BundleDetailsDto> GetById(long bundleId);
         Result<BundleDetailsDto> CreateBundle(CreateBundleDto dto);
         Result<BundleDetailsDto> UpdateBundle(UpdateBundleDto dto);
         Result<BundleDetailsDto> AddOrRemoveBundleItem(AddOrRemoveBundleItemDto item);

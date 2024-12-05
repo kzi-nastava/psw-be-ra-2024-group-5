@@ -236,7 +236,7 @@ namespace Explorer.Tours.Core.UseCases.Tourist
 				{
 					foreach (var item in shoppingCart.Items)
 					{
-						if (coupon.TourIds.Contains(item.ItemId)) 
+						if (coupon.TourIds.Contains(item.ItemId) && item.IsBundle == ITS_TOUR) 
 						{
 							discountedTotalPrice -= item.Price.Amount * discountPercentage;
 						}
