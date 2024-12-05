@@ -86,7 +86,20 @@ namespace Explorer.API.Controllers.Author
 			return Ok(result.Value); // Vraća listu kupona
 		}
 
-		
+		[HttpGet("code")]
+		[AllowAnonymous]
+		public ActionResult<CouponDto> GetByCode(string code)
+		{
+			var result = _couponService.GetByCode(code);
+
+			if (!result.IsSuccess)
+			{
+				return NotFound(result.Errors.FirstOrDefault()?.Message);
+			}
+
+			return Ok(result.Value); 
+		}
+
 
 		[HttpGet("tours")]
 		public async Task<ActionResult<List<TourDto>>> GetToursByIds([FromQuery] List<long> tourIds)

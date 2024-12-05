@@ -14,6 +14,7 @@ namespace Explorer.Payments.API.Public.Author
 		public Result Delete(long id);
 		public Result<CouponDto> Update(long id, CouponDto couponDto);
 		public Result<List<CouponDto>> GetAll();
+		public Result<CouponDto> GetByCode(string code);
 
 
 	}
