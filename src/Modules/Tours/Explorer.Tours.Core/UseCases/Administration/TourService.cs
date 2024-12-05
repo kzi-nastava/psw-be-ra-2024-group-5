@@ -62,6 +62,7 @@ public class TourService : ITourService {
         try {
             var tours = _tourRepository.GetByAuthorPaged(authorId, page, pageSize);
             var tourDtos = _mapper.Map<List<TourCardDto>>(tours);
+
             return Result.Ok(tourDtos);
         }
         catch (Exception e) {
