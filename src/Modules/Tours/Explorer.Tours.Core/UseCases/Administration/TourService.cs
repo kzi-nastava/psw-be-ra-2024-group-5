@@ -16,6 +16,7 @@ using Explorer.Tours.API.Internal;
 using Explorer.Payments.API.Internal;
 using Explorer.Tours.API.Dtos.TourLeaderboard;
 using Explorer.Stakeholders.API.Internal;
+using Explorer.Preferences.Core.Domain.RepositoryInterfaces;
 
 namespace Explorer.Tours.Core.UseCases.Administration;
 
@@ -28,10 +29,11 @@ public class TourService : ITourService {
     private readonly ITourExecutionRepository _tourExecutionRepository;
     private readonly ITourReviewRepository _tourReviewRepository;
     private readonly IUserProfileServiceInternal _userProfileService;
+    private readonly IPreferenceRepository _preferenceRepository;
 
     public TourService(ITourRepository repository, IUserRepository userRepository , IMapper mapper,
         IInternalShoppingCartService shoppingCartRepository, ITourExecutionRepository tourExecutionRepository,
-        ITourReviewRepository tourReviewRepository, IUserProfileServiceInternal userProfileService)
+        ITourReviewRepository tourReviewRepository, IUserProfileServiceInternal userProfileService, IPreferenceRepository preferenceRepository)
     {
         _tourRepository = repository;
         _tourExecutionRepository = tourExecutionRepository;
@@ -42,6 +44,7 @@ public class TourService : ITourService {
         equipmentMapper = new MapperConfiguration(cfg => cfg.CreateMap<Equipment, EquipmentDto>()).CreateMapper();
         _tourReviewRepository = tourReviewRepository;
         _userProfileService = userProfileService;
+        _preferenceRepository = preferenceRepository;
     }
 
     public Result<TourDto> GetById(long id) {
@@ -424,6 +427,72 @@ public class TourService : ITourService {
 			Description = t.Description
 		}).ToList();
 	}
+
+    public Result<PagedResult<TourCardDto>> GetToursByActivePreferencePaged(long touristId, int page, int pageSize)
+    {
+        try
+        {
+            var preferences = _preferenceRepository.GetByTouristId(touristId);
+            var activePreference = preferences.FirstOrDefault(p => p.IsActive);
+
+            if (activePreference == null)
+            {
+                return Result.Fail<PagedResult<TourCardDto>>("No active preferences found.");
+            }
+
+            var pagedTours = _tourRepository.GetPublishedPaged(page, pageSize);
+
+            var filteredTours = pagedTours.Where(tour =>
+                (tour.Level == activePreference.PreferredDifficulty) ||
+                (tour.TransportDurations.Any(td =>
+                    (activePreference.WalkRating > 0 && td.Transport == TourTransport.OnFoot) ||
+                    (activePreference.BikeRating > 0 && td.Transport == TourTransport.Bicycle) ||
+                    (activePreference.CarRating > 0 && td.Transport == TourTransport.Car))) ||
+                (activePreference.InterestTags.Any(tag =>
+                    !string.IsNullOrEmpty(tour.Tags) && tour.Tags.Split(',').Contains(tag.Trim())))
+            ).ToList();
+
+            var tourDtos = filteredTours.Select(tour =>
+            {
+                var price = new MoneyDto(tour.Price.Amount, tour.Price.Currency);
+                var keypoint = tour.KeyPoints.FirstOrDefault();  
+                var keyPointDto = keypoint == null ? null : new KeyPointDto(keypoint.Id, keypoint.Latitude, keypoint.Longitude, keypoint.Name, keypoint.Description, keypoint.TourId)
+                {
+                    Image = keypoint?.Image != null ? Base64Converter.ConvertFromByteArray(keypoint.Image) : null
+                };
+
+                var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
+                double? averageRating = reviews.IsSuccess && reviews.Value.Any()
+                    ? reviews.Value.Average(r => r.Rating)
+                    : null;
+
+                return new TourCardDto(
+                    tour.Id,
+                    tour.Name,
+                    tour.Tags,
+                    tour.Level,
+                    tour.Status,
+                    price,
+                    tour.AuthorId,
+                    tour.Length,
+                    tour.PublishedTime,
+                    keyPointDto,
+                    averageRating
+                );
+            }).ToList();
+
+            var pagedResult = new PagedResult<TourCardDto>(tourDtos, filteredTours.Count); 
+
+            return Result.Ok(pagedResult);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail<PagedResult<TourCardDto>>($"An error occurred while filtering tours: {ex.Message}");
+        }
+    }
+
+
+
 
 }
 

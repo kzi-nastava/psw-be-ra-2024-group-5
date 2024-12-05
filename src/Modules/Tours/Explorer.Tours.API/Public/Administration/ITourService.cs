@@ -25,5 +25,6 @@ public interface ITourService {
     Result<TourTouristDto> GetForTouristById(long id, long touristId);
     Result ArchiveTour(long tourId);
 	Task<List<TourDto>> GetToursByIds(List<long> tourIds);
+    Result<PagedResult<TourCardDto>> GetToursByActivePreferencePaged(long touristId, int page, int pageSize);
 
 }

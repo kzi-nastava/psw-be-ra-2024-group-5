@@ -17,25 +17,26 @@ public class EncounterService : CrudService<EncounterDto, Encounter>, IEncounter
 {
 
     private readonly IEncounterRepository _encounterRepository;
+    private readonly IEncounterExecutionRepository _executionRepository;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
 
-    public EncounterService(IEncounterRepository encounterRepository, IMapper mapper, IUserRepository userRepository,
-        INotificationService notificationService)
-        : base(encounterRepository, mapper)
-    {
+    public EncounterService(IEncounterRepository encounterRepository, IEncounterExecutionRepository executionRepository, IMapper mapper, IUserRepository userRepository,
+        INotificationService notificationService) 
+        : base(encounterRepository, mapper) {
 
         _encounterRepository = encounterRepository;
         _mapper = mapper;
         _userRepository = userRepository;
         _notificationService = notificationService;
-
+        _executionRepository = executionRepository;
     }
 
-    public Result<List<EncounterDto>> GetAllActive()
-    {
+    public Result<List<EncounterDto>> GetAllActive(long userId) {
         var encounters = _encounterRepository.GetAllActive();
+        var completedEncounterIds = _executionRepository.GetCompletedEncounterIds(userId);
+        encounters = encounters.Where(e => !completedEncounterIds.Contains(e.Id)).ToList();
         var encounterDtos = _mapper.Map<List<EncounterDto>>(encounters);
         return Result.Ok(encounterDtos);
     }
