@@ -16,9 +16,9 @@ public class TouristBundleController : BaseApiController {
         _bundleService = bundleService;
     }
 
-    [HttpGet("all")]
-    public ActionResult<PagedResult<BundleSummaryDto>> GetAllBundles([FromQuery] int page, [FromQuery] int pageSize) {
-        var result = _bundleService.GetAllBundles(page, pageSize);
+    [HttpGet("all/{page:int}/{pageSize:int}")]
+    public ActionResult<List<BundleDetailsDto>> GetAllDetailedBundles(int page, int pageSize) {
+        var result = _bundleService.GetAllDetailedBundles(page, pageSize);
         return CreateResponse(result);
     }
 }

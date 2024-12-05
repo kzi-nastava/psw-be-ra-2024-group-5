@@ -149,6 +149,14 @@ namespace Explorer.Payments.Core.UseCases
             return Result.Ok(pagedResult);
         }
 
+        public Result<List<BundleDetailsDto>> GetAllDetailedBundles(int page, int pageSize) {
+            var pageResult = _bundleRepository.GetPaged(page, pageSize);
+
+            var result = pageResult.Results.Select(bundle => _mapper.Map<BundleDetailsDto>(bundle)).ToList();
+
+            return Result.Ok(result);
+        }
+
         public Result<BundleDetailsDto> UpdateBundle(UpdateBundleDto dto)
         {
             if (!_internalUserService.CheckAuthorExists(dto.AuthorId))
