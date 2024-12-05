@@ -1,11 +1,17 @@
 DELETE FROM tours."TouristEquipment";
 DELETE FROM tours."TourEquipment";
 DELETE FROM tours."Equipment";
+ALTER SEQUENCE tours."Equipment_Id_seq" RESTART WITH 1;
 DELETE FROM tours."KeyPoint";
+ALTER SEQUENCE tours."KeyPoint_Id_seq" RESTART WITH 1;
 DELETE FROM tours."Facilities";
+ALTER SEQUENCE tours."Facilities_Id_seq" RESTART WITH 1;
 DELETE FROM tours."TourReviews";
+ALTER SEQUENCE tours."TourReviews_Id_seq" RESTART WITH 1;
 DELETE FROM tours."Preferences";
+ALTER SEQUENCE tours."Preferences_Id_seq" RESTART WITH 1;
 DELETE FROM tours."Tours";
+ALTER SEQUENCE tours."Tours_Id_seq" RESTART WITH 1;
 
 insert into tours."Tours"
 	("Name", "Description", "Tags", "Level", "Status",

@@ -1,5 +1,7 @@
 DELETE FROM blog."Blogs";
+ALTER SEQUENCE blog."Blogs_Id_seq" RESTART WITH 1;
 DELETE FROM blog."BlogComments";
+ALTER SEQUENCE blog."BlogComments_Id_seq" RESTART WITH 1;
 
 insert into blog."Blogs"
 	("UserId", "Title", "Description", "CreatedDate", "Status", "Votes", "Images")
