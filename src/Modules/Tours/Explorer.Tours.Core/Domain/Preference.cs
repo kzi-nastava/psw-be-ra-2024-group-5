@@ -1,4 +1,5 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
+using Explorer.Tours.API.Enum;
 using System.Collections.Generic;
 
 namespace Explorer.Tours.Core.Domain
@@ -7,17 +8,19 @@ namespace Explorer.Tours.Core.Domain
     public class Preference : Entity
     {
         public long TouristId { get; private set; }
-        public TourDifficulty PreferredDifficulty { get; private set; }
+        public TourLevel PreferredDifficulty { get; private set; }
         public int WalkRating { get; private set; }
         public int BikeRating { get; private set; }
         public int CarRating { get; private set; }
         public int BoatRating { get; private set; }
         public List<string> InterestTags { get; private set; }
+        public bool IsActive { get; private set; }
 
-        public Preference(long touristId, TourDifficulty preferredDifficulty, int walkRating, int bikeRating, int carRating, int boatRating, List<string> interestTags)
+
+        public Preference(long touristId, TourLevel preferredDifficulty, int walkRating, int bikeRating, int carRating, int boatRating, List<string> interestTags)
         {
 
-            if (!Enum.IsDefined(typeof(TourDifficulty), preferredDifficulty))
+            if (!Enum.IsDefined(typeof(TourLevel), preferredDifficulty))
             {
                 throw new ArgumentException("Invalid tour difficulty. Allowed values are BEGINNER, INTERMEDIATE, and ADVANCED.");
             }
@@ -49,9 +52,20 @@ namespace Explorer.Tours.Core.Domain
             BikeRating = bikeRating;
             CarRating = carRating;
             BoatRating = boatRating;
-            InterestTags = interestTags ?? new List<string>(); // Postavlja praznu listu ako je null
+            InterestTags = interestTags ?? new List<string>();
+            IsActive = false;
+
         }
 
+        public void Activate()
+        {
+            IsActive = true;
+        }
+
+        public void Deactivate()
+        {
+            IsActive = false;
+        }
 
         public enum TourDifficulty
         {

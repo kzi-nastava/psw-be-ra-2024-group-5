@@ -172,5 +172,14 @@ namespace Explorer.API.Controllers.Author
 				return CreateResponse(Result.Fail("Invalid Base64 string for the image."));
 			}
 		}
-	}
+
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{touristId:long}/preferences/{page:int}/{pageSize:int}")]
+        public ActionResult<PagedResult<TourCardDto>> GetToursByActivePreferencePaged(long touristId, int page, int pageSize)
+        {
+            var result = _tourService.GetToursByActivePreferencePaged(touristId, page, pageSize);
+            return CreateResponse(result);
+        }
+    }
 }

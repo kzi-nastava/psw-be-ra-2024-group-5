@@ -1,5 +1,7 @@
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Preferences.Core.Domain.RepositoryInterfaces;
+using Explorer.Preferences.Infrastructure.Database.Repositories;
 using Explorer.Tours.API.Internal;
 using Explorer.Tours.API.Public;
 using Explorer.Tours.API.Public.Administration;
@@ -56,8 +58,10 @@ public static class ToursStartup
         services.AddScoped<ITourExecutionRepository, TourExecutionRepository>();
         services.AddScoped<ITourReviewRepository, TourReviewDatabaseRepository>();
         services.AddScoped<ICrudRepository<TourReview>>(sp => sp.GetRequiredService<ITourReviewRepository>());
+        services.AddScoped<IPreferenceRepository, PreferenceRepository>();
 
-		services.AddDbContext<ToursContext>(opt =>
+
+        services.AddDbContext<ToursContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("tours"),
                 x => x.MigrationsHistoryTable("__EFMigrationsHistory", "tours")));
     }

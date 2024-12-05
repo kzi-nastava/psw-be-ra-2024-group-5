@@ -98,6 +98,28 @@ namespace Explorer.Payments.Core.UseCases
 
 			return Result.Ok();
 		}
+
+		public Result<CouponDto> GetByCode(string code)
+		{
+			Coupon coupon = _couponRepository.GetByCode(code);
+
+			if (coupon == null)
+			{
+				return Result.Fail<CouponDto>("Coupon not found");
+			}
+
+			CouponDto couponDto = new CouponDto
+			{
+				Id = coupon.Id,          
+				Code = coupon.Code,            
+				Percentage = coupon.Percentage,
+				ExpiredDate = coupon.ExpiredDate,
+				TourIds = coupon.TourIds
+			};
+
+			return couponDto;
+		}
+
 		public Result<CouponDto> Update(long id, CouponDto couponDto)
 		{
 			var coupon = _couponRepository.GetById(id);
