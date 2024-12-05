@@ -7,7 +7,7 @@ using Explorer.Payments.Core.Domain;
 using Explorer.Payments.API.Enum;
 using Xunit;
 
-namespace Explorer.Payments.Tests.Integration
+namespace Explorer.Payments.Tests.Unit
 {
     public class BundleUnitTests
     {
@@ -151,7 +151,7 @@ namespace Explorer.Payments.Tests.Integration
 
         private static Bundle CreateTestBundle()
         {
-            return new Bundle("Test Bundle", new Money(100, ShoppingCurrency.AC), 1, new List<long> { 101, 102,104 });
+            return new Bundle("Test Bundle", new Money(100, ShoppingCurrency.AC), 1, new List<long> { 101, 102, 104 });
         }
     }
 }
