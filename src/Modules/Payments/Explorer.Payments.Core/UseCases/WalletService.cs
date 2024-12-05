@@ -58,7 +58,7 @@ namespace Explorer.Payments.Core.UseCases
                 wallet.AddFunds(moneyAC);
                 wallet = _walletRepository.Update(wallet);
 
-                SendNotificationForWalletUpdate(touristId);
+                SendNotificationForWalletUpdate(touristId, moneyAC);
 
                 var walletDto = _mapper.Map<WalletDto>(wallet);
 
@@ -137,13 +137,13 @@ namespace Explorer.Payments.Core.UseCases
         }
 
 
-        private void SendNotificationForWalletUpdate(long touristId)
+        private void SendNotificationForWalletUpdate(long touristId, Money money)
         {
             var userIds = new List<long> { touristId };
 
             var notificationDto = new NotificationDto
             {
-                Content = "Funds to your wallet have been added! " +
+                Content = $"{money.Amount} AC have been added to your wallet! " +
                 "Checkout our new deals, and embark on a new adventure!",
                 CreatedAt = DateTime.UtcNow,
                 UserIds = userIds,
