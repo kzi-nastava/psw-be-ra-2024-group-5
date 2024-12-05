@@ -25,7 +25,8 @@ public enum NotificationType
     ClubMessage,
     ClubActivity,
     EncounterCreated,  
-    EncounterApprovalStatus
+    EncounterApprovalStatus,
+    WalletUpdated
 }
 
 

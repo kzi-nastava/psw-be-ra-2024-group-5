@@ -38,7 +38,7 @@ namespace Explorer.Payments.Core.Domain
 
         public bool IsEnoughFunds(Money money)
         {
-            if (money.Amount >= Balance.Amount)
+            if (money.Amount > Balance.Amount)
             {
                 return false;
             }
