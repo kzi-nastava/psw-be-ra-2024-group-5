@@ -1,10 +1,15 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Dtos;
 using Explorer.Tours.API.Public.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FluentResults;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Explorer.Tours.API.Dtos.TourLeaderboard;
 
-namespace Explorer.API.Controllers.Author {
+namespace Explorer.API.Controllers.Author
+{
     [Authorize(Policy = "authorPolicy")]
     [Route("api/tour")]
     public class TourController : BaseApiController {
@@ -15,9 +20,23 @@ namespace Explorer.API.Controllers.Author {
             _tourService = tourService;
         }
 
-        [HttpGet("author/{authorId:long}")]
-        public ActionResult<List<TourDto>> GetByAuthor(int authorId) {
-            var result = _tourService.GetByAuthorId(authorId);
+        [HttpGet("author/{authorId:long}/{page:int}/{pageSize:int}")]
+        public ActionResult<List<TourCardDto>> GetByAuthorPaged(int authorId, int page, int pageSize) {
+            var result = _tourService.GetByAuthorPaged(authorId, page, pageSize);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("author/filtered/{authorId:int}")]
+        public ActionResult<List<TourCardDto>> GetAuthorPagedToursFiltered(int authorId, [FromBody] TourSearchDto searchDto) {
+            var result = _tourService.GetAuthorPagedToursFiltered(
+                authorId,
+                searchDto.Page,
+                searchDto.PageSize,
+                searchDto.StartLong,
+                searchDto.EndLong,
+                searchDto.StartLat,
+                searchDto.EndLat
+            );
             return CreateResponse(result);
         }
 
@@ -42,6 +61,23 @@ namespace Explorer.API.Controllers.Author {
         public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)
         {
             var result = _tourService.AddReview(review);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("{tourId:int}/leaderboard")]
+        public ActionResult<TourLeaderboardDto?> GetLeaderboard(int tourId)
+        {
+            var result = _tourService.GetLeaderboard(tourId);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpPost("bundle")] //treba biti get ali zbog fronta je post ima komentar tamo
+        public ActionResult<List<TourCardDto>> GetBundleTours([FromBody] List<long> tourIds) {
+            var result = _tourService.GetTourCardsByIds(tourIds);
             return CreateResponse(result);
         }
 
@@ -88,7 +124,7 @@ namespace Explorer.API.Controllers.Author {
         }
 
         [HttpPost("publish/{tourId:long}")]
-        public ActionResult PublishTour(int tourId, [FromBody] MoneyDto money)
+        public ActionResult PublishTour(long tourId, [FromBody] MoneyDto money)
         {
             // Proveriti da li su prosleđeni podaci validni
             if (money == null || money.Amount <= 0 || money.Currency == null)
@@ -102,9 +138,47 @@ namespace Explorer.API.Controllers.Author {
 
         [HttpPost("archive/{tourId:long}")]
 
-        public ActionResult ArchiveTour(int tourId)
+        public ActionResult ArchiveTour(long tourId)
         {
             var result = _tourService.ArchiveTour(tourId);
+            return CreateResponse(result);
+        }
+
+		[AllowAnonymous]
+		[HttpGet("{tourId:long}/image")]
+		public ActionResult GetTourImage(long tourId)
+		{
+			var result = _tourService.GetById(tourId);
+
+			if (!result.IsSuccess || result.Value == null)
+				return CreateResponse(Result.Fail("Tour not found."));
+
+			var tour = result.Value;
+
+			if (tour.KeyPoints == null || !tour.KeyPoints.Any())
+				return CreateResponse(Result.Fail("KeyPoints not found."));
+
+			var firstKeyPoint = tour.KeyPoints.FirstOrDefault();
+			if (firstKeyPoint?.Image == null)
+				return CreateResponse(Result.Fail("Image not available."));
+
+			try
+			{
+				byte[] imageBytes = Convert.FromBase64String(firstKeyPoint.Image);
+				return new FileContentResult(imageBytes, "image/jpeg");
+			}
+			catch (FormatException)
+			{
+				return CreateResponse(Result.Fail("Invalid Base64 string for the image."));
+			}
+		}
+
+        [AllowAnonymous]
+        [Authorize(Policy = "touristPolicy")]
+        [HttpGet("tourist/{touristId:long}/preferences/{page:int}/{pageSize:int}")]
+        public ActionResult<PagedResult<TourCardDto>> GetToursByActivePreferencePaged(long touristId, int page, int pageSize)
+        {
+            var result = _tourService.GetToursByActivePreferencePaged(touristId, page, pageSize);
             return CreateResponse(result);
         }
     }

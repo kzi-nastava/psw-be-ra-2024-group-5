@@ -1,5 +1,8 @@
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Preferences.Core.Domain.RepositoryInterfaces;
+using Explorer.Preferences.Infrastructure.Database.Repositories;
+using Explorer.Tours.API.Internal;
 using Explorer.Tours.API.Public;
 using Explorer.Tours.API.Public.Administration;
 using Explorer.Tours.API.Public.Author;
@@ -32,6 +35,7 @@ public static class ToursStartup
     private static void SetupCore(IServiceCollection services)
     {
         services.AddScoped<ITourService, TourService>();
+        services.AddScoped<IInternalTourService, InternalTourService>();
         services.AddScoped<ITouristService, TouristService>();
         services.AddScoped<IEquipmentService, EquipmentService>();
         services.AddScoped<IKeyPointService, KeyPointService>();
@@ -39,7 +43,6 @@ public static class ToursStartup
         services.AddScoped<IPreferenceService, PreferenceService>();
         services.AddScoped<ITourReviewService, TourReviewService>();
         services.AddScoped<ITourExecutionService, TourExecutionService>();
-        services.AddScoped<IShoppingCartService, ShoppingCartService>();
     }
 
 	private static void SetupInfrastructure(IServiceCollection services)
@@ -53,12 +56,12 @@ public static class ToursStartup
         services.AddScoped(typeof(ICrudRepository<Preference>), typeof(CrudDatabaseRepository<Preference, ToursContext>));
 		services.AddScoped<ITouristRepository, TouristRepository>();
         services.AddScoped<ITourExecutionRepository, TourExecutionRepository>();
-        services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
-
         services.AddScoped<ITourReviewRepository, TourReviewDatabaseRepository>();
         services.AddScoped<ICrudRepository<TourReview>>(sp => sp.GetRequiredService<ITourReviewRepository>());
+        services.AddScoped<IPreferenceRepository, PreferenceRepository>();
 
-		services.AddDbContext<ToursContext>(opt =>
+
+        services.AddDbContext<ToursContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("tours"),
                 x => x.MigrationsHistoryTable("__EFMigrationsHistory", "tours")));
     }

@@ -20,6 +20,7 @@ public class NotificationDto
     public long? ClubId { get; set; }
     public string? Message { get; set; }
     public AttachmentDto? Attachment { get; set; }
+    public long? EncounterId { get; set; }
     public List<NotificationReadStatusDto> UserReadStatuses { get; set; }
 }
 

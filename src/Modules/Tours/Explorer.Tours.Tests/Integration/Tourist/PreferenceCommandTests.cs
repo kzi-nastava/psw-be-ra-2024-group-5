@@ -6,6 +6,7 @@ using Explorer.Tours.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using Explorer.Tours.API.Enum;
 
 namespace Explorer.Tours.Tests.Integration.Tourist
 {
@@ -29,7 +30,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var newPreference = new PreferenceDto
             {
                 TouristId = -11,
-                PreferredDifficulty = TourDifficulty.INTERMEDIATE,
+                PreferredDifficulty = TourLevel.Intermediate,
                 WalkRating = 3,
                 BikeRating = 2,
                 CarRating = 1,
@@ -53,7 +54,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var storedPreference = dbContext.Preferences.FirstOrDefault(p => p.TouristId == newPreference.TouristId);
             storedPreference.ShouldNotBeNull();
             storedPreference.TouristId.ShouldBe(result.TouristId);
-            storedPreference.PreferredDifficulty.ShouldBe(Preference.TourDifficulty.INTERMEDIATE);
+            storedPreference.PreferredDifficulty.ShouldBe(TourLevel.Intermediate);
         }
 
         [Fact]
@@ -65,7 +66,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var updatedPreference = new PreferenceDto
             {
                 TouristId = -1, // Invalid ID, dobro je, 
-                PreferredDifficulty = TourDifficulty.ADVANCED,
+                PreferredDifficulty = TourLevel.Advanced,
                 WalkRating = 3,
                 BikeRating = 3,
                 CarRating = 2,
@@ -95,7 +96,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             {
                 Id = 735331,
                 TouristId = 1,
-                PreferredDifficulty = TourDifficulty.INTERMEDIATE,
+                PreferredDifficulty = TourLevel.Intermediate,
                 WalkRating = 3,
                 BikeRating = 2,
                 CarRating = 1,

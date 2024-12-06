@@ -1,5 +1,6 @@
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.BuildingBlocks.Infrastructure.Database;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.Core.Domain;
 using Explorer.Tours.Core.Domain.RepositoryInterfaces;
 using FluentResults;
@@ -16,18 +17,44 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         _dbContext = dbContext;
     }
 
-    public Tour? GetById(int id) {
+    public Tour? GetById(long id) {
         return DbContext.Tours.Where(t => t.Id == id)
             .Include(t => t.KeyPoints)
             .Include(t => t.Reviews)
             .FirstOrDefault();
     }
 
-    public List<Tour>? GetByAuthorId(int authorId) {
+    public List<Tour>? GetByAuthorPaged(int authorId, int page, int pageSize) {
+        if (page < 1 || pageSize < 1) {
+            return new List<Tour>();
+        }
+
         return DbContext.Tours.Where(t => t.AuthorId == authorId)
             .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
     }
+    public List<Tour> GetAuthorPagedToursFiltered(int authorId, int page, int pageSize, double startLong, double endLong, double startLat, double endLat) {
+        if (page < 1 || pageSize < 1) {
+            return new List<Tour>();
+        }
+
+        var allTours = DbContext.Tours.Where(t => t.AuthorId == authorId)
+            .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .ToList();
+
+        // Use the Tour aggregate's filtering method
+        var filteredTours = Tour.FilterToursByLocation(allTours, startLat, endLat, startLong, endLong);
+
+        return filteredTours
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
 
     public new Tour Update(Tour tour) {
         DbContext.Entry(tour).State = EntityState.Modified;
@@ -104,5 +131,18 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .ToList();
     }
 
-
+	public async Task<List<Tour>> GetToursByIds(List<long> tourIds)
+	{
+		// Pretražuje bazu podataka i vra?a ture koje odgovaraju ID-evima
+		return await _dbContext.Tours
+			.Where(t => tourIds.Contains(t.Id))
+			.ToListAsync();
+	}
+	public List<Tour> GetToursFromIds(List<long> tourIds) {
+        return DbContext.Tours
+            .Where(t => tourIds.Contains(t.Id))
+            .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .ToList();
+    }
 }

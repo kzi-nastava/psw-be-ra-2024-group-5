@@ -70,6 +70,29 @@ namespace Explorer.API.Controllers.Tourist
             return Ok(result.Value);
         }
 
+        [HttpPost("activate/{Id:long}")]
+        public ActionResult ActivatePreference(long Id)
+        {
+            var result = _preferenceService.ActivatePreference(Id);
+            if (result.IsSuccess)
+            {
+                return Ok("Preference activated successfully.");
+            }
+            return NotFound(result.Errors);
+        }
+
+        [HttpPost("deactivate/{Id:long}")]
+        public ActionResult DeactivatePreference(long Id)
+        {
+            var result = _preferenceService.DeactivatePreference(Id);
+            if (result.IsSuccess)
+            {
+                return Ok("Preference deactivated successfully.");
+            }
+            return NotFound(result.Errors);
+        }
+
+
 
 
     }

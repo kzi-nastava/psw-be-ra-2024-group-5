@@ -1,9 +1,11 @@
 ﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Payments.API.Internal;
 using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
 using FluentResults;
+using System.Runtime.CompilerServices;
 
 namespace Explorer.Stakeholders.Core.UseCases;
 
@@ -12,12 +14,17 @@ public class AuthenticationService : IAuthenticationService
     private readonly ITokenGenerator _tokenGenerator;
     private readonly IUserRepository _userRepository;
     private readonly ICrudRepository<Person> _personRepository;
+    private readonly IInternalShoppingCartService _shoppingCartService;
+    private readonly IInternalWalletService _walletService;
 
-    public AuthenticationService(IUserRepository userRepository, ICrudRepository<Person> personRepository, ITokenGenerator tokenGenerator)
+    public AuthenticationService(IUserRepository userRepository, ICrudRepository<Person> personRepository, ITokenGenerator tokenGenerator, 
+        IInternalShoppingCartService shoppingCartService, IInternalWalletService walletService)
     {
         _tokenGenerator = tokenGenerator;
         _userRepository = userRepository;
         _personRepository = personRepository;
+        _shoppingCartService = shoppingCartService;
+        _walletService = walletService;
     }
 
     public Result<AuthenticationTokensDto> Login(CredentialsDto credentials)
@@ -72,6 +79,9 @@ public class AuthenticationService : IAuthenticationService
         {
             var user = _userRepository.Create(new User(account.Username, account.Password, UserRole.Tourist, true));
             var person = _personRepository.Create(new Person(user.Id, account.Name, account.Surname, account.Email));
+
+            _shoppingCartService.Create(user.Id);
+            _walletService.CreateWallet(user.Id);
 
             return _tokenGenerator.GenerateAccessToken(user, person.Id);
         }

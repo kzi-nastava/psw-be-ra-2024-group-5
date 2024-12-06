@@ -1,5 +1,5 @@
 ﻿using Explorer.API.Controllers.Tourist;
-using Explorer.Tours.API.Dtos;
+using Explorer.Tours.API.Dtos.TourLifecycle;
 using Explorer.Tours.API.Public;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;

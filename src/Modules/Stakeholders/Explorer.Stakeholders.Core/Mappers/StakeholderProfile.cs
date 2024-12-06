@@ -24,7 +24,7 @@ public class StakeholderProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Item1.UserId))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item2.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Item2.Surname))
-            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.Item1.ProfilePictureUrl))
+            .ForMember(dest => dest.ProfileImage, opt => opt.MapFrom(src => Convert.ToBase64String(src.Item1.ProfileImage!)))
             .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.Item1.Biography))
             .ForMember(dest => dest.Motto, opt => opt.MapFrom(src => src.Item1.Motto))
             .ForMember(dest => dest.Messages, opt => opt.Ignore());
@@ -32,7 +32,7 @@ public class StakeholderProfile : Profile
         CreateMap<UserProfileDto, UserProfile>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.ProfilePictureUrl))
+            .ForMember(dest => dest.ProfileImage, opt => opt.MapFrom(src => Convert.FromBase64String(src.ProfileImage ?? "")))
             .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.Biography))
             .ForMember(dest => dest.Motto, opt => opt.MapFrom(src => src.Motto));
 
@@ -42,14 +42,21 @@ public class StakeholderProfile : Profile
 
             CreateMap<ClubDto, Club>().ReverseMap();
             CreateMap<ClubMembershipDto, ClubMembership>().ReverseMap();
-            CreateMap<AppRatingDto, AppRating>().ReverseMap();
+        CreateMap<AppRatingDto, AppRating>()
+   .ConstructUsing(dto => new AppRating(
+       dto.Grade,
+       dto.TimeStamp,
+       dto.UserId,
+       dto.Comment ?? string.Empty
+   ))
+   .ReverseMap();
 
         CreateMap<Person, UserProfileDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.UserId, opt => opt.Ignore())
-            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.Ignore())
+            .ForMember(dest => dest.ProfileImage, opt => opt.Ignore())
             .ForMember(dest => dest.Biography, opt => opt.Ignore())
             .ForMember(dest => dest.Motto, opt => opt.Ignore());
 

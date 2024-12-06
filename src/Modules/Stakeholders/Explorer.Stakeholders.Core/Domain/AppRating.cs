@@ -12,13 +12,12 @@ namespace Explorer.Stakeholders.Core.Domain
 
         public AppRating(int grade, DateTime timeStamp, long userId, string comment)
         {
-
             if (grade < 1 || grade > 5)
             {
                 throw new ArgumentException("Invalid grade");
             }
             Grade = grade;
-            TimeStamp = timeStamp;
+            TimeStamp = timeStamp != default ? timeStamp : DateTime.UtcNow;
             UserId = userId;
             Comment = comment;
         }

@@ -14,7 +14,8 @@ namespace Explorer.Tours.Core.Domain
         public long TourId { get; private set; }
         public long TouristId { get; private set; }
         public double CompletionPercentage { get; set; }
-        public TourReview(int rating, string comment, DateTime visitDate,DateTime reviewDate, long tourId, long touristId, byte[]? image = null, double completionPercentage = 0)
+        public TourReview() { }
+        public TourReview(int rating, string comment, DateTime visitDate, DateTime reviewDate, byte[]? image, long tourId, long touristId, double completionPercentage = 0)
         {
             ValidateRating(rating);
             ValidateComment(comment);
@@ -24,13 +25,13 @@ namespace Explorer.Tours.Core.Domain
             Comment = comment;
             VisitDate = visitDate;
             ReviewDate = reviewDate;
+            Image = image;
             TourId = tourId;
             TouristId = touristId;
-            Image = image;
             CompletionPercentage = completionPercentage;
         }
 
-        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, long tourId, long touristId, byte[]? image = null, double completionPercentage = 0)
+        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, byte[]? image, long tourId, long touristId, double completionPercentage = 0)
         {
             ValidateRating(rating);
             ValidateComment(comment);
@@ -41,9 +42,9 @@ namespace Explorer.Tours.Core.Domain
             Comment = comment;
             VisitDate = visitDate;
             ReviewDate = reviewDate;
+            Image = image;
             TourId = tourId;
             TouristId = touristId;
-            Image = image;
             CompletionPercentage = completionPercentage;
         }
 

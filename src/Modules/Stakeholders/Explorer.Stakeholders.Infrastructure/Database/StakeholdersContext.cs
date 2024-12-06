@@ -36,8 +36,8 @@ public class StakeholdersContext : DbContext
             .Property(m => m.Attachment).HasColumnType("jsonb");
 
         modelBuilder.Entity<Notification>()
-        .ToTable("Notifications", "stakeholders")
-        .Property(n => n.Attachment).HasColumnType("jsonb");
+            .ToTable("Notifications", "stakeholders")
+            .Property(n => n.Attachment).HasColumnType("jsonb");
 
         ConfigureStakeholder(modelBuilder);
     }
@@ -112,13 +112,20 @@ public class StakeholdersContext : DbContext
            .ToTable("NotificationReadStatuses", "stakeholders")
            .HasKey(nrs => new { nrs.NotificationId, nrs.UserId });
 
-        //modelBuilder.Entity<ProfileMessage>()
-        //    .ToTable("ProfileMessages", "stakeholders")
-        //    .Property(m => m.Attachment).HasColumnType("jsonb");
+        modelBuilder.Entity<AppRating>()
+            .HasOne<User>()
+            .WithOne()
+            .HasForeignKey<AppRating>(r => r.UserId);
 
-        //modelBuilder.Entity<ClubMessage>()
-        //    .ToTable("ClubMessages", "stakeholders")
-        //    .Property(m => m.Attachment).HasColumnType("jsonb");
+        modelBuilder.Entity<Club>()
+            .HasOne<User>()
+            .WithOne()
+            .HasForeignKey<Club>(c => c.OwnerId);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne<Club>()
+            .WithOne()
+            .HasForeignKey<Notification>(n => n.ClubId);
 
     }
 }
