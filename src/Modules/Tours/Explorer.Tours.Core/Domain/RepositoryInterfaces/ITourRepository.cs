@@ -13,7 +13,7 @@ public interface ITourRepository : ICrudRepository<Tour> {
     List<Tour> GetAuthorPagedToursFiltered(int authorId, int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
 
     List<Tour> GetPublishedPaged(int page, int pageSize);
-   List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length);
+   List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length, decimal? minPrice, decimal? maxPrice); 
 	Task<List<Tour>> GetToursByIds(List<long> tourIds);
 
 }

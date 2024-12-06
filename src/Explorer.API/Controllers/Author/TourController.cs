@@ -93,7 +93,9 @@ namespace Explorer.API.Controllers.Author
                 searchDto.StartLat,
                 searchDto.EndLat,
                 searchDto.Name,
-                searchDto.Length
+                searchDto.Length,
+                searchDto.MinPrice,
+                searchDto.MaxPrice
 
             );
             return CreateResponse(result);

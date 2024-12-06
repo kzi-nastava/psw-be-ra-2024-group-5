@@ -118,7 +118,9 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
      double? startLat = null,
      double? endLat = null,
      string? name = null,
-     double? length = null)
+     double? length = null,
+     decimal? minPrice = null,  // Add this
+     decimal? maxPrice = null)  // Add this
     {
         if (page < 1 || pageSize < 1)
         {
@@ -138,6 +140,16 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         if (length.HasValue)
         {
             query = query.Where(t => t.Length <= length.Value);
+        }
+
+        
+        if (minPrice.HasValue)
+        {
+            query = query.Where(t => (decimal)t.Price.Amount >= minPrice.Value);
+        }
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(t => (decimal)t.Price.Amount <= maxPrice.Value);
         }
 
         // Get tours with their key points

@@ -18,6 +18,9 @@ namespace Explorer.Tours.API.Dtos.TourLifecycle
         public string? Name { get; set; }
 
         public double? Length { get; set; }
+
+        public decimal? MinPrice { get; set; }  
+        public decimal? MaxPrice { get; set; } 
     }
 
 }

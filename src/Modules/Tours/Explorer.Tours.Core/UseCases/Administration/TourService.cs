@@ -176,11 +176,11 @@ public class TourService : ITourService {
     }
 
 
-    public Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length)
+    public Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length, decimal? minPrice, decimal? maxPrice)
     {
         try
         {
-            var tours = _tourRepository.GetPublishedPagedFiltered(page, pageSize, startLong, endLong, startLat, endLat, name, length);
+            var tours = _tourRepository.GetPublishedPagedFiltered(page, pageSize, startLong, endLong, startLat, endLat, name, length, minPrice, maxPrice);
             var resultDtos = new List<TourCardDto>();
 
             foreach (var tour in tours)
