@@ -19,7 +19,7 @@ public interface ITourService {
     Result PublishTour(long tourId, double priceAmount, Currency currency);
 
     Result<List<TourCardDto>> GetPublishedPagedTours(int page, int pageSize);
-    Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat);
+  Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length);
     Result<TourReviewDto> AddReview(TourReviewDto reviewDto);
     Result<TourLeaderboardDto> GetLeaderboard(int tourId, int size = 10);
     Result<TourTouristDto> GetForTouristById(long id, long touristId);

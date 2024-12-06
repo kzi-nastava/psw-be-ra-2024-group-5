@@ -19,6 +19,8 @@ public class TourDto
     public DateTime PublishedTime { get; set; }
     public DateTime ArchivedTime { get; set; }
 
+    
+
     public TourDto() { }
     public TourDto(long id, string? name, string? description,
         string? tags, TourLevel? level, TourStatus status, MoneyDto price,

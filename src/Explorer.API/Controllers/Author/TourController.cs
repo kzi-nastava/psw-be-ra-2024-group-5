@@ -32,10 +32,10 @@ namespace Explorer.API.Controllers.Author
                 authorId,
                 searchDto.Page,
                 searchDto.PageSize,
-                searchDto.StartLong,
-                searchDto.EndLong,
-                searchDto.StartLat,
-                searchDto.EndLat
+                searchDto.StartLong ?? -180, 
+                searchDto.EndLong ?? 180,    
+                searchDto.StartLat ?? -90,   
+                searchDto.EndLat ?? 90
             );
             return CreateResponse(result);
         }
@@ -91,7 +91,10 @@ namespace Explorer.API.Controllers.Author
                 searchDto.StartLong,
                 searchDto.EndLong,
                 searchDto.StartLat,
-                searchDto.EndLat
+                searchDto.EndLat,
+                searchDto.Name,
+                searchDto.Length
+
             );
             return CreateResponse(result);
         }
