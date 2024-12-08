@@ -110,28 +110,73 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .ToList();
     }
 
-    public List<Tour> GetPublishedPagedFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat)
+    public List<Tour> GetPublishedPagedFiltered(
+     int page,
+     int pageSize,
+     double? startLong = null,
+     double? endLong = null,
+     double? startLat = null,
+     double? endLat = null,
+     string? name = null,
+     double? length = null,
+     decimal? minPrice = null,  // Add this
+     decimal? maxPrice = null)  // Add this
     {
         if (page < 1 || pageSize < 1)
         {
             return new List<Tour>();
         }
 
-        var allTours = DbContext.Tours
-            .Where(t => t.Status == API.Enum.TourStatus.Published)
+        var query = DbContext.Tours
+            .Where(t => t.Status == API.Enum.TourStatus.Published);
+
+        // Apply name filter if provided
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(t => t.Name.ToLower().Contains(name.ToLower()));
+        }
+
+        // Apply length filter if provided
+        if (length.HasValue)
+        {
+            query = query.Where(t => t.Length <= length.Value);
+        }
+
+        
+        if (minPrice.HasValue)
+        {
+            query = query.Where(t => (decimal)t.Price.Amount >= minPrice.Value);
+        }
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(t => (decimal)t.Price.Amount <= maxPrice.Value);
+        }
+
+        // Get tours with their key points
+        var allTours = query
             .Include(t => t.KeyPoints)
             .ToList();
 
-        // Use the Tour aggregate's filtering method
-        var filteredTours = Tour.FilterToursByLocation(allTours, startLat, endLat, startLong, endLong);
+        // Only apply location filtering if all coordinate parameters are provided
+        if (startLat.HasValue && endLat.HasValue && startLong.HasValue && endLong.HasValue)
+        {
+            allTours = Tour.FilterToursByLocation(
+                allTours,
+                startLat.Value,
+                endLat.Value,
+                startLong.Value,
+                endLong.Value
+            );
+        }
 
-        return filteredTours
+        // Apply paging
+        return allTours
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
     }
 
-	public async Task<List<Tour>> GetToursByIds(List<long> tourIds)
+    public async Task<List<Tour>> GetToursByIds(List<long> tourIds)
 	{
 		// Pretražuje bazu podataka i vra?a ture koje odgovaraju ID-evima
 		return await _dbContext.Tours

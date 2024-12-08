@@ -181,12 +181,11 @@ public class TourService : ITourService {
     }
 
 
-    public Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double startLong, double endLong, double startLat, double endLat)
+    public Result<List<TourCardDto>> GetPublishedPagedToursFiltered(int page, int pageSize, double? startLong, double? endLong, double? startLat, double? endLat, string? name, double? length, decimal? minPrice, decimal? maxPrice)
     {
         try
         {
-            var tours = _tourRepository.GetPublishedPagedFiltered(page, pageSize, startLong, endLong, startLat, endLat);
-
+            var tours = _tourRepository.GetPublishedPagedFiltered(page, pageSize, startLong, endLong, startLat, endLat, name, length, minPrice, maxPrice);
             var resultDtos = new List<TourCardDto>();
 
             foreach (var tour in tours)
@@ -195,33 +194,32 @@ public class TourService : ITourService {
                 var kp = tour.KeyPoints[0];
                 if (kp == null)
                     throw new Exception("Keypoints list is empty!");
+
                 var imgString = Base64Converter.ConvertFromByteArray(kp.Image);
                 var firstKeypointDto = new KeyPointDto(kp.Id, kp.Latitude, kp.Longitude, kp.Name, kp.Description, kp.TourId);
                 firstKeypointDto.Image = imgString;
 
                 var reviews = _tourReviewRepository.GetByTourId((int)tour.Id);
                 double? averageRating = null;
-
                 if (reviews.IsSuccess && reviews.Value.Any())
                 {
-                   
                     averageRating = reviews.Value.Average(r => r.Rating);
                 }
+
                 resultDtos.Add(new TourCardDto(
-                                tour.Id,
-                                tour.Name,
-                                tour.Tags,
-                                tour.Level,
-                                tour.Status,
-                                price,
-                                tour.AuthorId,
-                                tour.Length,
-                                tour.PublishedTime,
-                                firstKeypointDto,
-                                averageRating
-                            ));
-            
-        }
+                    tour.Id,
+                    tour.Name,
+                    tour.Tags,
+                    tour.Level,
+                    tour.Status,
+                    price,
+                    tour.AuthorId,
+                    tour.Length,
+                    tour.PublishedTime,
+                    firstKeypointDto,
+                    averageRating
+                ));
+            }
 
             return Result.Ok(resultDtos);
         }
@@ -230,7 +228,6 @@ public class TourService : ITourService {
             return Result.Fail("Failed to get paged tours " + ex.Message);
         }
     }
-
 
     public Result<TourTouristDto> GetForTouristById(long tourId, long touristId)
     {
