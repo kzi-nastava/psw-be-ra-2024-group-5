@@ -94,7 +94,7 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
         return new PagedResult<Equipment>(equipment, equipment.Count);
     }
 
-    public List<Tour> GetPublishedPaged(int page, int pageSize)
+    public List<Tour> GetPublishedPaged(int page, int pageSize) // sortirano po prosecnoj oceni
     {
         if (page < 1 || pageSize < 1)
         {
@@ -105,6 +105,9 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .Where(t => t.Status == API.Enum.TourStatus.Published)
             .Include(t => t.KeyPoints)
             .Include(t => t.Reviews)
+            .OrderByDescending(t => t.Reviews.Any())  
+            .ThenByDescending(t => t.Reviews.Any() ?
+                t.Reviews.Average(r => r.Rating) : 0)  
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
