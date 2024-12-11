@@ -1,6 +1,4 @@
 ﻿using Explorer.BuildingBlocks.Core.Domain;
-using System;
-using System.Collections.Generic;
 
 namespace Explorer.Tours.Core.Domain
 {
@@ -17,10 +15,6 @@ namespace Explorer.Tours.Core.Domain
         public TourReview() { }
         public TourReview(int rating, string comment, DateTime visitDate, DateTime reviewDate, byte[]? image, long tourId, long touristId, double completionPercentage = 0)
         {
-            ValidateRating(rating);
-            ValidateComment(comment);
-            ValidateVisitDate(visitDate);
-
             Rating = rating;
             Comment = comment;
             VisitDate = visitDate;
@@ -29,14 +23,14 @@ namespace Explorer.Tours.Core.Domain
             TourId = tourId;
             TouristId = touristId;
             CompletionPercentage = completionPercentage;
-        }
 
-        public TourReview(long id,int rating, string comment, DateTime visitDate, DateTime reviewDate, byte[]? image, long tourId, long touristId, double completionPercentage = 0)
-        {
             ValidateRating(rating);
             ValidateComment(comment);
             ValidateVisitDate(visitDate);
+        }
 
+        public TourReview(long id, int rating, string comment, DateTime visitDate, DateTime reviewDate, byte[]? image, long tourId, long touristId, double completionPercentage = 0)
+        {
             Id = id;
             Rating = rating;
             Comment = comment;
@@ -46,6 +40,10 @@ namespace Explorer.Tours.Core.Domain
             TourId = tourId;
             TouristId = touristId;
             CompletionPercentage = completionPercentage;
+
+            ValidateRating(rating);
+            ValidateComment(comment);
+            ValidateVisitDate(visitDate);
         }
 
         private void ValidateRating(int rating)

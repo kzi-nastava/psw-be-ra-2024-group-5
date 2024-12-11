@@ -56,6 +56,29 @@ namespace Explorer.Tours.Core.UseCases
             }
         }
 
+        public Result<List<TourReviewDto>> GetByTourId(int tourId, long? userId)
+        {
+            try
+            {
+                var reviews = _repository.GetByTourId(tourId);
+                var reviewList = reviews.Value!;
+
+                if (userId.HasValue)
+                {
+                    reviewList = reviewList
+                        .OrderByDescending(r => r.TouristId == userId.Value)
+                        .ThenByDescending(r => r.ReviewDate)
+                        .ToList();
+                }
+
+                return MapToDto(reviewList);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(FailureCode.NotFound).WithError(ex.Message);
+            }
+        }
+
         public Result<List<TourReviewDto>> GetByTouristId(int touristId)
         {
             try

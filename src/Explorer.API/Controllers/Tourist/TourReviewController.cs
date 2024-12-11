@@ -33,9 +33,9 @@ namespace Explorer.API.Controllers.Tourist
         }
 
         [HttpGet("by-tour/{tourId:int}")]
-        public ActionResult<List<TourReviewDto>> GetByTourId(int tourId)
+        public ActionResult<List<TourReviewDto>> GetByTourId(int tourId, [FromQuery] long? userId)
         {
-            var result = _tourReviewService.GetByTourId(tourId);
+            var result = _tourReviewService.GetByTourId(tourId, userId);
             return CreateResponse(result);
         }
 
