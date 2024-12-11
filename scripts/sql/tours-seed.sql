@@ -15,24 +15,24 @@ ALTER SEQUENCE tours."Tours_Id_seq" RESTART WITH 1;
 
 insert into tours."Tours"
 	("Name", "Description", "Tags", "Level", "Status",
-	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime", "NumberOfViews")
 values
 	('Draft tura', 'Kul je ova tura', '#najbolje', 0, 0,
-	'{"Amount":1000,"Currency":0}', 2, 0, '[{"Duration": 10,"Transport":0}]', '0001-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":1000,"Currency":0}', 2, 0, '[{"Duration": 10,"Transport":0}]', '0001-01-01 00:00:00+00', '0001-01-01 00:00:00+00', 0);
 
 insert into tours."Tours"
 	("Name", "Description", "Tags", "Level", "Status",
-	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime", "NumberOfViews")
 values
 	('Faks tura', 'Jej tura', '#bolja', 1, 1,
-	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00', 15);
 
 insert into tours."Tours"
 	("Name", "Description", "Tags", "Level", "Status",
-	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime")
+	"Price", "AuthorId", "Length", "TransportDurations", "PublishedTime", "ArchivedTime", "NumberOfViews")
 values
 	('Futoska tura', 'Jos jedna tura', '#zeleno', 1, 1,
-	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00');
+	'{"Amount":2500,"Currency":0}', 2, 10, '[{"Duration": 5,"Transport":1}]', '2023-01-01 00:00:00+00', '0001-01-01 00:00:00+00', 105);
 
 insert into tours."KeyPoint"
 	("Latitude", "Longitude", "Name", "Description", "Image", "TourId", "Secret", "SecretImage")

@@ -16,5 +16,6 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
         TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId);
         bool IsTourBought(long touristId, long tourId);
         bool IsTourInCart(long touristId, long tourId);
+        int GetNumberOfPurchasesForTour(long tourId);
     }
 }

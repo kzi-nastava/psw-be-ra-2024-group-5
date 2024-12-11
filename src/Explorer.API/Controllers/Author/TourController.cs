@@ -56,6 +56,14 @@ namespace Explorer.API.Controllers.Author
         }
 
         [AllowAnonymous]
+        [HttpGet("addView/{tourId:long}")]
+        public ActionResult<TourTouristDto> AddView(long tourId)
+        {
+            var result = _tourService.AddView(tourId);
+            return CreateResponse(result);
+        }
+
+        [AllowAnonymous]
         [Authorize(Policy = "touristPolicy")]
         [HttpPost("review")]
         public ActionResult<TourReviewDto> AddReview([FromBody] TourReviewDto review)

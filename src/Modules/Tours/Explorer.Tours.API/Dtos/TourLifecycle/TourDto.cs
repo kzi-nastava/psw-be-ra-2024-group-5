@@ -18,15 +18,16 @@ public class TourDto
     public List<TransportDurationDto> TransportDurations { get; set; }
     public DateTime PublishedTime { get; set; }
     public DateTime ArchivedTime { get; set; }
-
-    
+    public int NumberOfViews { get; set; }
+    public int NumberOfPurchases { get; set; }
+    public int NumberOfCompletions { get; set; }
 
     public TourDto() { }
     public TourDto(long id, string? name, string? description,
         string? tags, TourLevel? level, TourStatus status, MoneyDto price,
         long authorId, List<KeyPointDto> keyPoints, List<TourReviewDto> reviews,
         double? length, List<TransportDurationDto> transportDurations,
-        DateTime publishedTime, DateTime archivedTime)
+        DateTime publishedTime, DateTime archivedTime, int numberOfViews)
     {
         Id = id;
         Name = name;
@@ -42,6 +43,7 @@ public class TourDto
         TransportDurations = transportDurations;
         PublishedTime = publishedTime;
         ArchivedTime = archivedTime;
+        NumberOfViews = numberOfViews;
     }
 
 }
