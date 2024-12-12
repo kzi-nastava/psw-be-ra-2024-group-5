@@ -13,5 +13,6 @@ namespace Explorer.Payments.API.Internal
         bool IsTourBought(long touristId, long tourId);
         bool IsTourInCart(long touristId, long tourId);
         Result Create(long touristId);
+        int GetNumberOfPurchasesForTour(long tourId);
     }
 }

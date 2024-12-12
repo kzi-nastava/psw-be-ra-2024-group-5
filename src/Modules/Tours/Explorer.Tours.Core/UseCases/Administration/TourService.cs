@@ -47,9 +47,30 @@ public class TourService : ITourService {
         try {
             var tour = _tourRepository.GetById(id);
             var tourDto = _mapper.Map<TourDto>(tour);
+
+            tourDto.NumberOfPurchases = _shoppingService.GetNumberOfPurchasesForTour(id);
+            tourDto.NumberOfCompletions = _tourExecutionRepository.GetByTour(id).Where(te => te.Status == TourExecutionStatus.Completed).Count();
             return Result.Ok(tourDto);
         }
         catch (Exception e) {
+            return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+        }
+    }
+
+    public Result AddView(long tourId)
+    {
+        try
+        {
+            var tour = _tourRepository.GetById(tourId);
+
+            tour.IncrementViews();
+
+            tour = _tourRepository.Update(tour);
+
+            return Result.Ok();
+        }
+        catch (Exception e)
+        {
             return Result.Fail(FailureCode.NotFound).WithError(e.Message);
         }
     }
@@ -253,6 +274,9 @@ public class TourService : ITourService {
             var activeTour = _tourExecutionRepository.GetActive(touristId);
             bool isTourInCart = _shoppingService.IsTourInCart(touristId, tourId);
             bool isTourBought = _shoppingService.IsTourBought(touristId, tourId);
+
+            tourDto.NumberOfPurchases = _shoppingService.GetNumberOfPurchasesForTour(tourId);
+            tourDto.NumberOfCompletions = _tourExecutionRepository.GetByTour(tourId).Where(te => te.Status == TourExecutionStatus.Completed).Count();
 
             //dok ne kupi ne moze da vidi sve keypointove
             if (!isTourBought)

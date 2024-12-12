@@ -78,5 +78,10 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
 
             return shoppingCart.ContainsTour(bundleId, ITS_BUNDLE);
         }
+
+        public int GetNumberOfPurchasesForTour(long tourId)
+        {
+            return DbContext.TourPurchaseTokens.Where(tpt => tpt.TourId == tourId).Count();
+        }
     }
 }

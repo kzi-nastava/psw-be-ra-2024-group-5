@@ -55,5 +55,10 @@ namespace Explorer.Payments.Core.UseCases
                 return Result.Fail(ex.Message);
             }
         }
+
+        public int GetNumberOfPurchasesForTour(long tourId)
+        {
+            return _shoppingCartRepository.GetNumberOfPurchasesForTour(tourId);
+        }
     }
 }

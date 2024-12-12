@@ -17,6 +17,7 @@ public class Tour : Entity {
     public List<TransportDuration> TransportDurations { get; private set; }
     public DateTime PublishedTime { get; private set; }
     public DateTime ArchivedTime { get; private set; }
+    public int NumberOfViews { get; private set; }
 
     public Tour() { }
 
@@ -24,7 +25,7 @@ public class Tour : Entity {
     public Tour(long id, string? name, string? description, string? tags,
         TourLevel? level, TourStatus status, Money price, long authorId,
         List<KeyPoint> keyPoints, List<TourReview> reviews, double? length,
-        List<TransportDuration> transportDurations, DateTime publishedTime, DateTime archivedTime) {
+        List<TransportDuration> transportDurations, DateTime publishedTime, DateTime archivedTime, int numberOfViews) {
         Id = id;
         Name = name;
         Description = description;
@@ -39,6 +40,7 @@ public class Tour : Entity {
         TransportDurations = transportDurations;
         PublishedTime = publishedTime;
         ArchivedTime = archivedTime;
+        NumberOfViews = numberOfViews;
     }
 
     //Constructor for creation
@@ -57,7 +59,7 @@ public class Tour : Entity {
         TransportDurations = transportDurations;
         PublishedTime = DateTime.MinValue;
         ArchivedTime = DateTime.MinValue; // ili null da bude
-
+        NumberOfViews = 0;
     }
 
 
@@ -150,6 +152,11 @@ public class Tour : Entity {
         if(Reviews.Count > 0) 
             return Reviews.Average(x => x.Rating);
         return 0;
+    }
+
+    public void IncrementViews()
+    {
+        NumberOfViews++;
     }
 
 }
