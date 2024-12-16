@@ -141,25 +141,34 @@ public class BlogPost : Entity
         _comments.Remove(comment);
     }
 
-    public void AddOrUpdateRating(VoteType value, int userId)
+    public BlogVote AddOrUpdateRating(VoteType value, int userId)
     {
         if (Status == BlogStatus.Draft)
             throw new InvalidOperationException("Voting is allowed only for published blogs.");
 
-        //if (this.UserId != UserId)
-        //    throw new InvalidOperationException("User cant vote.");
-
         var existingRating = _votes.FirstOrDefault(r => r.UserId == userId);
 
-        if (existingRating != null)
+        if (existingRating != null && existingRating.Type == value)
         {
             _votes.Remove(existingRating);
+            UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
+            return existingRating;
         }
-
-        var rating = new BlogVote(userId, value);
-        _votes.Add(rating);
-
-        UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
+        else if (existingRating != null)
+        {
+            _votes.Remove(existingRating);
+            var rating = new BlogVote(userId, value);
+            _votes.Add(rating);
+            UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
+            return rating;
+        }
+        else
+        {
+            var rating = new BlogVote(userId, value);
+            _votes.Add(rating);
+            UpdateStatusBasedOnVotesAndComments(GetUpvoteCount(), GetDownvoteCount(), _comments.Count);
+            return rating;
+        }
     }
 
     public void RemoveRating(int userId)
