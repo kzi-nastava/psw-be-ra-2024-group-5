@@ -40,7 +40,7 @@ namespace Explorer.Tours.Tests.Integration.Tourist
             var controller = CreateController(scope);
 
             // Act
-            var result = ((ObjectResult)controller.GetByTourId(-1).Result)?.Value as List<TourReviewDto>;
+            var result = ((ObjectResult)controller.GetByTourId(-1, null).Result)?.Value as List<TourReviewDto>;
 
             // Assert
             result.ShouldNotBeNull();

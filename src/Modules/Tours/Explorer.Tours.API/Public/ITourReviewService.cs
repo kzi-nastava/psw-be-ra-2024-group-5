@@ -10,6 +10,7 @@ namespace Explorer.Tours.API.Public
         Result<TourReviewDto> Create(TourReviewDto review);
         Result<TourReviewDto> GetById(int id);
         Result<List<TourReviewDto>> GetByTourId(int tourId);
+        Result<List<TourReviewDto>> GetByTourId(int tourId, long? userId);
         Result<List<TourReviewDto>> GetByTouristId(int touristId);
         Result<TourReviewDto> Update(TourReviewDto review);
         Result Delete(int id);
