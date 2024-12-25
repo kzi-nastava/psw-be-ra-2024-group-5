@@ -11,5 +11,6 @@ public interface IUserRepository
 
     User? Get(long userId);
     List<User> GetAll();
+    User Update(User user);
 
 }

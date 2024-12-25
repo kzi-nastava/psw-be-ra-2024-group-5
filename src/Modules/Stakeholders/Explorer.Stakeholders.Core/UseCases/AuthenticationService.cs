@@ -41,6 +41,33 @@ public class AuthenticationService : IAuthenticationService
         {
             personId = 0;
         }
+
+        var lastSession = user.LastSession;
+        user.LastSession = DateTime.UtcNow;
+        DateTime yesterday = DateTime.Today.AddDays(-1);
+
+        try
+        {
+            if (user.RewardStreak == 7)
+            {
+                user.RewardStreak = 0;
+            }
+            else if (lastSession.Date == yesterday.Date)
+            {
+                user.RewardStreak++;
+            }
+            else if (lastSession.Date < yesterday.Date)
+            {
+                user.RewardStreak = 0;
+            }
+
+            _userRepository.Update(user);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(FailureCode.Internal);
+        }
+
         return _tokenGenerator.GenerateAccessToken(user, personId);
     }
 
@@ -77,7 +104,12 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            var user = _userRepository.Create(new User(account.Username, account.Password, UserRole.Tourist, true));
+            var user = new User(account.Username, account.Password, UserRole.Tourist, true);
+            user.LastSession = DateTime.MinValue;
+            user.LastRewardClaimed = DateTime.MinValue;
+            user.RewardStreak = 0;
+
+            user = _userRepository.Create(user);
             var person = _personRepository.Create(new Person(user.Id, account.Name, account.Surname, account.Email));
 
             _shoppingCartService.Create(user.Id);
