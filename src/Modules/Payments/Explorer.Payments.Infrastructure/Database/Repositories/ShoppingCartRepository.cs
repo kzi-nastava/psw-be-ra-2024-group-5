@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Explorer.Tours.Core.Domain;
 
 namespace Explorer.Payments.Infrastructure.Database.Repositories
 {
@@ -48,6 +49,11 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
         public TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId)
         {
             return DbContext.TourPurchaseTokens.Where(tpt => tpt.TourId == tourId && tpt.UserId == touristId).FirstOrDefault();
+        }
+
+        public List<TourPurchaseToken> GetPurchaseTokenByTouristId(long touristId)
+        {
+            return DbContext.TourPurchaseTokens.Where(tpt => tpt.UserId == touristId).ToList();
         }
 
         public void SavePaymentRecord(PaymentRecord paymentRecord) {

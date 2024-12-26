@@ -48,7 +48,7 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            if (user.RewardStreak == 7)
+            if (user.RewardStreak >= 6)
             {
                 user.RewardStreak = 0;
             }

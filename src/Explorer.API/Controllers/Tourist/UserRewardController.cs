@@ -6,8 +6,8 @@ using System.Numerics;
 
 namespace Explorer.API.Controllers.Tourist
 {
-    [Route("api/tourist/reward")]
-    [ApiController]
+
+    [Route("api/reward")]
     public class UserRewardController: BaseApiController
     {
         private readonly IUserRewardService _userRewardService;
@@ -30,7 +30,7 @@ namespace Explorer.API.Controllers.Tourist
         }
 
         [Authorize(Policy = "touristPolicy")]
-        [HttpPost("/daily/{userId:long}")]
+        [HttpPost("daily/{userId:long}")]
         public ActionResult ClaimDaily(long userId)
         {
             var result = this._userRewardService.ClaimDaily(userId);
@@ -43,10 +43,10 @@ namespace Explorer.API.Controllers.Tourist
         }
 
         [Authorize(Policy = "touristPolicy")]
-        [HttpPost("/wheel/{userId:long}/{rewardType:int}")]
-        public ActionResult<UserRewardDto> ClaimWheelOfFortune(long userId, int rewardType)
+        [HttpPost("wheel/{userId:long}/{rewardType:int}")]
+        public async Task<ActionResult<ClaimedRewardDto>> ClaimWheelOfFortune(long userId, int rewardType)
         {
-            var result = this._userRewardService.GetRewardInfo(userId);
+            var result = await this._userRewardService.ClaimWheelOfFortune(userId,rewardType);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors.FirstOrDefault()?.Message);

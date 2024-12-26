@@ -14,5 +14,7 @@ namespace Explorer.Payments.API.Internal
         bool IsTourInCart(long touristId, long tourId);
         Result Create(long touristId);
         int GetNumberOfPurchasesForTour(long tourId);
+        List<long> GetPurchasedTourIdsByTouristId(long touristId);
+        void CreateToken(long touristId, long tourId);
     }
 }

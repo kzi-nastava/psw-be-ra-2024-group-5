@@ -12,6 +12,6 @@ namespace Explorer.Stakeholders.API.Public
     {
         Result<UserRewardDto> GetRewardInfo(long userId);
         Result ClaimDaily(long userId);
-        Result ClaimWheelOfFortune(long userId, uint reward);
+        Task<Result<ClaimedRewardDto>> ClaimWheelOfFortune(long userId, int reward);
     }
 }

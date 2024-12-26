@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Explorer.BuildingBlocks.Core.UseCases;
 using Explorer.Encounters.API.Dtos;
-using Explorer.Encounters.API.Internal;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Explorer.Encounters.Core.UseCases
 {
-    public class ParticipantService : CrudService<ParticipantDto, Participant>, IParticipantService, IInternalParticipantService
+    public class ParticipantService : CrudService<ParticipantDto, Participant>, IParticipantService
     {
         private readonly IParticipantRepository _participantRepository;
         private readonly IMapper _mapper;

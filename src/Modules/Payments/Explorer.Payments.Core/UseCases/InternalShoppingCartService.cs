@@ -55,10 +55,26 @@ namespace Explorer.Payments.Core.UseCases
                 return Result.Fail(ex.Message);
             }
         }
+        public List<long> GetPurchasedTourIdsByTouristId(long touristId)
+        {
+            var tourPurchaseTokens = _shoppingCartRepository.GetPurchaseTokenByTouristId(touristId);
+            return tourPurchaseTokens.Select(token => token.TourId).ToList();
 
+        }
         public int GetNumberOfPurchasesForTour(long tourId)
         {
             return _shoppingCartRepository.GetNumberOfPurchasesForTour(tourId);
+        }
+
+        public void CreateToken(long touristId, long tourId)
+        {
+            var token = new TourPurchaseToken
+            {
+                TourId = tourId,
+                UserId = touristId,
+                PurchaseDate = DateTime.UtcNow
+            };
+            _shoppingCartRepository.SaveToken(token);
         }
     }
 }

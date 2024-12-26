@@ -1,5 +1,4 @@
 ﻿using Explorer.BuildingBlocks.Infrastructure.Database;
-using Explorer.Encounters.API.Internal;
 using Explorer.Encounters.API.Public;
 using Explorer.Encounters.Core.Domain.RepositoryInterfaces;
 using Explorer.Encounters.Core.Mappers;
@@ -31,7 +30,6 @@ public static class EncountersStartup {
         services.AddScoped<IEncounterService, EncounterService>();
         services.AddScoped<IEncounterExecutionService, EncounterExecutionService>();
         services.AddScoped<IParticipantService, ParticipantService>();
-        services.AddScoped<IInternalParticipantService, ParticipantService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)

@@ -14,6 +14,7 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
         void SaveToken(TourPurchaseToken token);
         void SavePaymentRecord(PaymentRecord paymentRecord);
         TourPurchaseToken GetPurchaseTokenByTourAndTouristId(long touristId, long tourId);
+        List<TourPurchaseToken> GetPurchaseTokenByTouristId(long touristId);
         bool IsTourBought(long touristId, long tourId);
         bool IsTourInCart(long touristId, long tourId);
         int GetNumberOfPurchasesForTour(long tourId);

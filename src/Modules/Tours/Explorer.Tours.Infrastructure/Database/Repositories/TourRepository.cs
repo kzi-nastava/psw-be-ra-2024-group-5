@@ -193,4 +193,13 @@ public class TourRepository : CrudDatabaseRepository<Tour, ToursContext>, ITourR
             .Include(t => t.Reviews)
             .ToList();
     }
+
+    public List<Tour> GetToursWithoutIds(List<long> tourIds)
+    {
+        return DbContext.Tours
+            .Where(t => !tourIds.Contains(t.Id))
+            .Include(t => t.KeyPoints)
+            .Include(t => t.Reviews)
+            .ToList();
+    }
 }
