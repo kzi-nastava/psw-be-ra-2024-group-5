@@ -8,9 +8,9 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class ClaimedRewardDto
     {
-        public long TourId { get; set; }
-        public string TourName { get; set; }
-        public string Image { get; set; }
+        public long? TourId { get; set; }
+        public string? TourName { get; set; }
+        public string? Image { get; set; }
         public long? CouponId { get; set; }
         public string? Code { get; set; }
         public long? Percentage { get; set; }
