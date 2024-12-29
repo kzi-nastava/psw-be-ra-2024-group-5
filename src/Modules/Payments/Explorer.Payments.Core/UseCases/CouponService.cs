@@ -63,6 +63,7 @@ namespace Explorer.Payments.Core.UseCases
 				// Mapiranje na DTO
 				var createdCouponDto = new CouponDto
 				{
+					Id = coupon.Id,
 					Code = coupon.Code,
 					Percentage = coupon.Percentage,
 					ExpiredDate = coupon.ExpiredDate,
