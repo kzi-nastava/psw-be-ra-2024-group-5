@@ -57,5 +57,11 @@ public class EncounterExecutionController : BaseApiController {
         var result = _encounterExecutionService.CompleteMiscEncounter(encounterId, userId);
         return CreateResponse(result);
     }
+
+    [HttpPatch("complete-riddle")]
+    public ActionResult CompleteRiddleEncounter(int encounterId, int userId, string answer) {
+        var result = _encounterExecutionService.CompleteRiddleEncounter(encounterId, userId, answer);
+        return CreateResponse(result);
+    }
 }
 

@@ -18,5 +18,6 @@ namespace Explorer.Encounters.API.Public {
         public Result<ProgressResponseDto> Progress(EncounterExecutionRequestDto request);
         public Result CompleteHiddenLocationEncounter(EncounterExecutionRequestDto request);
         public Result CompleteMiscEncounter(int encounterId, int userId);
+        public Result CompleteRiddleEncounter(int encounterId, int userId, string answer);
     }
 }

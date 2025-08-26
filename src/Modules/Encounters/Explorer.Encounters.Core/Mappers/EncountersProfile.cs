@@ -26,12 +26,21 @@ public class EncountersProfile : Profile
             .ReverseMap()
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertFromByteArray(src.Image)));
 
+        CreateMap<RiddleEncounterDto, RiddleEncounter>()
+            .ForMember(dest => dest.Riddle, opt => opt.MapFrom(src => src.Riddle))
+            .ForMember(dest => dest.PotentialAnswers, opt => opt.MapFrom(src => src.PotentialAnswers))
+            .ReverseMap()
+            .ForMember(dest => dest.Riddle, opt => opt.MapFrom(src => src.Riddle))
+            .ForMember(dest => dest.PotentialAnswers, opt => opt.MapFrom(src => src.PotentialAnswers));
+
         CreateMap<EncounterDto, Encounter>()
             .Include<SocialEncounterDto, SocialEncounter>()
             .Include<HiddenLocationEncounterDto, HiddenLocationEncounter>()
+            .Include<RiddleEncounterDto, RiddleEncounter>()
             .ReverseMap()
             .Include<SocialEncounter, SocialEncounterDto>()
-            .Include<HiddenLocationEncounter, HiddenLocationEncounterDto>();
+            .Include<HiddenLocationEncounter, HiddenLocationEncounterDto>()
+            .Include<RiddleEncounter, RiddleEncounterDto>();
 
         CreateMap<ParticipantDto, Participant>()
             .ReverseMap();

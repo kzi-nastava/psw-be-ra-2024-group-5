@@ -21,6 +21,11 @@ insert into encounters."Encounters"
 values
 	('Sremski Karlovci most famous building', 'Find the place from which this photo was taken.', '{"Latitude": 45.207545, "Longitude": 19.930066}', 50, 1, 2, 1);
 
+insert into encounters."Encounters"
+	("Name", "Description", "Location", "XP", "Status", "Type", "CreatorId")
+values
+	('Riddle encounter', 'Solve the riddle', '{"Latitude": 45.217545, "Longitude": 19.920066}', 300, 1, 3, 1);
+
 insert into encounters."SocialEncounters"
 	("Id", "Radius", "PeopleCount", "UserIds")
 values
@@ -30,3 +35,8 @@ insert into encounters."HiddenLocationEncounters"
 	("Id", "ImageLocation", "Image")
 values
 	(3, '{"Latitude": 45.202264, "Longitude": 19.934194}', '');
+
+insert into encounters."RiddleEncounters"
+	("Id", "Riddle", "Answer", "PotentialAnswers")
+values
+	(4, 'What has keys but can not open locks?', 'Keyboard', '["Keyboard", "Piano", "Map"]');
