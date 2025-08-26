@@ -81,6 +81,20 @@ namespace Explorer.Payments.Core.Domain
             if (_bundleItems.Count() < 2)
                 throw new ArgumentException("You need to add at least 2 items to bundle.", nameof(_bundleItems));
         }
+        public void RemoveBundleItem(long authorId, long tourId)
+        {
+            if (authorId != this.AuthorId)
+                throw new UnauthorizedAccessException("Only the author can remove tours from this bundle.");
+
+            if (!_bundleItems.Contains(tourId))
+                throw new ArgumentException($"Tour {tourId} is not part of this bundle.");
+
+            _bundleItems.Remove(tourId);
+
+            if (_bundleItems.Count < 2)
+                throw new ArgumentException("Bundle must have at least 2 items.");
+        }
+
     }
 }
 

@@ -252,5 +252,102 @@ namespace Explorer.Payments.Core.UseCases
                 return Result.Fail(FailureCode.InvalidArgument).WithError($"An unexpected error occurred: {ex.Message}");
             }
         }
+
+        
+
+        public Result<List<BundleDetailsDto>> GetBundlesByAuthor(long authorId, int page, int pageSize)
+        {
+            if (!_internalUserService.CheckAuthorExists(authorId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Author does not exist.");
+
+            var pageResult = _bundleRepository.GetPagedByAuthor(authorId, page, pageSize);
+
+           
+            var resultDto = pageResult.Results
+                .Select(bundle => _mapper.Map<BundleDetailsDto>(bundle))
+                .ToList();
+
+            return Result.Ok(resultDto);
+        }
+
+        public Result<BundleDetailsDto> ArchiveBundle(long bundleId, long authorId)
+        {
+            if (!_internalUserService.CheckAuthorExists(authorId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Author does not exist.");
+
+            try
+            {
+                var bundle = _bundleRepository.Get(bundleId);
+                if (bundle == null)
+                    return Result.Fail(FailureCode.NotFound).WithError("Bundle not found.");
+
+                bundle.ChangeStatus(authorId, BundleStatus.Archive);
+
+                _bundleRepository.Update(bundle);
+
+                var resultDto = _mapper.Map<BundleDetailsDto>(bundle);
+                return Result.Ok(resultDto);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(FailureCode.InvalidArgument)
+                             .WithError($"An unexpected error occurred: {ex.Message}");
+            }
+        }
+        public Result<bool> CanPublishBundle(long bundleId)
+        {
+            var bundle = new Bundle();
+            try
+            {
+                bundle = _bundleRepository.Get(bundleId);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail<bool>(FailureCode.InvalidArgument)
+                             .WithError($"Bundle doesn't exist: {ex.Message}");
+            }
+
+            var tours = new List<TourDto>();
+            foreach (var tourId in bundle.BundleItems)
+            {
+                var tourResult = _internalTourService.GetById(tourId);
+                if (tourResult != null && tourResult.IsSuccess && tourResult.Value != null)
+                    tours.Add(tourResult.Value);
+            }
+
+            var publishedToursCount = tours.Count(t => t.Status == Tours.API.Enum.TourStatus.Published);
+            return Result.Ok(publishedToursCount >= 2);
+        }
+        public Result<BundleDetailsDto> RemoveTourFromBundle(long bundleId, long tourId, long authorId)
+        {
+            if (!_internalUserService.CheckAuthorExists(authorId))
+                return Result.Fail(FailureCode.InvalidArgument).WithError("Author does not exist.");
+
+            Bundle bundle;
+            try
+            {
+                bundle = _bundleRepository.Get(bundleId);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(FailureCode.InvalidArgument).WithError($"Bundle doesn't exist: {ex.Message}");
+            }
+
+            try
+            {
+                bundle.RemoveBundleItem(authorId, tourId);
+                _bundleRepository.Update(bundle);
+
+                var resultDto = _mapper.Map<BundleDetailsDto>(bundle);
+                return Result.Ok(resultDto);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(FailureCode.InvalidArgument)
+                             .WithError($"Failed to remove tour from bundle: {ex.Message}");
+            }
+        }
+
+
     }
 }

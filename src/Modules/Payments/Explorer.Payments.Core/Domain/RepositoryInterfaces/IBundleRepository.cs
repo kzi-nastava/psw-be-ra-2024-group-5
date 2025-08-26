@@ -11,5 +11,8 @@ namespace Explorer.Payments.Core.Domain.RepositoryInterfaces
     {
         Bundle Update(Bundle aggregateRoot);
         List<Bundle> GetBundlesPublished(int page, int pageSize);
+        PagedResult<Bundle> GetPagedByAuthor(long authorId, int page, int pageSize);
+
+
     }
 }

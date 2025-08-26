@@ -29,5 +29,27 @@ namespace Explorer.Payments.Infrastructure.Database.Repositories
                 .Take(pageSize)
                 .ToList();
         }
+
+        public PagedResult<Bundle> GetPagedByAuthor(long authorId, int page, int pageSize)
+        {
+            if (page < 1 || pageSize < 1)
+            {
+                return new PagedResult<Bundle>(new List<Bundle>(), 0);
+            }
+
+            var query = DbContext.Bundles
+                .Where(b => b.AuthorId == authorId);
+
+            var totalCount = query.Count();
+
+            var items = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<Bundle>(items, totalCount);
+        }
     }
+
 }
+

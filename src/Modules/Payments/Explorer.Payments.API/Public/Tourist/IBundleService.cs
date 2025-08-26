@@ -22,6 +22,12 @@ namespace Explorer.Payments.API.Public.Tourist
         Result<List<BundleDetailsDto>> GetAllPublishedBundles(int page, int pageSize);
         Result<BundleDetailsDto> DeleteBundle(long bundleId, long authorId);
         Result<BundleDetailsDto> ChangeStatus(long bundleId, long authorId, BundleStatus newStatus);
+        Result<List<BundleDetailsDto>> GetBundlesByAuthor(long authorId, int page, int pageSize);
+        Result<BundleDetailsDto> ArchiveBundle(long bundleId, long authorId);
+        Result<bool> CanPublishBundle(long bundleId);
+        Result<BundleDetailsDto> RemoveTourFromBundle(long bundleId, long tourId, long authorId);
+
+
 
     }
 }
