@@ -72,5 +72,46 @@ namespace Explorer.API.Controllers.Author
             var result = _bundleService.DeleteBundle(bundleId, authorId);
             return CreateResponse(result);
         }
+
+        [HttpGet("authors/{authorId}/bundles")]
+        public ActionResult<PagedResult<BundleSummaryDto>> GetBundlesByAuthor(
+        long authorId,
+        [FromQuery] int page,
+        [FromQuery] int pageSize)
+        {
+            var result = _bundleService.GetBundlesByAuthor(authorId, page, pageSize);
+            return CreateResponse(result);
+        }
+
+        [HttpPut("{bundleId}/archive")]
+        public IActionResult ArchiveBundle(long bundleId, [FromQuery] long authorId)
+        {
+            var result = _bundleService.ArchiveBundle(bundleId, authorId);
+
+            if (result.IsFailed)
+            {
+                return result.Errors.Any()
+                    ? BadRequest(result.Errors.Select(e => e.Message))
+                    : BadRequest("Failed to archive bundle.");
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{bundleId}/can-publish")]
+        public ActionResult<bool> CanPublish(long bundleId)
+        {
+            var result = _bundleService.CanPublishBundle(bundleId);
+            return CreateResponse(result); 
+        }
+
+        [HttpDelete("{bundleId}/tour/{tourId}")]
+        public ActionResult<BundleDetailsDto> RemoveTour(long bundleId, long tourId, [FromQuery] long authorId)
+        {
+            var result = _bundleService.RemoveTourFromBundle(bundleId, tourId, authorId);
+            return CreateResponse(result);
+        }
+
     }
+
 }
