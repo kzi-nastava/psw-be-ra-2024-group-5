@@ -1,4 +1,5 @@
-﻿using FluentResults;
+﻿using Explorer.Payments.API.Dtos;
+using FluentResults;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Explorer.Payments.API.Internal
     public interface IInternalWalletService
     {
         Result CreateWallet(long touristId);
+        Result<WalletDto> AddFunds(ShoppingMoneyDto moneyDto, long touristId);
     }
 }

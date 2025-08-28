@@ -8,6 +8,9 @@ public class User : Entity
     public string Password { get; private set; }
     public UserRole Role { get; private set; }
     public bool IsActive { get; set; }
+    public DateTime LastSession { get; set; }
+    public int RewardStreak { get; set; }
+    public DateTime LastRewardClaimed { get; set; }
 
     public User(string username, string password, UserRole role, bool isActive)
     {

@@ -39,6 +39,7 @@ public static class StakeholdersStartup
         services.AddScoped<IProfileMessagesService, ProfileMessagesService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IUserProfileServiceInternal, UserProfileServiceInternal>();
+        services.AddScoped<IUserRewardService, UserRewardService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)

@@ -12,6 +12,6 @@ namespace Explorer.Tours.API.Internal
     {
         Result<TourDto> GetById(long id);
         Result<List<TourDto>>? GetByAuthorPaged(int authorId, int page, int pageSize);
-
+        Result<List<TourCardDto>> GetTourCardsExceptIds(List<long> tourIds);
     }
 }

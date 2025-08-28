@@ -21,11 +21,16 @@ DELETE FROM stakeholders."ProfileMessages";
 ALTER SEQUENCE stakeholders."ProfileMessages_Id_seq" RESTART WITH 1;
 
 -- Users
-insert into stakeholders."Users"("Username", "Password", "Role", "IsActive") values ('admin', 'admin', 0, true);
-insert into stakeholders."Users"("Username", "Password", "Role", "IsActive") values ('author', 'author', 1, true);
-INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive") VALUES ('pera', 'pera', 2, true);
-INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive") VALUES ('djura', 'djura', 2, true);
-INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive") VALUES ('zika', 'zika', 2, true);
+insert into stakeholders."Users"("Username", "Password", "Role", "IsActive", "LastSession", "RewardStreak", "LastRewardClaimed") 
+values ('admin', 'admin', 0, true, '2024-12-24 00:00:00+00', 0, '0001-01-01 00:00:00+00');
+insert into stakeholders."Users"("Username", "Password", "Role", "IsActive", "LastSession", "RewardStreak", "LastRewardClaimed") 
+values ('author', 'author', 1, true, '2024-12-22 00:00:00+00', 0, '0001-01-01 00:00:00+00');
+INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive", "LastSession", "RewardStreak", "LastRewardClaimed") 
+VALUES ('pera', 'pera', 2, true,'2024-12-21 00:00:00+00', 0, '2024-01-01 00:00:00+00');
+INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive", "LastSession", "RewardStreak", "LastRewardClaimed") 
+VALUES ('djura', 'djura', 2, true, '2024-12-22 00:00:00+00', 0, '2024-01-01 00:00:00+00');
+INSERT INTO stakeholders."Users"("Username", "Password", "Role", "IsActive", "LastSession", "RewardStreak", "LastRewardClaimed") 
+VALUES ('zika', 'zika', 2, true,'2024-12-24 00:00:00+00', 0, '2024-01-01 00:00:00+00');
 
 -- People
 insert into stakeholders."People"("UserId", "Name", "Surname", "Email") values (1, 'Admin', 'Adminovic', 'admin@gmail.com');

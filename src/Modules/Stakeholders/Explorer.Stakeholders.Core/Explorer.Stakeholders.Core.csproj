@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+	<ProjectReference Include="..\..\Tours\Explorer.Tours.API\Explorer.Tours.API.csproj" />
+    <ProjectReference Include="..\..\Encounters\Explorer.Encounters.API\Explorer.Encounters.API.csproj" />
     <ProjectReference Include="..\..\Payments\Explorer.Payments.API\Explorer.Payments.API.csproj" />
     <ProjectReference Include="..\Explorer.Stakeholders.API\Explorer.Stakeholders.API.csproj" />
   </ItemGroup>

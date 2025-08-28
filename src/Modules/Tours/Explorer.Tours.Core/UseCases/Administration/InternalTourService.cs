@@ -51,5 +51,20 @@ namespace Explorer.Tours.Core.UseCases.Administration
                 return Result.Fail(FailureCode.NotFound).WithError(e.Message);
             }
         }
+
+        public Result<List<TourCardDto>> GetTourCardsExceptIds(List<long> tourIds)
+        {
+            try
+            {
+                var tours = _tourRepository.GetToursWithoutIds(tourIds);
+                var tourDtos = _mapper.Map<List<TourCardDto>>(tours);
+                return Result.Ok(tourDtos);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(FailureCode.NotFound).WithError(e.Message);
+            }
+        }
+
     }
 }

@@ -54,4 +54,11 @@ public class UserDatabaseRepository : IUserRepository
         return _dbContext.Users.ToList();
     }
 
+    public User Update(User user)
+    {
+        _dbContext.Update(user);
+        _dbContext.SaveChanges();
+        return user;
+    }
+
 }

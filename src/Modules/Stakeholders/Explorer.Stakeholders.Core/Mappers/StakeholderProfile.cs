@@ -102,5 +102,6 @@ public class StakeholderProfile : Profile
 
         CreateMap<NotificationReadStatus, NotificationReadStatusDto>().ReverseMap();
 
+        CreateMap<User, UserRewardDto>().ReverseMap();
     }
 }
