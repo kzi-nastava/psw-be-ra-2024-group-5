@@ -12,6 +12,7 @@ namespace Explorer.Encounters.API.Dtos;
 [JsonDerivedType(typeof(EncounterDto), typeDiscriminator: (int)EncounterType.Misc)]
 [JsonDerivedType(typeof(SocialEncounterDto), typeDiscriminator: (int)EncounterType.Social)]
 [JsonDerivedType(typeof(HiddenLocationEncounterDto), typeDiscriminator: (int)EncounterType.Locaion)]
+[JsonDerivedType(typeof(RiddleEncounterDto), typeDiscriminator: (int)EncounterType.Riddle)]
 public class EncounterDto
 {
     [JsonPropertyName("type")]

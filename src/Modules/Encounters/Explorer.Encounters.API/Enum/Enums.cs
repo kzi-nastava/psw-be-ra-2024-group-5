@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Explorer.Encounters.API.Enum;
 
-public enum EncounterType { Misc, Social, Locaion }
+public enum EncounterType { Misc, Social, Locaion, Riddle }
 public enum EncounterStatus { Draft, Active, Archived }
 public enum EncounterExecutionStatus { Active, Completed, Abandoned }
 public enum Availability { Available, TooFarAway, AlreadyOn }

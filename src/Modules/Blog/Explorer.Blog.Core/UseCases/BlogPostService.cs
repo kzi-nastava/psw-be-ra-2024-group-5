@@ -365,24 +365,19 @@ namespace Explorer.Blog.Core.UseCases
             }
             if (blogPost == null) return Result.Fail(FailureCode.InvalidArgument).WithError("Blog post not found.");
 
+            BlogVote vote;
             try
             {
-                blogPost.AddOrUpdateRating((VoteType)voteType, userId);
+                vote = blogPost.AddOrUpdateRating((VoteType)voteType, userId);
             }
             catch (Exception e)
             {
                 return Result.Fail(FailureCode.InvalidArgument).WithError(e.Message);
             }
 
-            var voteToAdd = blogPost.Votes.FirstOrDefault(v => v.UserId == userId);
-            if (voteToAdd == null)
-            {
-                return Result.Fail(FailureCode.InvalidArgument).WithError("Vote not found for the specified user.");
-            }
-
             _blogPostRepositoy.Update(blogPost);
 
-            var blogVoteDto = _mapper.Map<BlogVoteDto>(voteToAdd);
+            var blogVoteDto = _mapper.Map<BlogVoteDto>(vote);
             return Result.Ok(blogVoteDto);
         }
 

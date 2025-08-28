@@ -233,5 +233,32 @@ namespace Explorer.Encounters.Core.UseCases
             }
         }
 
+        public Result CompleteRiddleEncounter(int encounterId, int userId, string answer) 
+        {
+            try {
+                var encounterExecution = _executionRepository.GetActive(userId);
+
+                if (encounterExecution == null)
+                    return Result.Fail(FailureCode.NotFound).WithError("Execution not found.");
+
+                var encounter = (RiddleEncounter) _encounterRepository.Get(encounterExecution.EncounterId);
+                if(!encounter.CheckAnswer(answer))
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Wrong answer.");
+
+                if (encounter.Type != EncounterType.Riddle || encounter.Id != encounterId)
+                    return Result.Fail(FailureCode.InvalidArgument).WithError("Invalid encounter.");
+
+                encounterExecution.Complete();
+                _executionRepository.Update(encounterExecution);
+
+                _participantService.AddXP(userId, encounter.XP);
+
+                return Result.Ok();
+            }
+            catch {
+                return Result.Fail(FailureCode.NotFound).WithError("Encounter not found.");
+            }
+        }
+
     }
 }
